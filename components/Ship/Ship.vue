@@ -1,15 +1,27 @@
 <script setup lang="ts">
-import { useShipDragging } from "./composables";
+import ShipSvg1 from "./components/ShipSvg1.vue";
+import ShipSvg2 from "./components/ShipSvg2.vue";
+import ShipSvg3 from "./components/ShipSvg3.vue";
+import ShipSvg4 from "./components/ShipSvg4.vue";
+import { useShipDragging } from "./composables/useShipDragging";
 import type { ShipProps } from "./types";
+import { shipClipPath } from "./utils/helpers";
+
+const ShipsComponents = {
+  1: ShipSvg1,
+  2: ShipSvg2,
+  3: ShipSvg3,
+  4: ShipSvg4,
+};
 
 const ROTATIONS = { top: 0, right: 90, down: 180, left: 270 };
 
-const { x, y, rotation, id } = defineProps<ShipProps>();
+const ship = defineProps<ShipProps>();
 
 const rotationDegree = ref(0);
 
 watchEffect(() => {
-  const newRotation = ROTATIONS[rotation ?? "top"];
+  const newRotation = ROTATIONS[ship.rotation ?? "top"];
   if (newRotation != rotationDegree.value) {
     rotationDegree.value += Math.abs(
       (rotationDegree.value % 360) - (!newRotation ? 360 : newRotation)
@@ -18,27 +30,44 @@ watchEffect(() => {
 });
 
 const el = useTemplateRef<HTMLDivElement>("el");
-const coords = useShipDragging(el, {
-  shipId: id,
+const { coords, shipCoordination } = useShipDragging(el, {
+  shipId: ship.id,
   initial: {
-    x: `calc(var(--fcell-size) * ${x})`,
-    y: `calc(var(--fcell-size) * ${y})`,
+    x: `calc(var(--fcell-size) * ${ship.x})`,
+    y: `calc(var(--fcell-size) * ${ship.y})`,
   },
 });
 </script>
 <template>
-  <div
-    ref="el"
+  <component
+    :is="ShipsComponents[type]"
     :class="[$style.ship, $style[`ship${type}`]]"
+    theme="error"
     :style="{
       left: coords.x,
       top: coords.y,
+      opacity: (shipCoordination?.invalidParts.length ?? 0) > 0 ? 1 : 0,
+      clipPath: shipClipPath(ship, shipCoordination?.invalidParts ?? [], true),
       rotate: `${rotationDegree}deg`,
       ...(coords.displaceX || coords.displaceY
         ? { transformOrigin: `${coords.displaceX}px ${coords.displaceY}px` }
         : {}),
     }"
-  ></div>
+  />
+  <component
+    :is="ShipsComponents[type]"
+    ref="el"
+    :class="[$style.ship, $style[`ship${type}`]]"
+    :style="{
+      left: coords.x,
+      top: coords.y,
+      clipPath: shipClipPath(ship, shipCoordination?.invalidParts ?? []),
+      rotate: `${rotationDegree}deg`,
+      ...(coords.displaceX || coords.displaceY
+        ? { transformOrigin: `${coords.displaceX}px ${coords.displaceY}px` }
+        : {}),
+    }"
+  />
 </template>
 <style module lang="scss">
 .ship {
@@ -53,27 +82,15 @@ const coords = useShipDragging(el, {
   transition: rotate 0.5s;
 }
 .ship4 {
-  background-image: url("./images/ship4.svg");
   height: calc(var(--fcell-size) * 4);
-  // scale: 1.1 1.01;
-  // translate: 0 1px;
 }
 .ship3 {
-  background-image: url("./images/ship3.svg");
   height: calc(var(--fcell-size) * 3);
-  // scale: 1.1 1.12;
-  // translate: 0 1px;
 }
 .ship2 {
-  background-image: url("./images/ship2.svg");
   height: calc(var(--fcell-size) * 2);
-  // scale: 1.1 1.03;
-  // translate: 1px 3px;
 }
 .ship1 {
-  background-image: url("./images/ship1.svg");
   height: calc(var(--fcell-size) * 1);
-  // scale: 1.17 1.1;
-  // translate: 1px 3px;
 }
 </style>

@@ -44,25 +44,46 @@ import * as _ from "lodash-es";
 import type { ShipProps } from "../Ship/types";
 import type { PlayfieldState } from "./types";
 import { fieldStateContextKey } from "./utils";
+import { sizeContextKey } from "~/layouts/utils";
+import { useResizeObserver } from "@vueuse/core";
 
 const { type } = defineProps<{ type: "player" | "enemy" }>();
 const hletters = ["A", "Б", "В", "Г", "Д", "E", "Ж", "З", "И", "К"];
-const state = reactive<PlayfieldState>([
-  { id: "4-ship", type: "4", x: "0", y: "6", rotation: "top" },
-  { id: "3-ship-1", type: "3", x: "1", y: "7", rotation: "top" },
-  { id: "3-ship-2", type: "3", x: "2", y: "7", rotation: "top" },
-  { id: "2-ship-1", type: "2", x: "3", y: "8", rotation: "top" },
-  { id: "2-ship-2", type: "2", x: "4", y: "8", rotation: "top" },
-  { id: "2-ship-3", type: "2", x: "5", y: "8", rotation: "top" },
-  { id: "1-ship-1", type: "1", x: "6", y: "9", rotation: "top" },
-  { id: "1-ship-2", type: "1", x: "7", y: "9", rotation: "top" },
-  { id: "1-ship-3", type: "1", x: "8", y: "9", rotation: "top" },
-  { id: "1-ship-4", type: "1", x: "9", y: "9", rotation: "top" },
-]);
+const state = reactive<PlayfieldState>({
+  fieldCoords: {} as DOMRect,
+  ships: [
+    { id: "4-ship", type: 4, x: 0, y: 6, rotation: "top", isDragging: false },
+    { id: "3-ship-1", type: 3, x: 1, y: 7, rotation: "top", isDragging: false },
+    { id: "3-ship-2", type: 3, x: 2, y: 7, rotation: "top", isDragging: false },
+    { id: "2-ship-1", type: 2, x: 3, y: 8, rotation: "top", isDragging: false },
+    { id: "2-ship-2", type: 2, x: 4, y: 8, rotation: "top", isDragging: false },
+    { id: "2-ship-3", type: 2, x: 5, y: 8, rotation: "top", isDragging: false },
+    { id: "1-ship-1", type: 1, x: 6, y: 9, rotation: "top", isDragging: false },
+    { id: "1-ship-2", type: 1, x: 7, y: 9, rotation: "top", isDragging: false },
+    { id: "1-ship-3", type: 1, x: 8, y: 9, rotation: "top", isDragging: false },
+    { id: "1-ship-4", type: 1, x: 9, y: 9, rotation: "top", isDragging: false },
+  ],
+});
 provide(fieldStateContextKey, state);
+
+const root = useTemplateRef("root");
+const onRearrangeHandler = () => {
+  setTimeout(() => {
+    if (root.value) {
+      state.fieldCoords = root.value.getBoundingClientRect();
+    }
+  });
+};
+onMounted(() => {
+  window.addEventListener("resize", onRearrangeHandler);
+});
+onUnmounted(() => {
+  window.removeEventListener("resize", onRearrangeHandler);
+});
+useResizeObserver(root, onRearrangeHandler);
 </script>
 <template>
-  <div class="playfield">
+  <div class="playfield" ref="root">
     <div :class="type == 'player' ? 'border1' : 'border2'"></div>
     <div class="h-ruler">
       <div v-for="letter in hletters">
@@ -74,6 +95,6 @@ provide(fieldStateContextKey, state);
         {{ digit }}
       </div>
     </div>
-    <Ship v-for="props in state" v-bind="props" :key="props.id" />
+    <Ship v-for="props in state.ships" v-bind="props" :key="props.id" />
   </div>
 </template>

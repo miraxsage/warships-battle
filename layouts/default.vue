@@ -1,24 +1,24 @@
 <style lang="scss">
 body {
   margin: 0;
-  --cell-size: 10px;
+  --cell-size: 18px;
   @media (width >= 400px) {
-    --cell-size: 12px;
-  }
-  @media (width >= 500px) {
-    --cell-size: 14px;
-  }
-  @media (width >= 1024px) {
-    --cell-size: 16px;
-  }
-  @media (width >= 1280px) {
-    --cell-size: 18px;
-  }
-  @media (width >= 1440px) {
     --cell-size: 20px;
   }
-  @media (width >= 1920px) {
+  @media (width >= 500px) {
     --cell-size: 22px;
+  }
+  @media (width >= 1024px) {
+    --cell-size: 24px;
+  }
+  @media (width >= 1280px) {
+    --cell-size: 26px;
+  }
+  @media (width >= 1440px) {
+    --cell-size: 28px;
+  }
+  @media (width >= 1920px) {
+    --cell-size: 30px;
   }
   & * {
     user-select: none;
@@ -57,6 +57,7 @@ const bgVerticalCells = 46;
 const bgHorizontalCells = 40;
 
 const cellSize = ref(0);
+const fcellSize = computed(() => cellSize.value * 2);
 const verticalCells = ref(0);
 const horizontalCells = ref(0);
 const verticalCenter = ref(0);
@@ -64,6 +65,7 @@ const horizontalCenter = ref(0);
 
 const sizeContext = reactive({
   cellSize,
+  fcellSize,
   verticalCells,
   verticalCenter,
   horizontalCells,
@@ -80,7 +82,6 @@ watchEffect(() => {
   if (!isBrowser() || !windowWidth.value || !windowHeight.value) {
     return;
   }
-  console.log("SCK", sizeContext);
   cellSize.value = getRootSizeCssVar("cellSize") ?? 0;
 
   verticalCells.value = Math.ceil(templateHeight.value / cellSize.value);

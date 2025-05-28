@@ -2,6 +2,7 @@ import type { InjectionKey } from "vue";
 
 export type SizeContext = {
   cellSize: number;
+  fcellSize: number;
   verticalCells: number;
   verticalCenter: number;
   horizontalCells: number;
