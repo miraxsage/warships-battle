@@ -36,6 +36,7 @@ const colors = computed(
       '--background': colors.background,
       '--foreground': colors.foreground,
       '--stroke': colors.stroke,
+      filter: theme == 'normal' ? 'unset' : 'contrast(1.5)',
     }"
   >
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 101.67 113.89">

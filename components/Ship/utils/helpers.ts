@@ -1,3 +1,4 @@
+import type { ShipState } from "~/components/Playfield/types";
 import type { ShipProps } from "../types";
 
 export function rotatePoint(
@@ -22,7 +23,7 @@ export function rotatePoint(
 }
 
 export function shipClipPath(
-  ship: ShipProps,
+  ship: ShipState,
   invalidParts: number[],
   remainInvalid: boolean = false
 ) {

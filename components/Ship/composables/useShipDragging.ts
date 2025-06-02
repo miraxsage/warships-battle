@@ -2,31 +2,35 @@ import type { ShallowRef } from "vue";
 import { sizeContextKey } from "~/layouts/utils";
 import { fieldStateContextKey } from "~/components/Playfield/utils";
 import { rotatePoint } from "../utils/helpers";
+import { useShipCoordination } from "./useShipCoordination";
 import {
   NEXT_ROTATION,
+  PREV_ROTATION,
   ROTATION_ANGLE,
   ROTATION_CENTER,
-} from "../utils/constants";
-import { useShipCoordination } from "./useShipCoordination";
+} from "~/constants/common";
+import * as _ from "lodash-es";
+const lodash = _;
 
-type UseDragOptions = {
-  shipId: string;
-  initial: {
-    x: number | string;
-    y: number | string;
-  };
-};
+// type UseDragOptions = {
+//   shipId: string;
+//   initial: {
+//     x: number | string;
+//     y: number | string;
+//   };
+// };
 
 export function useShipDragging<T extends HTMLElement>(
   el: ShallowRef<T | null>,
-  { shipId, initial }: UseDragOptions
+  shipId: string
 ) {
   const fieldState = inject(fieldStateContextKey);
+  const shipState = useShip(shipId)!;
   const sizeState = inject(sizeContextKey);
 
   const coords = reactive({
-    x: initial.x || 0,
-    y: initial.y || 0,
+    x: `calc(var(--fcell-size) * ${shipState.x})`,
+    y: `calc(var(--fcell-size) * ${shipState.y})`,
     displaceX: 0,
     displaceY: 0,
   });
@@ -40,11 +44,12 @@ export function useShipDragging<T extends HTMLElement>(
         return;
       }
       const dragHandler = (event: MouseEvent) => {
-        const shipState = fieldState?.ships.find(({ id }) => id == shipId);
         if (!shipState || !fieldState || !sizeState) {
           return;
         }
+        fieldState.shipPlaceholder = { ...shipState };
         shipState.isDragging = true;
+        shipState.isSmooth = false;
         const shipRect = el.getBoundingClientRect();
         const fieldRect = el.parentElement!.getBoundingClientRect();
 
@@ -89,12 +94,17 @@ export function useShipDragging<T extends HTMLElement>(
         };
 
         const keyHandler = (event: KeyboardEvent) => {
+          console.log(event.code);
           if (!fieldState) {
             return;
           }
-          if (event.code == "ControlLeft" || event.code == "ControlRight") {
+          if (event.code == "ArrowRight" || event.code == "KeyD") {
             shipState.rotation = NEXT_ROTATION[shipState.rotation];
           }
+          if (event.code == "ArrowLeft" || event.code == "KeyA") {
+            shipState.rotation = PREV_ROTATION[shipState.rotation];
+          }
+          window.focus();
         };
         window.addEventListener("keyup", keyHandler);
         window.addEventListener("mousemove", moveHandler);
@@ -122,6 +132,18 @@ export function useShipDragging<T extends HTMLElement>(
             }px`;
             coords.displaceX = 0;
             coords.displaceY = 0;
+
+            lodash.defer(() => {
+              shipState.isSmooth = true;
+              shipState.x = fieldState.shipPlaceholder!.x;
+              shipState.y = fieldState.shipPlaceholder!.y;
+              shipState.rotation = fieldState.shipPlaceholder!.rotation;
+              fieldState.shipPlaceholder = undefined;
+              shipState.isDragging = false;
+              coords.x = `calc(var(--fcell-size) * ${shipState.x})`;
+              coords.y = `calc(var(--fcell-size) * ${shipState.y})`;
+              lodash.delay(() => (shipState.isSmooth = false), 500);
+            });
           },
           { once: true }
         );
