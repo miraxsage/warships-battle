@@ -12,7 +12,7 @@ const colors = computed(
       normal: {
         background: "#bdc4d4",
         foreground: "#939baa",
-        stroke: "#000000",
+        stroke: "var(--pen-color)",
       },
       error: {
         background: "#f8beb6",

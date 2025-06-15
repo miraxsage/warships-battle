@@ -1,0 +1,41 @@
+@mixin smmm {
+  @media (width < 500px) {
+    @content;
+  }
+}
+
+@mixin smm {
+  @media (width >= 500px) {
+    @content;
+  }
+}
+
+@mixin sm {
+  @media (width >= 800px) {
+    @content;
+  }
+}
+
+@mixin md {
+  @media (width >= 1024px) {
+    @content;
+  }
+}
+
+@mixin xl {
+  @media (width >= 1280px) {
+    @content;
+  }
+}
+
+@mixin xxl {
+  @media (width >= 1440px) {
+    @content;
+  }
+}
+
+@mixin xxxl {
+  @media (width >= 1920px) {
+    @content;
+  }
+}

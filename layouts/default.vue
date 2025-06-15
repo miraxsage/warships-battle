@@ -1,23 +1,29 @@
 <style lang="scss">
+@use "@/styles/mixins.scss" as *;
+
 body {
   margin: 0;
-  --cell-size: 18px;
-  @media (width >= 400px) {
+  --pen-color: #10123b;
+  --cell-size: 14px;
+  @include smmm {
+    --cell-size: 16px;
+  }
+  @include smm {
+    --cell-size: 18px;
+  }
+  @include sm {
+    --cell-size: 18px;
+  }
+  @include md {
     --cell-size: 20px;
   }
-  @media (width >= 500px) {
+  @include xl {
     --cell-size: 22px;
   }
-  @media (width >= 1024px) {
-    --cell-size: 24px;
-  }
-  @media (width >= 1280px) {
+  @include xxl {
     --cell-size: 26px;
   }
-  @media (width >= 1440px) {
-    --cell-size: 28px;
-  }
-  @media (width >= 1920px) {
+  @include xxxl {
     --cell-size: 30px;
   }
   & * {
@@ -26,7 +32,7 @@ body {
 }
 .layout {
   position: relative;
-  height: calc(max(100dvh, calc(var(--cell-size) * 35)));
+  height: calc(max(100dvh, calc(var(--cell-size) * 36)));
   overflow: hidden;
   @media (width < 1024px) {
     height: calc(max(100dvh, calc(var(--fcell-size) * 27)));
@@ -99,6 +105,10 @@ watchEffect(() => {
     :style="{
       '--bg-scale-x': `${cellSize * bgHorizontalCells}px`,
       '--bg-scale-y': `${cellSize * bgVerticalCells}px`,
+      '--v-cells': `${verticalCells}`,
+      '--h-cells': `${horizontalCells}`,
+      '--v-cells-odd': verticalCells % 2,
+      '--h-cells-odd': horizontalCells % 2,
       '--bg-height': `${verticalCenter}px`,
       '--cell-size': `${cellSize}px`,
       '--fcell-size': `${cellSize * 2}px`,

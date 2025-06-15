@@ -1,7 +1,9 @@
 <style>
 .border1,
 .border2 {
-  background-image: url("/images/border1.svg");
+  mask-image: url("/images/border1.svg");
+  mask-size: 100% 100%;
+  background-color: var(--pen-color);
   width: 100%;
   height: 100%;
   scale: 1.1;
@@ -9,7 +11,9 @@
   background-repeat: no-repeat;
 }
 .border2 {
-  background-image: url("/images/border2.svg");
+  mask-image: url("/images/border2.svg");
+  mask-size: 100% 100%;
+  background-color: var(--pen-color);
   translate: 0px 2px;
   scale: -1.09 -1.09;
 }
@@ -24,8 +28,10 @@
   align-items: center;
   justify-items: center;
   font-family: "First Time Writing";
-  font-size: 30px;
-  filter: drop-shadow(1px 0px 0px black) drop-shadow(0px 1px 0px black);
+  font-size: 38px;
+  color: var(--pen-color);
+  filter: drop-shadow(1px 0px 0px var(--pen-color))
+    drop-shadow(0px 1px 0px var(--pen-color));
 }
 .v-ruler {
   width: var(--fcell-size);

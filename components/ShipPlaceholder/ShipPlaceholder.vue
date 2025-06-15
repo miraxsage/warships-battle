@@ -1,8 +1,26 @@
 <style module lang="scss">
 .placeholder.placeholder {
-  border: 2px solid rgb(15, 142, 9);
-  background: rgba(0, 238, 71, 0.192);
   transition: all 0.4s;
+  background-color: rgba(178, 255, 137, 0.06);
+  &:before {
+    content: "";
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    mask-image: var(--frame-bg);
+    background-color: rgb(58, 133, 83);
+    mask-size: 100% 100%;
+    scale: 1.17 1.05;
+  }
+  & > div {
+    mask-image: url(/images/hatch.svg);
+    mask-size: 100% 100%;
+    background-color: rgb(88 184 38);
+    width: var(--fcell-size);
+    height: var(--fcell-size);
+    position: relative;
+    scale: 1.1;
+  }
 }
 .appear {
   animation: appear 0.3s;
@@ -60,10 +78,13 @@ watchEffect(() => {});
       { [$style.appear]: shown },
     ]"
     :style="{
+      '--frame-bg': `url(/images/rect${lastPlaceholder.type}.svg)`,
       opacity: fieldState?.shipPlaceholder ? 1 : 0,
       left: lastPlaceholder.x * sizeState.fcellSize + 'px',
       top: lastPlaceholder.y * sizeState.fcellSize + 'px',
       rotate: `${rotationDegree}deg`,
     }"
-  />
+  >
+    <div v-for="num in lastPlaceholder?.type" />
+  </div>
 </template>

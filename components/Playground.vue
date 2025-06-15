@@ -4,7 +4,10 @@
   position: absolute;
   width: calc(var(--fcell-size) * 10);
   height: calc(var(--fcell-size) * 10);
-  top: calc(var(--cell-size) * 7 - 3px);
+  top: calc(
+    var(--cell-size) * max(7, (var(--v-cells) - var(--v-cells-odd) - 20) / 2) -
+      3px
+  );
   left: calc(
     max(
         var(--cell-size),

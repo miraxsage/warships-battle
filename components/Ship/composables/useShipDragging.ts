@@ -12,14 +12,6 @@ import {
 import * as _ from "lodash-es";
 const lodash = _;
 
-// type UseDragOptions = {
-//   shipId: string;
-//   initial: {
-//     x: number | string;
-//     y: number | string;
-//   };
-// };
-
 export function useShipDragging<T extends HTMLElement>(
   el: ShallowRef<T | null>,
   shipId: string
@@ -53,8 +45,8 @@ export function useShipDragging<T extends HTMLElement>(
         const shipRect = el.getBoundingClientRect();
         const fieldRect = el.parentElement!.getBoundingClientRect();
 
-        coords.displaceX = event.pageX - shipRect.left;
-        coords.displaceY = event.pageY - shipRect.top;
+        coords.displaceX = event.clientX - shipRect.left;
+        coords.displaceY = event.clientY - shipRect.top;
         coords.x = `${shipRect.left - fieldRect.left}px`;
         coords.y = `${shipRect.top - fieldRect.top}px`;
 
@@ -89,8 +81,8 @@ export function useShipDragging<T extends HTMLElement>(
         }
 
         const moveHandler = (event: MouseEvent) => {
-          coords.x = `${event.pageX - fieldRect.left - coords.displaceX}px`;
-          coords.y = `${event.pageY - fieldRect.top - coords.displaceY}px`;
+          coords.x = `${event.clientX - fieldRect.left - coords.displaceX}px`;
+          coords.y = `${event.clientY - fieldRect.top - coords.displaceY}px`;
         };
 
         const keyHandler = (event: KeyboardEvent) => {
