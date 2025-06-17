@@ -5,7 +5,7 @@
   width: calc(var(--fcell-size) * 10);
   height: calc(var(--fcell-size) * 10);
   top: calc(
-    var(--cell-size) * max(7, (var(--v-cells) - var(--v-cells-odd) - 20) / 2) -
+    var(--cell-size) * max(10, (var(--v-cells) - var(--v-cells-odd) - 20) / 2) -
       3px
   );
   left: calc(
@@ -14,6 +14,9 @@
         var(--horizontal-center) - var(--fcell-size) * 5 - var(--cell-size)
       ) - 1px
   );
+  @media (width < 1024px) {
+    top: calc(var(--cell-size) * 7 - 3px);
+  }
 }
 .my-field {
   @media (width >= 1024px) {
@@ -35,15 +38,10 @@
     );
   }
   @media (width < 1024px) {
-    top: calc(var(--cell-size) * 6 + var(--fcell-size) * 11);
+    top: calc(var(--cell-size) * 9 + var(--fcell-size) * 11);
   }
 }
 </style>
-
-<script setup lang="ts">
-import { sizeContextKey } from "~/layouts/utils";
-const sizeContext = inject(sizeContextKey, null);
-</script>
 
 <template>
   <Playfield type="player" class="my-field" />

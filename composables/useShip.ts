@@ -1,6 +1,4 @@
-import { fieldStateContextKey } from "~/components/Playfield/utils";
-
 export function useShip(shipId: string) {
-  const fieldState = inject(fieldStateContextKey);
+  const { player: fieldState } = useFieldStore();
   return fieldState?.ships.find(({ id }) => id == shipId);
 }

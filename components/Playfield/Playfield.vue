@@ -1,4 +1,6 @@
-<style>
+<style lang="scss">
+@use "@/styles/mixins.scss" as *;
+
 .border1,
 .border2 {
   mask-image: url("/images/border1.svg");
@@ -28,10 +30,20 @@
   align-items: center;
   justify-items: center;
   font-family: "First Time Writing";
-  font-size: 38px;
   color: var(--pen-color);
   filter: drop-shadow(1px 0px 0px var(--pen-color))
     drop-shadow(0px 1px 0px var(--pen-color));
+
+  font-size: 22px;
+  @include sm {
+    font-size: 27px;
+  }
+  @include xl {
+    font-size: 32px;
+  }
+  @include xxxl {
+    font-size: 38px;
+  }
 }
 .v-ruler {
   width: var(--fcell-size);
@@ -44,35 +56,21 @@
 </style>
 <script setup lang="ts">
 import * as _ from "lodash-es";
-import type { PlayfieldState } from "./types";
-import { fieldStateContextKey } from "./utils";
 import { useResizeObserver } from "@vueuse/core";
 
 const { type } = defineProps<{ type: "player" | "enemy" }>();
-const hletters = ["A", "Б", "В", "Г", "Д", "E", "Ж", "З", "И", "К"];
-const state = reactive<PlayfieldState>({
-  fieldCoords: {} as DOMRect,
+const isPlayerField = type == "player";
 
-  ships: [
-    { id: "4-ship", type: 4, x: 0, y: 6, rotation: "top" },
-    { id: "3-ship-1", type: 3, x: 1, y: 7, rotation: "top" },
-    { id: "3-ship-2", type: 3, x: 2, y: 7, rotation: "top" },
-    { id: "2-ship-1", type: 2, x: 3, y: 8, rotation: "top" },
-    { id: "2-ship-2", type: 2, x: 4, y: 8, rotation: "top" },
-    { id: "2-ship-3", type: 2, x: 5, y: 8, rotation: "top" },
-    { id: "1-ship-1", type: 1, x: 6, y: 9, rotation: "top" },
-    { id: "1-ship-2", type: 1, x: 7, y: 9, rotation: "top" },
-    { id: "1-ship-3", type: 1, x: 8, y: 9, rotation: "top" },
-    { id: "1-ship-4", type: 1, x: 9, y: 9, rotation: "top" },
-  ],
-});
-provide(fieldStateContextKey, state);
+const hletters = ["A", "Б", "В", "Г", "Д", "E", "Ж", "З", "И", "К"];
+
+const fieldState = useFieldStore();
 
 const root = useTemplateRef("root");
+
 const onRearrangeHandler = () => {
   setTimeout(() => {
     if (root.value) {
-      state.fieldCoords = root.value.getBoundingClientRect();
+      fieldState[type].fieldCoords = root.value.getBoundingClientRect();
     }
   });
 };
@@ -97,7 +95,13 @@ useResizeObserver(root, onRearrangeHandler);
         {{ digit }}
       </div>
     </div>
-    <ShipPlaceholder />
-    <Ship v-for="props in state.ships" v-bind="props" :key="props.id" />
+    <template v-if="isPlayerField">
+      <ShipPlaceholder />
+      <Ship
+        v-for="props in fieldState.player.ships"
+        v-bind="props"
+        :key="props.id"
+      />
+    </template>
   </div>
 </template>

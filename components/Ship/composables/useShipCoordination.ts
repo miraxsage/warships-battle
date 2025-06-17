@@ -1,7 +1,4 @@
 import type { ShallowRef } from "vue";
-import type { PlayfieldState } from "~/components/Playfield/types";
-import { fieldStateContextKey } from "~/components/Playfield/utils";
-import { sizeContextKey } from "~/layouts/utils";
 import * as _ from "lodash-es";
 import type { Coord, Rotation } from "~/types/common";
 import { rotatePoint } from "../utils/helpers";
@@ -24,7 +21,7 @@ const SHIP_DIRECTION_INCREMENTS: Record<Rotation, [x: number, y: number]> = {
   left: [1, 0],
 };
 
-function getFieldMap(fieldState: PlayfieldState, withoutShipId: string) {
+function getFieldMap(fieldState: PlayerField, withoutShipId: string) {
   const map: string[][] = [];
   for (let ship of fieldState.ships) {
     if (ship.id == withoutShipId) {
@@ -44,15 +41,15 @@ export function useShipCoordination<T extends HTMLElement>(
   el: ShallowRef<T | null>,
   { shipId, coords }: UseCoordinationOptions
 ) {
-  const fieldState = inject(fieldStateContextKey);
-  const sizeState = inject(sizeContextKey);
+  const { player: fieldState } = useFieldStore();
+  const scaleState = useScaleStore();
   const shipState = useShip(shipId);
 
   const state = reactive({
     invalidParts: [] as number[],
   });
 
-  watch([coords, fieldState, shipState], () => {
+  watchEffect(() => {
     if (!fieldState?.ships.find(({ id }) => id == shipId)?.isDragging) {
       state.invalidParts = [];
       return;
@@ -60,7 +57,7 @@ export function useShipCoordination<T extends HTMLElement>(
     const fieldMap = fieldState && getFieldMap(fieldState, shipId);
     const ship = _.find(fieldState?.ships, { id: shipId });
 
-    if (!fieldState || !ship || !sizeState || !fieldMap) {
+    if (!fieldState || !ship || !scaleState || !fieldMap) {
       return;
     }
 
@@ -76,8 +73,8 @@ export function useShipCoordination<T extends HTMLElement>(
     );
     const actualCoords = ACTUAL_COORDS[ship.rotation](
       actualCoordsCorner,
-      sizeState.fcellSize,
-      ship.type * sizeState.fcellSize
+      scaleState.fcellSize,
+      ship.type * scaleState.fcellSize
     );
 
     const x = actualCoords.x;
@@ -87,9 +84,9 @@ export function useShipCoordination<T extends HTMLElement>(
     const isHorizontal = !!ship.rotation.match(/left|right/);
     if (
       (isVertical &&
-        (x < 0 || x + sizeState.fcellSize > fieldState.fieldCoords.width)) ||
+        (x < 0 || x + scaleState.fcellSize > fieldState.fieldCoords.width)) ||
       (isHorizontal &&
-        (y < 0 || y + sizeState.fcellSize > fieldState.fieldCoords.height))
+        (y < 0 || y + scaleState.fcellSize > fieldState.fieldCoords.height))
     ) {
       state.invalidParts = [..._.range(ship?.type)];
     } else {
@@ -98,19 +95,19 @@ export function useShipCoordination<T extends HTMLElement>(
         0,
         !isVertical
           ? 0
-          : y + ship.type * sizeState.fcellSize - fieldState.fieldCoords.height
+          : y + ship.type * scaleState.fcellSize - fieldState.fieldCoords.height
       );
       const leftOverX = Math.max(0, -x);
       const rightOverX = Math.max(
         0,
         !isHorizontal
           ? 0
-          : x + ship.type * sizeState.fcellSize - fieldState.fieldCoords.width
+          : x + ship.type * scaleState.fcellSize - fieldState.fieldCoords.width
       );
       if (upOverY || downOverY || leftOverX || rightOverX) {
         let offParts =
           Math.max(upOverY, downOverY, leftOverX, rightOverX) /
-          sizeState.fcellSize;
+          scaleState.fcellSize;
         if (offParts >= ship.type) {
           state.invalidParts = [..._.range(ship?.type)];
         } else {
@@ -131,7 +128,7 @@ export function useShipCoordination<T extends HTMLElement>(
       }
     }
     if (state.invalidParts.length < ship.type) {
-      const fcellSz = sizeState.fcellSize;
+      const fcellSz = scaleState.fcellSize;
       let sx = x + (ship.rotation == "right" ? (ship.type - 1) * fcellSz : 0);
       let sy = y + (ship.rotation == "down" ? (ship.type - 1) * fcellSz : 0);
       const startSxCells = sx / fcellSz;

@@ -36,12 +36,10 @@
 </style>
 <script setup lang="ts">
 import { ROTATION_ANGLE } from "~/constants/common";
-import { fieldStateContextKey } from "../Playfield/utils";
-import { sizeContextKey } from "~/layouts/utils";
-import type { ShipState } from "../Playfield/types";
+import * as _ from "lodash-es";
 
-const sizeState = inject(sizeContextKey)!;
-const fieldState = inject(fieldStateContextKey);
+const scaleState = useScaleStore();
+const { player: fieldState } = useFieldStore();
 
 const lastPlaceholder = reactive({} as ShipState);
 const rotationDegree = ref(0);
@@ -65,8 +63,6 @@ watchEffect(() => {
     rotationDegree.value += angle;
   }
 });
-
-watchEffect(() => {});
 </script>
 <template>
   <div
@@ -80,8 +76,8 @@ watchEffect(() => {});
     :style="{
       '--frame-bg': `url(/images/rect${lastPlaceholder.type}.svg)`,
       opacity: fieldState?.shipPlaceholder ? 1 : 0,
-      left: lastPlaceholder.x * sizeState.fcellSize + 'px',
-      top: lastPlaceholder.y * sizeState.fcellSize + 'px',
+      left: lastPlaceholder.x * scaleState.fcellSize + 'px',
+      top: lastPlaceholder.y * scaleState.fcellSize + 'px',
       rotate: `${rotationDegree}deg`,
     }"
   >

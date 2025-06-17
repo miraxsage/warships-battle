@@ -4,12 +4,11 @@
 body {
   margin: 0;
   --pen-color: #10123b;
-  --cell-size: 14px;
   @include smmm {
-    --cell-size: 16px;
+    --cell-size: 13px;
   }
   @include smm {
-    --cell-size: 18px;
+    --cell-size: 16px;
   }
   @include sm {
     --cell-size: 18px;
@@ -35,7 +34,7 @@ body {
   height: calc(max(100dvh, calc(var(--cell-size) * 36)));
   overflow: hidden;
   @media (width < 1024px) {
-    height: calc(max(100dvh, calc(var(--fcell-size) * 27)));
+    height: calc(max(100dvh, calc(var(--fcell-size) * 30)));
   }
 }
 .topBg,
@@ -55,34 +54,25 @@ body {
 </style>
 <script setup lang="ts">
 import { useElementSize, useWindowSize } from "@vueuse/core";
-import { sizeContextKey } from "./utils";
+import { storeToRefs } from "pinia";
 
 const layoutRef = useTemplateRef("layoutRef");
 
 const bgVerticalCells = 46;
 const bgHorizontalCells = 40;
 
-const cellSize = ref(0);
-const fcellSize = computed(() => cellSize.value * 2);
-const verticalCells = ref(0);
-const horizontalCells = ref(0);
-const verticalCenter = ref(0);
-const horizontalCenter = ref(0);
-
-const sizeContext = reactive({
+const {
   cellSize,
   fcellSize,
   verticalCells,
   verticalCenter,
   horizontalCells,
   horizontalCenter,
-});
+} = storeToRefs(useScaleStore());
 
 const { width: windowWidth, height: windowHeight } = useWindowSize();
 const { height: templateHeight, width: templateWidth } =
   useElementSize(layoutRef);
-
-provide(sizeContextKey, sizeContext);
 
 watchEffect(() => {
   if (!isBrowser() || !windowWidth.value || !windowHeight.value) {

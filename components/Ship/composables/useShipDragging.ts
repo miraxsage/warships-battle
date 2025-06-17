@@ -1,6 +1,4 @@
 import type { ShallowRef } from "vue";
-import { sizeContextKey } from "~/layouts/utils";
-import { fieldStateContextKey } from "~/components/Playfield/utils";
 import { rotatePoint } from "../utils/helpers";
 import { useShipCoordination } from "./useShipCoordination";
 import {
@@ -16,9 +14,9 @@ export function useShipDragging<T extends HTMLElement>(
   el: ShallowRef<T | null>,
   shipId: string
 ) {
-  const fieldState = inject(fieldStateContextKey);
+  const scaleState = useScaleStore();
+  const { player: fieldState } = useFieldStore();
   const shipState = useShip(shipId)!;
-  const sizeState = inject(sizeContextKey);
 
   const coords = reactive({
     x: `calc(var(--fcell-size) * ${shipState.x})`,
@@ -36,7 +34,7 @@ export function useShipDragging<T extends HTMLElement>(
         return;
       }
       const dragHandler = (event: MouseEvent) => {
-        if (!shipState || !fieldState || !sizeState) {
+        if (!shipState || !fieldState || !scaleState) {
           return;
         }
         fieldState.shipPlaceholder = { ...shipState };
@@ -62,13 +60,13 @@ export function useShipDragging<T extends HTMLElement>(
             currentCenter.y,
             -ROTATION_ANGLE[shipState.rotation]
           );
-          displaceInInitialCoords.x += sizeState.cellSize - currentCenter.x;
-          displaceInInitialCoords.y += sizeState.cellSize - currentCenter.y;
+          displaceInInitialCoords.x += scaleState.cellSize - currentCenter.x;
+          displaceInInitialCoords.y += scaleState.cellSize - currentCenter.y;
           coords.displaceX = displaceInInitialCoords.x;
           coords.displaceY = displaceInInitialCoords.y;
           const centerInNewCoords = rotatePoint(
-            sizeState.cellSize,
-            sizeState.cellSize,
+            scaleState.cellSize,
+            scaleState.cellSize,
             displaceInInitialCoords.x,
             displaceInInitialCoords.y,
             ROTATION_ANGLE[shipState.rotation]
@@ -109,18 +107,18 @@ export function useShipDragging<T extends HTMLElement>(
             let angle = ROTATION_ANGLE[shipState.rotation];
 
             const { x: xRotated, y: yRotated } = rotatePoint(
-              sizeState.cellSize,
-              sizeState.cellSize,
+              scaleState.cellSize,
+              scaleState.cellSize,
               coords.displaceX,
               coords.displaceY,
               angle
             );
 
             coords.x = `${
-              parseFloat(coords.x.toString()) + xRotated - sizeState.cellSize
+              parseFloat(coords.x.toString()) + xRotated - scaleState.cellSize
             }px`;
             coords.y = `${
-              parseFloat(coords.y.toString()) + yRotated - sizeState.cellSize
+              parseFloat(coords.y.toString()) + yRotated - scaleState.cellSize
             }px`;
             coords.displaceX = 0;
             coords.displaceY = 0;

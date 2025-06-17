@@ -1,17 +1,17 @@
 @mixin smmm {
-  @media (width < 500px) {
+  @media (width < 400px) {
     @content;
   }
 }
 
 @mixin smm {
-  @media (width >= 500px) {
+  @media (width >= 400px) {
     @content;
   }
 }
 
 @mixin sm {
-  @media (width >= 800px) {
+  @media (width >= 768px) {
     @content;
   }
 }
