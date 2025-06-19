@@ -3,6 +3,13 @@
 
 .border1,
 .border2 {
+  width: 100%;
+  height: 100%;
+}
+.border1:before,
+.border2:before {
+  content: "";
+  display: block;
   mask-image: url("/images/border1.svg");
   mask-size: 100% 100%;
   background-color: var(--pen-color);
@@ -12,7 +19,7 @@
   translate: 5px -1px;
   background-repeat: no-repeat;
 }
-.border2 {
+.border2:before {
   mask-image: url("/images/border2.svg");
   mask-size: 100% 100%;
   background-color: var(--pen-color);
@@ -60,6 +67,7 @@ import { useResizeObserver } from "@vueuse/core";
 
 const { type } = defineProps<{ type: "player" | "enemy" }>();
 const isPlayerField = type == "player";
+const isEnemyField = type == "enemy";
 
 const hletters = ["A", "Б", "В", "Г", "Д", "E", "Ж", "З", "И", "К"];
 
@@ -102,6 +110,9 @@ useResizeObserver(root, onRearrangeHandler);
         v-bind="props"
         :key="props.id"
       />
+    </template>
+    <template v-if="isEnemyField">
+      <Pelengator />
     </template>
   </div>
 </template>

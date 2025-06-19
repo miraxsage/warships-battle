@@ -1,9 +1,10 @@
 <style lang="scss">
 @use "@/styles/mixins.scss" as *;
+@use "@/styles/colors.scss" as *;
 
 body {
   margin: 0;
-  --pen-color: #10123b;
+  --pen-color: #{$pen-color};
   @include smmm {
     --cell-size: 13px;
   }

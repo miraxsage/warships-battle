@@ -38,12 +38,11 @@ function getFieldMap(fieldState: PlayerField, withoutShipId: string) {
 }
 
 export function useShipCoordination<T extends HTMLElement>(
-  el: ShallowRef<T | null>,
+  _el: ShallowRef<T | null>,
   { shipId, coords }: UseCoordinationOptions
 ) {
   const { player: fieldState } = useFieldStore();
   const scaleState = useScaleStore();
-  const shipState = useShip(shipId);
 
   const state = reactive({
     invalidParts: [] as number[],

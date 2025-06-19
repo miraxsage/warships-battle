@@ -84,7 +84,6 @@ export function useShipDragging<T extends HTMLElement>(
         };
 
         const keyHandler = (event: KeyboardEvent) => {
-          console.log(event.code);
           if (!fieldState) {
             return;
           }
@@ -139,7 +138,9 @@ export function useShipDragging<T extends HTMLElement>(
         );
       };
       el.addEventListener("mousedown", dragHandler);
-      onCleanup(() => el.removeEventListener("mousemove", dragHandler));
+      onCleanup(() => {
+        el.removeEventListener("mousedown", dragHandler);
+      });
     },
     { immediate: true }
   );
