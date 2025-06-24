@@ -29,6 +29,28 @@ body {
   & * {
     user-select: none;
   }
+  .container {
+    margin: auto;
+    max-width: 1600px;
+    @include smmm {
+      max-width: 95%;
+    }
+    @include smm {
+      max-width: 95%;
+    }
+    @include sm {
+      max-width: 700px;
+    }
+    @include md {
+      max-width: 1000px;
+    }
+    @include xl {
+      max-width: 1200px;
+    }
+    @include xxl {
+      max-width: 1400px;
+    }
+  }
 }
 .layout {
   position: relative;
@@ -52,10 +74,14 @@ body {
 .bottomBg {
   scale: 1 -1;
 }
+.content {
+  height: var(--content-height);
+}
 </style>
 <script setup lang="ts">
 import { useElementSize, useWindowSize } from "@vueuse/core";
 import { storeToRefs } from "pinia";
+import { wsConnection } from "~/utils/wsConnection";
 
 const layoutRef = useTemplateRef("layoutRef");
 
@@ -64,7 +90,6 @@ const bgHorizontalCells = 40;
 
 const {
   cellSize,
-  fcellSize,
   verticalCells,
   verticalCenter,
   horizontalCells,
@@ -88,6 +113,10 @@ watchEffect(() => {
   horizontalCenter.value =
     Math.ceil(horizontalCells.value / 2) * cellSize.value;
 });
+
+onMounted(() => {
+  wsConnection();
+});
 </script>
 <template>
   <div
@@ -105,6 +134,9 @@ watchEffect(() => {
       '--fcell-size': `${cellSize * 2}px`,
       '--vertical-center': `${verticalCenter}px`,
       '--horizontal-center': `${horizontalCenter}px`,
+      '--content-height': `${
+        2 * verticalCenter - (verticalCells % 2 > 0 ? 9 : 8) * cellSize
+      }px`,
     }"
   >
     <div class="topBg" :style="{ height: verticalCenter + 'px' }" />
@@ -115,6 +147,10 @@ watchEffect(() => {
         top: `${verticalCenter - cellSize * 0.08}px`,
       }"
     />
-    <slot />
+    <Header />
+    <div class="content container">
+      <slot />
+    </div>
+    <Footer />
   </div>
 </template>

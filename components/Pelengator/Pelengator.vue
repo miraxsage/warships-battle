@@ -60,7 +60,7 @@
   height: calc(100% + var(--shift) * 2);
   left: calc(-0.9 * var(--shift));
   top: calc(-1 * var(--shift));
-  filter: drop-shadow(1px 0.5px 0px #{change-color($pen-color, $alpha: 0.7)});
+  filter: drop-shadow(1px 0.5px 0px rgba($pen-color, 0.7));
 }
 .pelengator {
   left: calc(var(--fcell-size) * 0.3);
@@ -99,8 +99,8 @@
   width: calc(var(--fcell-size) * 0.4);
   height: var(--fcell-size);
   position: absolute;
-  background: #{change-color($pen-color, $alpha: 0.05)};
-  border: 0px solid #{change-color($pen-color, $alpha: 0.5)};
+  background: rgba($pen-color, 0.05);
+  border: 0px solid rgba($pen-color, 0.5);
   border-width: 2px 0px 2px 0px;
   transition: all 0.5s cubic-bezier(0.12, 0.61, 0.4, 0.95);
   &:after {
