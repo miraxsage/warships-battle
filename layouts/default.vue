@@ -3,6 +3,7 @@
 @use "@/styles/colors.scss" as *;
 
 body {
+  font-family: "First Time Writing";
   margin: 0;
   --pen-color: #{$pen-color};
   @include smmm {
@@ -81,7 +82,6 @@ body {
 <script setup lang="ts">
 import { useElementSize, useWindowSize } from "@vueuse/core";
 import { storeToRefs } from "pinia";
-import { wsConnection } from "~/utils/wsConnection";
 
 const layoutRef = useTemplateRef("layoutRef");
 
@@ -112,10 +112,6 @@ watchEffect(() => {
     Math.ceil(verticalCells.value / 2) * cellSize.value + cellSize.value * 0.04;
   horizontalCenter.value =
     Math.ceil(horizontalCells.value / 2) * cellSize.value;
-});
-
-onMounted(() => {
-  wsConnection();
 });
 </script>
 <template>

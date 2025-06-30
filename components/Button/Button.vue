@@ -1,5 +1,6 @@
 <style scoped lang="scss">
 @use "@/styles/colors.scss" as *;
+@use "@/styles/mixins.scss" as *;
 
 .root {
   border-style: solid;
@@ -12,6 +13,8 @@
   transition: all 0.3s;
   will-change: transform;
   mix-blend-mode: darken;
+  text-decoration: none;
+  cursor: pointer;
   .text {
     display: inline;
     position: relative;
@@ -28,8 +31,7 @@
     filter: blur(4px);
   }
   span {
-    filter: drop-shadow(1px 0px 0px var(--pen-color))
-      drop-shadow(0px 1px 0px var(--pen-color));
+    @include bold-filter;
     position: relative;
   }
   &:hover {
@@ -56,17 +58,27 @@
 }
 </style>
 <script setup lang="ts">
+import { NuxtLink } from "#components";
 import { useBorderVariant } from "~/composables/useBorderVariant";
 
-const props = defineProps<{ text: string; variant?: "1" | "2" | "3" | "4" }>();
+const props = defineProps<{
+  text: string;
+  variant?: "1" | "2" | "3" | "4";
+  href?: string;
+}>();
 
 const { borderVariant } = useBorderVariant(props.variant);
 </script>
 <template>
-  <button type="button" class="root" :style="{ ...borderVariant }">
+  <component
+    :is="props.href ? NuxtLink : 'button'"
+    v-bind="props.href ? { to: props.href } : { type: 'button' }"
+    class="root"
+    :style="{ ...borderVariant }"
+  >
     <HatchBackground class="hatch-bg" />
     <div class="text">
       <span>{{ props.text }}</span>
     </div>
-  </button>
+  </component>
 </template>

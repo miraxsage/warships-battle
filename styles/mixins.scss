@@ -39,3 +39,7 @@
     @content;
   }
 }
+
+@mixin bold-filter($color: var(--pen-color)) {
+  filter: drop-shadow(1px 0px 0px #{$color}) drop-shadow(0px 1px 0px #{$color});
+}

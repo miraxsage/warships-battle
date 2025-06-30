@@ -1,4 +1,4 @@
-import type { ShipState } from "~/components/Playfield/types";
+import type { ShipState } from "~/stores/field";
 import type { ShipProps } from "../types";
 
 export function rotatePoint(

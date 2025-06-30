@@ -38,8 +38,7 @@
   justify-items: center;
   font-family: "First Time Writing";
   color: var(--pen-color);
-  filter: drop-shadow(1px 0px 0px var(--pen-color))
-    drop-shadow(0px 1px 0px var(--pen-color));
+  @include bold-filter;
 
   font-size: 22px;
   @include sm {

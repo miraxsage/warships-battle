@@ -1,0 +1,99 @@
+// Массив размеров для margin классов
+$margin-sizes: (
+  2,
+  3,
+  4,
+  5,
+  6,
+  8,
+  10,
+  12,
+  14,
+  16,
+  18,
+  20,
+  22,
+  24,
+  26,
+  28,
+  30,
+  32,
+  34,
+  36,
+  38,
+  40,
+  42,
+  44,
+  46,
+  48,
+  50,
+  52,
+  54,
+  56,
+  58,
+  60,
+  62,
+  64
+);
+
+// Генерируем классы для margin
+@each $size in $margin-sizes {
+  // Margin для всех сторон
+  .m-#{$size} {
+    margin: #{$size}px;
+  }
+
+  // Margin для конкретных сторон
+  .mt-#{$size} {
+    margin-top: #{$size}px;
+  }
+
+  .mr-#{$size} {
+    margin-right: #{$size}px;
+  }
+
+  .mb-#{$size} {
+    margin-bottom: #{$size}px;
+  }
+
+  .ml-#{$size} {
+    margin-left: #{$size}px;
+  }
+
+  // Margin для горизонтальных сторон (left + right)
+  .mx-#{$size} {
+    margin-left: #{$size}px;
+    margin-right: #{$size}px;
+  }
+
+  // Margin для вертикальных сторон (top + bottom)
+  .my-#{$size} {
+    margin-top: #{$size}px;
+    margin-bottom: #{$size}px;
+  }
+}
+
+// Добавляем размер 0
+.m-0 {
+  margin: 0;
+}
+.mt-0 {
+  margin-top: 0;
+}
+.mr-0 {
+  margin-right: 0;
+}
+.mb-0 {
+  margin-bottom: 0;
+}
+.ml-0 {
+  margin-left: 0;
+}
+.mx-0 {
+  margin-left: 0;
+  margin-right: 0;
+}
+.my-0 {
+  margin-top: 0;
+  margin-bottom: 0;
+}

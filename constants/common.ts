@@ -60,3 +60,5 @@ export const NEXT_ROTATION: Record<Rotation, Rotation> = {
   right: "down",
   down: "left",
 };
+
+export const AVATARS_COUNT = 9;

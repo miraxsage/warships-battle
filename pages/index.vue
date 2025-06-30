@@ -1,18 +1,40 @@
-<script setup lang="ts">
-import { Playground } from "#components";
-</script>
-
 <style scoped>
-.input {
-  width: 200px;
+.splash {
+  background-image: url("/images/splash.svg");
+  scale: 1.1;
+  background-size: contain;
+  background-position: center;
+  background-repeat: no-repeat;
+  mix-blend-mode: multiply;
+  width: 100%;
+  aspect-ratio: 1.86;
+}
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+}
+.button {
+  font-size: 32px;
+}
+.content {
+  flex-grow: 1;
+  display: flex;
+  align-items: center;
 }
 </style>
-
 <template>
-  Hello
-  <Button text="Регистрация" variant="4" />
-  <br />
-  <Button text="Вход" variant="3" />
-  <br />
-  <Input class="input" variant="4" />
+  <div class="container">
+    <div class="splash" />
+    <div class="content">
+      <Button
+        class="button"
+        text="Вход / Регистрация"
+        variant="4"
+        href="/auth"
+      />
+    </div>
+  </div>
 </template>

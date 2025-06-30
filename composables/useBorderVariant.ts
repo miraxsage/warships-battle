@@ -8,8 +8,12 @@ export function useBorderVariant(
 
   const updateVariant = (colorOverride?: string) => {
     const color = colorOverride || getRootCssVar(colorKey, "black");
-    borderVariant.value =
-      borderImageVariants[parseInt(variant ?? "1") - 1](color);
+    const variantIndex = parseInt(variant ?? "1") - 1;
+    const variantFunction = borderImageVariants[variantIndex];
+
+    if (variantFunction) {
+      borderVariant.value = variantFunction(color);
+    }
   };
 
   onMounted(() => {

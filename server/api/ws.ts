@@ -1,4 +1,4 @@
-import { type Peer, AdapterInternal } from "crossws";
+import { type Peer, type AdapterInternal } from "crossws";
 
 const peers = new Map<Peer<AdapterInternal>, string>([]);
 
