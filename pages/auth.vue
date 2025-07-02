@@ -95,6 +95,12 @@ const clearError = () => {
   error.value = "";
 };
 
+const userStore = useUserStore();
+
+onMounted(() => {
+  document.getElementById("login")?.focus();
+});
+
 const handleAuth = async () => {
   error.value = "";
 
@@ -104,7 +110,6 @@ const handleAuth = async () => {
   }
 
   if (newUser.value) {
-    // Регистрация
     try {
       const response = await $fetch("/api/auth/register", {
         method: "POST",
@@ -117,6 +122,7 @@ const handleAuth = async () => {
       });
 
       if (response.success) {
+        await userStore.fetchUser();
         await navigateTo("/");
       }
     } catch (err: unknown) {
@@ -132,20 +138,9 @@ const handleAuth = async () => {
       ) as string;
     }
   } else {
-    // Авторизация
     try {
-      const response = await $fetch("/api/auth/login", {
-        method: "POST",
-        body: {
-          username: username.value,
-          password: password.value,
-          rememberMe: rememberMe.value,
-        },
-      });
-
-      if (response.success) {
-        await navigateTo("/");
-      }
+      await userStore.login(username.value, password.value, rememberMe.value);
+      await navigateTo("/");
     } catch (err: unknown) {
       error.value = (
         err &&
@@ -164,13 +159,14 @@ const handleAuth = async () => {
 
 <template>
   <div class="container">
-    <div class="form">
+    <form class="form" @submit.prevent="handleAuth">
       <Label text="Логин" for="login" class="mb-4 label" />
       <Input
         variant="3"
         id="login"
         v-model="username"
         @focus="clearError"
+        @input="clearError"
         class="mb-10"
         :style="{ paddingBlock: '14px' }"
       />
@@ -181,6 +177,7 @@ const handleAuth = async () => {
         type="password"
         v-model="password"
         @focus="clearError"
+        @input="clearError"
         class="mb-10"
         :style="{ paddingBlock: '14px' }"
       />
@@ -221,10 +218,10 @@ const handleAuth = async () => {
           variant="2"
           class="button"
           :disabled="!!error"
-          @click="handleAuth"
+          type="submit"
         />
         <Button text="Назад" variant="1" href="/" class="button" />
       </div>
-    </div>
+    </form>
   </div>
 </template>

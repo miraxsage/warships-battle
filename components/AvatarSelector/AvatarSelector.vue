@@ -61,6 +61,7 @@ onMounted(() => {
     </div>
     <div class="arrows">
       <button
+        type="button"
         @click="slider?.prev()"
         class="arrow arrow--left"
         :disabled="currentSlide === 0"
@@ -68,6 +69,7 @@ onMounted(() => {
         &lt;
       </button>
       <button
+        type="button"
         @click="slider?.next()"
         class="arrow arrow--right"
         :disabled="currentSlide === AVATARS_COUNT - 1"

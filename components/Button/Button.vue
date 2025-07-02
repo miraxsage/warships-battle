@@ -2,19 +2,31 @@
 @use "@/styles/colors.scss" as *;
 @use "@/styles/mixins.scss" as *;
 
-.root {
-  border-style: solid;
+.regular,
+.ghost {
   display: inline-block;
   font-size: 26px;
   font-family: "First Time Writing";
-  position: relative;
   color: var(--pen-color);
-  background: transparent;
   transition: all 0.3s;
+  cursor: pointer;
+  text-decoration: none;
+  background: transparent;
+  border: none;
+}
+.ghost {
+  @include bold-filter;
+  &:hover {
+    color: black;
+    @include bold-filter(black);
+  }
+}
+.regular {
+  border-style: solid;
+  position: relative;
+  background: transparent;
   will-change: transform;
   mix-blend-mode: darken;
-  text-decoration: none;
-  cursor: pointer;
   .text {
     display: inline;
     position: relative;
@@ -63,6 +75,7 @@ import { useBorderVariant } from "~/composables/useBorderVariant";
 
 const props = defineProps<{
   text: string;
+  theme?: "regular" | "ghost";
   variant?: "1" | "2" | "3" | "4";
   href?: string;
 }>();
@@ -70,10 +83,19 @@ const props = defineProps<{
 const { borderVariant } = useBorderVariant(props.variant);
 </script>
 <template>
+  <template v-if="props.theme === 'ghost'">
+    <component
+      :is="props.href ? NuxtLink : 'button'"
+      v-bind="props.href ? { to: props.href } : { type: 'button' }"
+      class="ghost"
+      >{{ props.text }}</component
+    >
+  </template>
   <component
+    v-else
     :is="props.href ? NuxtLink : 'button'"
     v-bind="props.href ? { to: props.href } : { type: 'button' }"
-    class="root"
+    class="regular"
     :style="{ ...borderVariant }"
   >
     <HatchBackground class="hatch-bg" />

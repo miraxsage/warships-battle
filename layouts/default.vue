@@ -78,12 +78,68 @@ body {
 .content {
   height: var(--content-height);
 }
+.loaderOverlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100dvw;
+  height: 100dvh;
+  background-color: rgb(249, 250, 250);
+  z-index: 1000;
+  background-image: repeating-linear-gradient(
+      270deg,
+      transparent 0,
+      transparent 30px,
+      change-color($pen-color, $lightness: 97.6%) 30px,
+      change-color($pen-color, $lightness: 97.6%) 32.5px,
+      transparent 32.5px
+    ),
+    repeating-linear-gradient(
+      0deg,
+      transparent 0,
+      transparent 30px,
+      change-color($pen-color, $lightness: 97.6%) 30px,
+      change-color($pen-color, $lightness: 97.6%) 32px
+    );
+}
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+.loader {
+  animation: spin 2.3s linear infinite;
+  rotate: 45deg;
+  width: 100px;
+  height: 120px;
+  transform-origin: 125px 60px;
+  position: absolute;
+  left: calc(50% - 125px);
+  top: calc(50% - 60px);
+  filter: drop-shadow(0px 0px 0px $pen-color);
+}
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.3s ease 0.5s;
+}
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
+}
 </style>
 <script setup lang="ts">
 import { useElementSize, useWindowSize } from "@vueuse/core";
 import { storeToRefs } from "pinia";
 
 const layoutRef = useTemplateRef("layoutRef");
+
+const isLoaded = ref(false);
+onMounted(() => {
+  isLoaded.value = true;
+});
 
 const bgVerticalCells = 46;
 const bgHorizontalCells = 40;
@@ -149,4 +205,9 @@ watchEffect(() => {
     </div>
     <Footer />
   </div>
+  <Transition name="fade">
+    <div class="loaderOverlay" v-if="!isLoaded">
+      <img src="/images/loader.svg" alt="loader" class="loader" />
+    </div>
+  </Transition>
 </template>

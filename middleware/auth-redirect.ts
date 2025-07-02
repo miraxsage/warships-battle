@@ -1,13 +1,12 @@
-export default defineNuxtRouteMiddleware(async (to) => {
+export default defineNuxtRouteMiddleware((to) => {
   if (to.path !== "/auth") {
     return;
   }
 
-  try {
-    const response = await $fetch("/api/auth/me");
+  const userStore = useUserStore();
 
-    if (response && response.success) {
-      return navigateTo("/");
-    }
-  } catch (error) {}
+  // Если пользователь авторизован, перенаправляем на главную
+  if (userStore.isAuthenticated) {
+    return navigateTo("/");
+  }
 });
