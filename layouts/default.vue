@@ -1,6 +1,7 @@
 <style lang="scss">
 @use "@/styles/mixins.scss" as *;
 @use "@/styles/colors.scss" as *;
+@use "sass:color";
 
 body {
   font-family: "First Time Writing";
@@ -90,16 +91,16 @@ body {
       270deg,
       transparent 0,
       transparent 30px,
-      change-color($pen-color, $lightness: 97.6%) 30px,
-      change-color($pen-color, $lightness: 97.6%) 32.5px,
+      color.change($pen-color, $lightness: 97.6%) 30px,
+      color.change($pen-color, $lightness: 97.6%) 32.5px,
       transparent 32.5px
     ),
     repeating-linear-gradient(
       0deg,
       transparent 0,
       transparent 30px,
-      change-color($pen-color, $lightness: 97.6%) 30px,
-      change-color($pen-color, $lightness: 97.6%) 32px
+      color.change($pen-color, $lightness: 97.6%) 30px,
+      color.change($pen-color, $lightness: 97.6%) 32px
     );
 }
 @keyframes spin {

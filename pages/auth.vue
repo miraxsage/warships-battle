@@ -96,10 +96,16 @@ const clearError = () => {
 };
 
 const userStore = useUserStore();
+const route = useRoute();
 
 onMounted(() => {
   document.getElementById("login")?.focus();
 });
+
+const redirectAfterAuth = () => {
+  const redirectUrl = route.query.redirect as string;
+  return navigateTo(redirectUrl || "/");
+};
 
 const handleAuth = async () => {
   error.value = "";
@@ -123,7 +129,7 @@ const handleAuth = async () => {
 
       if (response.success) {
         await userStore.fetchUser();
-        await navigateTo("/");
+        await redirectAfterAuth();
       }
     } catch (err: unknown) {
       error.value = (
@@ -140,7 +146,7 @@ const handleAuth = async () => {
   } else {
     try {
       await userStore.login(username.value, password.value, rememberMe.value);
-      await navigateTo("/");
+      await redirectAfterAuth();
     } catch (err: unknown) {
       error.value = (
         err &&

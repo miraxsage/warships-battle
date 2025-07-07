@@ -145,3 +145,14 @@ export function clearSessionCookie(event: H3Event) {
 
   event.node.res.setHeader("Set-Cookie", cookieValue);
 }
+
+export async function getUserFromToken(event: H3Event) {
+  const cookieHeader = getHeader(event, "cookie") || "";
+  const cookies = parseCookies(cookieHeader);
+  const token = cookies.session_token;
+
+  if (!token) return null;
+
+  const session = await validateSession(token);
+  return session?.user || null;
+}

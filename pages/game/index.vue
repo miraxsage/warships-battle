@@ -1,7 +1,11 @@
 <script setup lang="ts">
-import { Playground } from "#components";
+const { checkAuthAndRedirect } = useGameAuth();
+
+onMounted(async () => {
+  await checkAuthAndRedirect();
+});
 </script>
 
 <template>
-  <Playground />
+  <GameStarter />
 </template>

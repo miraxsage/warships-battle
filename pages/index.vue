@@ -28,46 +28,30 @@
   align-self: center;
   text-align: center;
 }
-.avatarBorder {
-  color: $pen-color;
-  grid-row: span 2;
-  padding: 0 !important;
-}
-.avatar {
-  width: calc(var(--cell-size) * 3);
-  height: calc(var(--cell-size) * 3);
-}
 .playButton.playButton {
   grid-area: 1/3/3/4;
   margin-left: 40px;
   font-size: 30px;
 }
+.logout {
+  font-size: 24x;
+  align-self: flex-start;
+  color: rgba($pen-color, 0.6);
+  &.logout:hover {
+    color: $error;
+    @include bold-filter($error);
+  }
+}
 .userContainer {
-  display: grid;
-  width: max-content;
-  grid-template-columns: repeat(3, auto);
-  grid-template-rows: 1fr 1fr;
-  gap: 0 10px;
-  margin: 0 auto;
+  display: flex;
+  gap: 20px;
   align-items: center;
-  color: $pen-color;
-  .username {
-    font-size: 28px;
-  }
-  .logout {
-    font-size: 24x;
-    align-self: flex-start;
-    color: rgba($pen-color, 0.6);
-    &:hover {
-      color: $error;
-      @include bold-filter($error);
-    }
-  }
+  width: min-content;
+  margin: 0 auto;
 }
 </style>
 <script setup lang="ts">
 const userStore = useUserStore();
-const { borderVariant } = useBorderVariant("1");
 </script>
 <template>
   <div :class="$style.container">
@@ -75,23 +59,16 @@ const { borderVariant } = useBorderVariant("1");
     <div :class="$style.content">
       <template v-if="userStore.isAuthenticated && userStore.user">
         <div :class="$style.userContainer">
-          <div :class="$style.avatarBorder" :style="borderVariant">
-            <SpriteSymbol
-              :class="$style.avatar"
-              :name="`avatars/id-${userStore.user.avatar as 1}`"
-            />
-          </div>
-          <Button
-            :text="userStore.user.username"
-            theme="ghost"
-            :class="$style.username"
-          />
-          <Button
-            :class="$style.logout"
-            text="Выход"
-            theme="ghost"
-            @click="userStore.logout()"
-          />
+          <UserLegend :user="userStore.user">
+            <template #actions>
+              <Button
+                :class="$style.logout"
+                text="Выход"
+                theme="ghost"
+                @click="userStore.logout()"
+              />
+            </template>
+          </UserLegend>
           <Button
             :class="$style.playButton"
             :text="userStore.isAuthenticated ? 'Играть' : 'Вход / Регистрация'"

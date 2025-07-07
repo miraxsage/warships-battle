@@ -21,12 +21,12 @@ const [container, slider] = useKeenSlider({
   initial: initialSlide,
   slideChanged: (slider) => {
     currentSlide.value = slider.track.details.rel;
-    emit("select", currentSlide.value as AvatarId);
+    emit("select", (currentSlide.value + 1) as AvatarId);
   },
 });
 
 onMounted(() => {
-  emit("select", initialSlide as AvatarId);
+  emit("select", (initialSlide + 1) as AvatarId);
 });
 </script>
 <template>

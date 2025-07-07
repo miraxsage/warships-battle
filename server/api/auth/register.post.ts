@@ -1,11 +1,12 @@
 import { db } from "../../db/database";
 import crypto from "crypto";
 import { AVATARS_COUNT } from "~/constants/common";
+import { createSession, setSessionCookie } from "../../utils/auth";
 
 export default defineEventHandler(async (event) => {
   try {
     const body = await readBody(event);
-    const { username, password, avatar = 1 } = body;
+    const { username, password, avatar = 1, rememberMe = false } = body;
 
     if (!username || !password) {
       throw createError({
@@ -70,10 +71,19 @@ export default defineEventHandler(async (event) => {
       );
     });
 
+    // Автоматическая авторизация после регистрации
+    const sessionToken = await createSession(result.id, rememberMe);
+    setSessionCookie(event, sessionToken, rememberMe);
+
     return {
       success: true,
       message: "Пользователь успешно зарегистрирован",
       userId: result.id,
+      user: {
+        id: result.id,
+        username,
+        avatar,
+      },
     };
   } catch (error: unknown) {
     if (error && typeof error === "object" && "statusCode" in error) {

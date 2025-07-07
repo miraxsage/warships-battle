@@ -43,8 +43,18 @@ const forceCurrentColorAdvanced = () => (svg: any) => {
 export default defineNuxtConfig({
   // compatibilityDate: '2025-05-15',
   devtools: { enabled: false },
-  modules: ["@nuxt/fonts", "@pinia/nuxt", "nuxt-svg-icon-sprite"],
+  modules: [
+    "@nuxt/fonts",
+    "@pinia/nuxt",
+    "nuxt-svg-icon-sprite",
+    "nuxt-qrcode",
+  ],
   css: ["@/styles/variables.scss"],
+  nitro: {
+    experimental: {
+      websocket: true,
+    },
+  },
   svgIconSprite: {
     sprites: {
       default: {

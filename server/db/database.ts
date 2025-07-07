@@ -44,9 +44,34 @@ export function initDatabase() {
             (sessionErr) => {
               if (sessionErr) {
                 reject(sessionErr);
-              } else {
-                resolve();
+                return;
               }
+
+              db.run(
+                `
+                CREATE TABLE IF NOT EXISTS games (
+                  id TEXT PRIMARY KEY,
+                  host_user_id INTEGER NOT NULL,
+                  guest_user_id INTEGER NOT NULL,
+                  status TEXT NOT NULL CHECK (status IN ('finished', 'exited')),
+                  host_score INTEGER NOT NULL DEFAULT 0,
+                  guest_score INTEGER NOT NULL DEFAULT 0,
+                  winner_id INTEGER DEFAULT NULL,
+                  created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+                  finished_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+                  FOREIGN KEY (host_user_id) REFERENCES users (id) ON DELETE CASCADE,
+                  FOREIGN KEY (guest_user_id) REFERENCES users (id) ON DELETE CASCADE,
+                  FOREIGN KEY (winner_id) REFERENCES users (id) ON DELETE SET NULL
+                )
+              `,
+                (gameErr) => {
+                  if (gameErr) {
+                    reject(gameErr);
+                  } else {
+                    resolve();
+                  }
+                }
+              );
             }
           );
         }
