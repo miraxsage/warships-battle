@@ -50,6 +50,13 @@ export default defineNuxtConfig({
     "nuxt-qrcode",
   ],
   css: ["@/styles/variables.scss"],
+  app: {
+    pageTransition: {
+      name: "page",
+      mode: "out-in",
+      duration: 300,
+    },
+  },
   nitro: {
     experimental: {
       websocket: true,
@@ -63,6 +70,10 @@ export default defineNuxtConfig({
       },
       avatars: {
         importPatterns: ["assets/icons/avatars/**/*.svg"],
+        processSpriteSymbol: [forceCurrentColorAdvanced()],
+      },
+      game: {
+        importPatterns: ["assets/icons/game/**/*.svg"],
         processSpriteSymbol: [forceCurrentColorAdvanced()],
       },
     },

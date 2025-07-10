@@ -125,13 +125,13 @@ const gameUrl = ref<string>("");
 const isLoading = ref(false);
 
 onMounted(async () => {
-  const peerGameId = route.query.peer as string;
+  const peerGameId =
+    (route.query.peer as string) || "c7a6652303aa25ac46e7408b80c75ba7";
 
   if (peerGameId) {
-    // Подключаемся к существующей игре
-    gameStore.connect(peerGameId);
+    const { url } = gameStore.connect(peerGameId);
+    gameUrl.value = url;
   } else {
-    // Создаем новую игру
     try {
       isLoading.value = true;
       const { gameId, url } = await gameStore.createGame();
@@ -145,13 +145,9 @@ onMounted(async () => {
   }
 });
 
-onUnmounted(() => {
-  gameStore.disconnect();
-});
-
 const statusText = computed(() => {
   if (isLoading.value) return "Создание игры...";
-  if (gameStore.connectionStatus === "connecting") return "Подключение...";
+  if (gameStore.gameStatus === "connecting") return "Подключение...";
   if (!gameStore.isConnected) return "Ошибка подключения";
   if (!gameStore.currentGame?.guestUser)
     return "Ожидание подключения соперника...";
@@ -161,11 +157,20 @@ const statusText = computed(() => {
 const shouldShowQRCode = computed(
   () => gameStore.isHost && !gameStore.currentGame?.guestUser && gameUrl.value
 );
+
+const hostUser = computed(() => {
+  const peerGameId = route.query.peer as string;
+  return (
+    gameStore.currentGame?.hostUser ||
+    (!peerGameId && userStore.user) ||
+    undefined
+  );
+});
 </script>
 <template>
   <div :class="$style.container">
     <div :class="$style.players">
-      <UserLegend :user="gameStore.currentGame?.hostUser" />
+      <UserLegend :user="hostUser" />
       <SpriteSymbol name="vs" :class="$style.vs" />
       <UserLegend
         :user="gameStore.currentGame?.guestUser"
@@ -195,7 +200,7 @@ const shouldShowQRCode = computed(
 
     <div :class="$style.loaderContainer">
       <div
-        v-if="gameStore.currentGame?.status !== 'playing'"
+        v-if="gameStore.currentGame?.status !== 'arrangement'"
         :class="$style.loader"
       >
         <div></div>

@@ -83,6 +83,7 @@ body {
   position: absolute;
   top: 0;
   left: 0;
+  transform: scale(1, 1) !important;
   width: 100dvw;
   height: 100dvh;
   background-color: rgb(249, 250, 250);

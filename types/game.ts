@@ -4,11 +4,28 @@ export interface GameUser {
   avatar: number;
 }
 
+export type GameStatus =
+  | "initial"
+  | "connecting"
+  | "joining"
+  | "guestConnectionWaiting"
+  | "arrangement"
+  | "hostArrangementWaiting"
+  | "guestArrangementWaiting"
+  | "arrangementFinished"
+  | "guestConnectionRepairingWaiting"
+  | "hostConnectionRepairingWaiting"
+  | "hostTurn"
+  | "guestTurn"
+  | "finished"
+  | "hostExited"
+  | "guestExited"
+  | "failed";
 export interface Game {
   id: string;
   hostUser: GameUser;
   guestUser?: GameUser;
-  status: "waiting" | "preparing" | "playing" | "finished" | "exited";
+  status: GameStatus;
   gameData?: any;
   createdAt: string;
   updatedAt?: string;
@@ -23,10 +40,10 @@ export interface Game {
 export type WSMessageType =
   | "game:join"
   | "game:joined"
+  | "game:arranged"
   | "game:left"
-  | "game:start"
-  | "game:move"
   | "game:update"
+  | "game:move"
   | "game:end"
   | "error";
 

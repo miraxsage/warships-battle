@@ -40,6 +40,14 @@
   }
 }
 
-@mixin bold-filter($color: var(--pen-color)) {
-  filter: drop-shadow(1px 0px 0px #{$color}) drop-shadow(0px 1px 0px #{$color});
+@mixin bold-filter($color: var(--pen-color), $bold: true) {
+  filter: drop-shadow(1px 0px 0px #{$color})
+    drop-shadow(0px #{if($bold, 1px, 0px)} 0px #{$color});
+}
+
+@mixin fixedSize($size) {
+  min-width: $size;
+  min-height: $size;
+  max-width: $size;
+  max-height: $size;
 }

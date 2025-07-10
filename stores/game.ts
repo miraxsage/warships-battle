@@ -1,13 +1,10 @@
-import type { Game, WSMessage } from "~/types/game";
+import type { Game, GameStatus, WSMessage } from "~/types/game";
 
 export const useGameStore = defineStore("game", () => {
   const currentGame = ref<Game | null>(null);
   const isConnected = ref(false);
   const isHost = ref(false);
-  const connectionStatus = ref<"disconnected" | "connecting" | "connected">(
-    "disconnected"
-  );
-
+  const gameStatus = ref<GameStatus>("initial");
   let ws: WebSocket | null = null;
   let reconnectAttempts = 0;
   const maxReconnectAttempts = 5;
@@ -15,9 +12,16 @@ export const useGameStore = defineStore("game", () => {
   const userStore = useUserStore();
 
   function connect(gameId: string) {
-    if (ws?.readyState === WebSocket.OPEN) return;
+    const game = {
+      gameId,
+      url: String(new URL(`/game?peer=${gameId}`, location.origin)),
+    };
 
-    connectionStatus.value = "connecting";
+    if (ws?.readyState === WebSocket.OPEN) {
+      return game;
+    }
+
+    gameStatus.value = "connecting";
 
     const protocol = location.protocol === "https:" ? "wss:" : "ws:";
     const wsUrl = `${protocol}//${location.host}/_ws`;
@@ -25,8 +29,8 @@ export const useGameStore = defineStore("game", () => {
     ws = new WebSocket(wsUrl);
 
     ws.onopen = () => {
-      connectionStatus.value = "connected";
       isConnected.value = true;
+      gameStatus.value = "joining";
       reconnectAttempts = 0;
 
       // Присоединяемся к игре
@@ -46,12 +50,13 @@ export const useGameStore = defineStore("game", () => {
         const message: WSMessage = JSON.parse(event.data);
         handleMessage(message);
       } catch (error) {
+        gameStatus.value = "failed";
         console.error("Failed to parse WebSocket message:", error);
       }
     };
 
     ws.onclose = () => {
-      connectionStatus.value = "disconnected";
+      gameStatus.value = "failed";
       isConnected.value = false;
 
       // Автоматическое переподключение
@@ -62,12 +67,17 @@ export const useGameStore = defineStore("game", () => {
     };
 
     ws.onerror = (error) => {
+      gameStatus.value = "failed";
+      isConnected.value = false;
       console.error("WebSocket error:", error);
     };
+
+    return game;
   }
 
   function handleMessage(message: WSMessage) {
     console.log("WebSocket message received:", message);
+    gameStatus.value = message.data?.game?.status || "failed";
     switch (message.type) {
       case "game:joined":
         if (message.data) {
@@ -113,7 +123,7 @@ export const useGameStore = defineStore("game", () => {
     currentGame.value = null;
     isConnected.value = false;
     isHost.value = false;
-    connectionStatus.value = "disconnected";
+    gameStatus.value = isHost.value ? "hostExited" : "guestExited";
   }
 
   async function createGame() {
@@ -135,7 +145,7 @@ export const useGameStore = defineStore("game", () => {
     currentGame: readonly(currentGame),
     isConnected: readonly(isConnected),
     isHost: readonly(isHost),
-    connectionStatus: readonly(connectionStatus),
+    gameStatus: readonly(gameStatus),
     connect,
     disconnect,
     sendMessage,

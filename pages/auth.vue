@@ -65,10 +65,7 @@
     display: inline-block;
   }
   &-icon {
-    min-width: 32px;
-    min-height: 32px;
-    max-width: 32px;
-    max-height: 32px;
+    @include fixedSize(32px);
     margin-right: 8px;
   }
 }

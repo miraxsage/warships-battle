@@ -1,0 +1,147 @@
+@use "~/styles/mixins" as *;
+@use "~/styles/colors" as *;
+
+.details {
+  color: $pen-color;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  height: 100%;
+  padding-inline: 26px;
+}
+.info {
+  margin-right: 8px;
+  position: relative;
+  top: 8px;
+  @include fixedSize(32px);
+  @include bold-filter($pen-color, $bold: false);
+}
+.text {
+  align-items: center;
+  gap: 4px;
+  line-height: 32px;
+  font-size: 24px;
+  margin: 0 0 20px 0;
+  & span {
+    @include bold-filter;
+  }
+}
+.cwArrow {
+  scale: -1 1;
+  display: inline-block;
+}
+.inline {
+  margin: 0;
+}
+.neutral {
+  color: $info;
+  @include bold-filter($info, $bold: false);
+}
+.text span.success {
+  color: $dark-success;
+  @include bold-filter($dark-success, $bold: false);
+}
+.error {
+  color: $light-error;
+  &:is(svg) {
+    @include bold-filter($light-error, $bold: false);
+  }
+  &:is(span) {
+    @include bold-filter($light-error);
+  }
+}
+.warning {
+  color: $warn;
+  &:is(svg) {
+    @include bold-filter($warn, $bold: false);
+  }
+  &:is(span) {
+    @include bold-filter($warn);
+  }
+}
+.success {
+  color: $success;
+  &:is(svg) {
+    @include bold-filter($success, $bold: false);
+  }
+  &:is(span) {
+    @include bold-filter($success);
+  }
+}
+.fightButton {
+  align-self: center;
+  min-width: 150px;
+  margin-top: 20px;
+}
+.energomoduleContainer {
+  width: 50%;
+  height: 100px;
+  margin: 0 auto;
+  position: relative;
+  mix-blend-mode: darken;
+  clip-path: inset(0px 1px 0px 0px);
+}
+.missileUnderlay {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  width: 100%;
+  & svg {
+    color: rgba($pen-color, 0.2);
+    width: 100%;
+    height: 100%;
+    transition: clip-path 1s linear;
+    clip-path: inset(0 0 0 calc(100% * var(--progress)));
+  }
+}
+.missile {
+  position: relative;
+  mix-blend-mode: darken;
+  width: 100%;
+  height: 100%;
+  isolation: isolate;
+  & svg {
+    transition: clip-path 1s linear;
+    clip-path: inset(0 calc(100% * (1 - var(--progress))) 0 0);
+  }
+  &::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: white;
+    mix-blend-mode: lighten;
+    pointer-events: none;
+  }
+  &::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    mix-blend-mode: lighten;
+    pointer-events: none;
+    .error & {
+      background: linear-gradient(90deg, #671648 0%, #f80923 100%);
+    }
+    .success & {
+      background: linear-gradient(90deg, #145c63 0%, #0ac44a 100%);
+    }
+  }
+
+  svg {
+    width: 100%;
+    height: 100%;
+    display: block;
+    position: relative;
+    color: black;
+  }
+}
+.center {
+  text-align: center;
+}

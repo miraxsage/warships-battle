@@ -1,5 +1,5 @@
 <style lang="scss">
-.my-field,
+.player-field,
 .enemy-field {
   position: absolute;
   width: calc(var(--fcell-size) * 10);
@@ -18,7 +18,7 @@
     top: calc(var(--cell-size) * 7 - 3px);
   }
 }
-.my-field {
+.player-field {
   @media (width >= 1024px) {
     left: calc(
       max(
@@ -44,6 +44,8 @@
 </style>
 
 <template>
-  <Playfield type="player" class="my-field" />
-  <Playfield type="enemy" class="enemy-field" />
+  <div>
+    <Playfield type="player" class="player-field" />
+    <Playfield type="enemy" class="enemy-field" />
+  </div>
 </template>
