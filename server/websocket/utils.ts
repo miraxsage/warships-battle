@@ -7,7 +7,7 @@ export function parseMessage(message: any): WSMessage | null {
   try {
     const wsMessage: WSMessage = JSON.parse(message.text());
 
-    if (!wsMessage.type || !wsMessage.data) {
+    if (!wsMessage.type || !("data" in wsMessage) || !wsMessage.data) {
       return null;
     }
 

@@ -1,7 +1,7 @@
 import type { WSMessage, Game, GameUser, GameStatus } from "~/types/game";
-import { ShipState } from "~/stores/field";
+import type { ShipState } from "~/types/game";
+import { Scheduler } from "./scheduler";
 
-// Описываем только то, что нам нужно от peer объекта
 export interface WebSocketPeer {
   id: string;
   send(data: string): void;
@@ -16,17 +16,19 @@ export interface GamePeer {
   isHost?: boolean;
 }
 
-export type Arrangement = Pick<ShipState, "type" | "x" | "y" | "rotation">;
-
 export interface GameRoom {
   id: string;
   hostUser: GameUser;
   guestUser?: GameUser;
-  hostArrangement?: Arrangement[];
-  guestArrangement?: Arrangement[];
+  hostArrangement?: ShipState[];
+  guestArrangement?: ShipState[];
   firstArranged?: "host" | "guest";
   status: GameStatus;
+  beforeLostConnectionStatus?: GameStatus;
   prevStatus?: GameStatus;
+  turnNumber?: number;
+  deferredOperation: () => Scheduler | undefined;
+  deferOperation: (handler: () => void, delay: number) => Scheduler;
   gameData?: any;
   createdAt: Date;
   players: Set<GamePeer>;

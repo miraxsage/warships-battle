@@ -1,10 +1,22 @@
-import type { Game, GameStatus, WSMessage } from "~/types/game";
+import type {
+  Game,
+  GameStatus,
+  WSMessage,
+  WSGameJoinedData,
+  WSGameUpdateData,
+  WSGameLeftData,
+  WSGameResetData,
+} from "~/types/game";
+import * as _ from "lodash-es";
 
 export const useGameStore = defineStore("game", () => {
   const currentGame = ref<Game | null>(null);
   const isConnected = ref(false);
   const isHost = ref(false);
+  const playerRole = computed(() => (isHost.value ? "host" : "guest"));
+  const enemyRole = computed(() => (!isHost.value ? "host" : "guest"));
   const gameStatus = ref<GameStatus>("initial");
+  const turnNumber = computed(() => currentGame.value?.turnNumber || 0);
   let ws: WebSocket | null = null;
   let reconnectAttempts = 0;
   const maxReconnectAttempts = 5;
@@ -38,9 +50,9 @@ export const useGameStore = defineStore("game", () => {
         type: "game:join",
         data: {
           gameId,
-          userId: userStore.user?.id,
-          username: userStore.user?.username,
-          avatar: userStore.user?.avatar,
+          userId: userStore.user!.id,
+          username: userStore.user!.username,
+          avatar: userStore.user!.avatar,
         },
       });
     };
@@ -77,36 +89,49 @@ export const useGameStore = defineStore("game", () => {
 
   function handleMessage(message: WSMessage) {
     console.log("WebSocket message received:", message);
-    gameStatus.value = message.data?.game?.status || "failed";
+
     switch (message.type) {
       case "game:joined":
-        if (message.data) {
-          console.log("Game joined:", message.data);
-          console.log("Host user:", message.data.game?.hostUser);
-          console.log("Guest user:", message.data.game?.guestUser);
-          currentGame.value = message.data.game;
-          isHost.value = message.data.isHost;
+        {
+          const data = message.data;
+          gameStatus.value = message.data.status || "failed";
+          if (data) {
+            console.log("Game joined:", data);
+            console.log("Host user:", data.game?.hostUser);
+            console.log("Guest user:", data.game?.guestUser);
+            currentGame.value = data.game;
+            isHost.value = data.isHost;
+          }
         }
         break;
 
       case "game:update":
-        if (message.data?.game) {
-          console.log("Game updated:", message.data.game);
-          console.log("Updated Host user:", message.data.game?.hostUser);
-          console.log("Updated Guest user:", message.data.game?.guestUser);
-          currentGame.value = message.data.game;
+        {
+          const data = message.data;
+          gameStatus.value = data.status || gameStatus.value;
+          if (data?.game) {
+            console.log("Game updated:", data.game);
+            console.log("Updated Host user:", data.game?.hostUser);
+            console.log("Updated Guest user:", data.game?.guestUser);
+            _.merge(currentGame.value, data.game);
+          }
         }
         break;
 
       case "game:left":
-        // Обработка отключения игрока
-        console.log("Player left:", message.data?.userId);
+        {
+          const data = message.data;
+          if (data) {
+            console.log("Player left:", data.userId);
+          }
+        }
         break;
 
       case "error":
         console.error("Game error:", message.error);
         break;
     }
+    currentGame.value!.status = gameStatus.value;
   }
 
   function sendMessage(message: WSMessage) {
@@ -141,14 +166,29 @@ export const useGameStore = defineStore("game", () => {
     }
   }
 
+  function resetGame() {
+    if (currentGame.value) {
+      sendMessage({
+        type: "game:reset",
+        data: {
+          gameId: currentGame.value.id,
+        },
+      });
+    }
+  }
+
   return {
     currentGame: readonly(currentGame),
     isConnected: readonly(isConnected),
     isHost: readonly(isHost),
+    playerRole,
+    enemyRole,
     gameStatus: readonly(gameStatus),
+    turnNumber: readonly(turnNumber),
     connect,
     disconnect,
     sendMessage,
     createGame,
+    resetGame,
   };
 });

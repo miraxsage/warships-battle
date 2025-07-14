@@ -1,3 +1,4 @@
+import { Scheduler } from "./scheduler";
 import type {
   GameRoom,
   GamePeer,
@@ -33,6 +34,8 @@ export function broadcastToRoom(
 export function createGameRoom(gameId: string, hostUser: GameUser): GameRoom {
   console.log(`Creating new room, ${hostUser.username} becomes HOST`);
 
+  let deferredOperation: Scheduler | undefined;
+
   const room: GameRoom = {
     id: gameId,
     hostUser,
@@ -40,6 +43,11 @@ export function createGameRoom(gameId: string, hostUser: GameUser): GameRoom {
     status: "guestConnectionWaiting",
     createdAt: new Date(),
     players: new Set(),
+    deferredOperation: () => deferredOperation,
+    deferOperation: (handler, delay) => {
+      deferredOperation?.stop();
+      return (deferredOperation = new Scheduler(handler, delay));
+    },
   };
 
   gameRooms.set(gameId, room);
@@ -112,5 +120,6 @@ export function createGameResponse(room: GameRoom): Game {
     status: room.status,
     createdAt: room.createdAt.toISOString(),
     updatedAt: new Date().toISOString(),
+    turnNumber: room.turnNumber,
   };
 }

@@ -1,6 +1,7 @@
 <style lang="scss">
 @use "@/styles/mixins.scss" as *;
 @use "@/styles/colors.scss" as *;
+@use "@/styles/common.scss" as *;
 @use "sass:color";
 
 body {
@@ -122,14 +123,6 @@ body {
   left: calc(50% - 125px);
   top: calc(50% - 60px);
   filter: drop-shadow(0px 0px 0px $pen-color);
-}
-.fade-enter-active,
-.fade-leave-active {
-  transition: opacity 0.3s ease 0.5s;
-}
-.fade-enter-from,
-.fade-leave-to {
-  opacity: 0;
 }
 </style>
 <script setup lang="ts">

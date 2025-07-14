@@ -1,4 +1,4 @@
-import type { WSMessage, GameUser, WebSocketPeer } from "./types";
+import type { WSMessage, GameUser, WebSocketPeer, GameRoom } from "./types";
 import { addGamePeer, getGamePeer, isPeerConnected } from "./peerManager";
 import {
   getGameRoom,
@@ -10,7 +10,40 @@ import {
   broadcastToRoom,
 } from "./gameRoom";
 import { sendMessage, sendError } from "./utils";
-import { delay } from "~/utils/delay";
+
+function scheduleGameTurn(
+  game: GameRoom,
+  turnFor: "host" | "guest",
+  delay = 0
+) {
+  const gameId = game.id;
+  game.deferOperation(() => {
+    game.status = `${turnFor}Turn`;
+
+    if (!game.turnNumber) {
+      game.turnNumber = 0;
+    }
+    game.turnNumber += 1;
+
+    broadcastToRoom(gameId, {
+      type: "game:update",
+      data: { status: game.status, game: createGameResponse(game) },
+    });
+
+    game.deferOperation(
+      () => {
+        game.status = `${turnFor}TurnLost`;
+
+        broadcastToRoom(gameId, {
+          type: "game:update",
+          data: { status: game.status },
+        });
+        scheduleGameTurn(game, turnFor == "host" ? "guest" : "host", 10000);
+      },
+      game.turnNumber == 1 ? 46000 : 31000
+    );
+  }, delay);
+}
 
 export async function handleGameJoin(
   peer: WebSocketPeer,
@@ -74,7 +107,8 @@ export async function handleGameJoin(
     if (isHost) {
       // Хост переподключается
       if (room.status == "hostConnectionRepairingWaiting") {
-        updateRoomStatus(gameId, room.prevStatus!, room.status);
+        updateRoomStatus(gameId, room.beforeLostConnectionStatus!, room.status);
+        room.deferredOperation()?.start();
         console.log(`${data.username} host connection repaired`);
       } else {
         console.log(`${data.username} is already HOST`);
@@ -82,7 +116,8 @@ export async function handleGameJoin(
     } else {
       // Гость подключается или переподключается
       if (room.status == "guestConnectionRepairingWaiting") {
-        updateRoomStatus(gameId, room.prevStatus!, room.status);
+        updateRoomStatus(gameId, room.beforeLostConnectionStatus!, room.status);
+        room.deferredOperation()?.start();
         console.log(`${data.username} guest connection repaired`);
       } else {
         // Добавляем нового гостя
@@ -110,15 +145,16 @@ export async function handleGameJoin(
   // Добавляем в комнату
   addPlayerToRoom(gameId, newGamePeer);
 
-  // Сохраняем предыдущий статус
-  if (room) {
-    room.prevStatus = room.status;
+  // Сохраняем текущий статус как предыдущий, если он не connectionRepairingWaiting
+  if (room && !room.status.endsWith("ConnectionRepairingWaiting")) {
+    room.beforeLostConnectionStatus = room.status;
   }
 
   // Отправляем подтверждение подключения
   sendMessage(peer, {
     type: "game:joined",
     data: {
+      status: gameResponse.status,
       game: gameResponse,
       isHost,
     },
@@ -129,7 +165,10 @@ export async function handleGameJoin(
     gameId,
     {
       type: "game:update",
-      data: { game: gameResponse },
+      data: {
+        game: gameResponse,
+        status: room.status,
+      },
     },
     peer
   );
@@ -142,6 +181,13 @@ export async function handleGameMove(
 ): Promise<void> {
   const gamePeer = getGamePeer(peer);
   if (!gamePeer?.gameId) return;
+  const game = getGameRoom(gamePeer.gameId);
+  if (!game) return;
+
+  // Увеличиваем номер хода
+  if (game.turnNumber) {
+    game.turnNumber++;
+  }
 
   // Пересылаем сообщение другим игрокам в комнате
   broadcastToRoom(gamePeer.gameId, wsMessage, peer);
@@ -155,6 +201,7 @@ export async function handleGameArranged(
   if (!gamePeer?.gameId) return;
   const game = getGameRoom(gamePeer.gameId);
   if (!game) return;
+  const gameId = gamePeer.gameId;
 
   console.log(`Player ${gamePeer.username} arranged ships:`, data.arrangement);
 
@@ -175,16 +222,30 @@ export async function handleGameArranged(
 
   if (game.status == "arrangementFinished") {
     // Ожидение уведомления пользователей о готовности к игре
-    await delay(5000);
-
-    // Переключeние статусa игры в актвную стадию
-    game.status = `${
-      game.firstArranged || (gamePeer.isHost ? "guest" : "host")
-    }Turn`;
-
-    broadcastToRoom(gamePeer.gameId, {
-      type: "game:update",
-      data: { status: game.status },
-    });
+    // и планирование следующего сообщения о начале игры
+    scheduleGameTurn(game, game.firstArranged!, 16000);
   }
+}
+
+export async function handleGameReset(peer: WebSocketPeer): Promise<void> {
+  const gamePeer = getGamePeer(peer);
+  if (!gamePeer?.gameId) return;
+  const game = getGameRoom(gamePeer.gameId);
+  if (!game) return;
+  game.deferredOperation()?.stop();
+
+  console.log(`Player ${gamePeer.username} reset game:`, gamePeer.gameId);
+
+  // Сбрасываем состояние игры до arrangement
+  game.status = "arrangement";
+  game.hostArrangement = undefined;
+  game.guestArrangement = undefined;
+  game.firstArranged = undefined;
+  game.turnNumber = undefined;
+
+  // Уведомляем всех игроков о сбросе
+  broadcastToRoom(gamePeer.gameId, {
+    type: "game:update",
+    data: { status: game.status },
+  });
 }

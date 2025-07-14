@@ -1,8 +1,17 @@
+import type { Coord, Rotation } from "./common";
+
 export interface GameUser {
   id: number;
   username: string;
   avatar: number;
 }
+
+export type ShipState = {
+  type: 1 | 2 | 3 | 4;
+  x: Coord;
+  y: Coord;
+  rotation: Rotation;
+};
 
 export type GameStatus =
   | "initial"
@@ -17,6 +26,8 @@ export type GameStatus =
   | "hostConnectionRepairingWaiting"
   | "hostTurn"
   | "guestTurn"
+  | "hostTurnLost"
+  | "guestTurnLost"
   | "finished"
   | "hostExited"
   | "guestExited"
@@ -29,6 +40,7 @@ export interface Game {
   gameData?: any;
   createdAt: string;
   updatedAt?: string;
+  turnNumber?: number;
   // Поля для завершенных игр
   hostScore?: number;
   guestScore?: number;
@@ -45,24 +57,64 @@ export type WSMessageType =
   | "game:update"
   | "game:move"
   | "game:end"
+  | "game:reset"
   | "error";
 
-export interface WSMessage<T = any> {
-  type: WSMessageType;
-  gameId?: string;
-  data?: T;
-  error?: string;
-}
+export type WSMessage =
+  | { type: "game:join"; gameId?: string; data: WSGameJoinData }
+  | { type: "game:joined"; gameId?: string; data: WSGameJoinedData }
+  | { type: "game:arranged"; gameId?: string; data: WSGameArrangedData }
+  | { type: "game:left"; gameId?: string; data: WSGameLeftData }
+  | { type: "game:update"; gameId?: string; data: WSGameUpdateData }
+  | { type: "game:move"; gameId?: string; data: WSGameMoveData }
+  | { type: "game:end"; gameId?: string; data: WSGameEndData }
+  | { type: "game:reset"; gameId?: string; data: WSGameResetData }
+  | { type: "error"; gameId?: string; error: string };
 
 export interface WSGameJoinData {
   gameId: string;
+  userId: number;
+  username: string;
+  avatar: number;
 }
 
 export interface WSGameJoinedData {
+  status: GameStatus;
   game: Game;
   isHost: boolean;
 }
 
 export interface WSGameUpdateData {
-  game: Game;
+  status: GameStatus;
+  turnNumber?: number;
+  game?: Game;
+  firstArranged?: "host" | "guest";
+}
+
+export interface WSGameArrangedData {
+  arrangement: ShipState[]; // массив кораблей без id
+}
+
+export interface WSGameMoveData {
+  [key: string]: unknown;
+}
+
+export interface WSGameLeftData {
+  status: GameStatus;
+  userId: number;
+}
+
+export interface WSGameEndData {
+  status: GameStatus;
+  winnerId?: number;
+  reason?: string;
+}
+
+export interface WSGameResetData {
+  gameId: string;
+}
+
+export interface WSErrorData {
+  status: GameStatus;
+  error: string;
 }

@@ -1,10 +1,14 @@
 <style lang="scss">
 @use "@/styles/mixins.scss" as *;
+@use "~/styles/colors.scss" as *;
 
 .border1,
 .border2 {
   width: 100%;
   height: 100%;
+}
+.field-disabled {
+  pointer-events: none;
 }
 .border1:before,
 .border2:before {
@@ -26,6 +30,37 @@
   background-color: var(--pen-color);
   translate: 0px 2px;
   scale: -1.09 -1.09;
+}
+
+:is(.border1, .border2):has(> .critical):before {
+  background-color: $error;
+  mix-blend-mode: multiply;
+}
+:is(.border1, .border2):has(> .successful):before {
+  background-color: #959595;
+  mix-blend-mode: multiply;
+}
+:is(.border1, .border2):has(> :is(.critical, .successful)):after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: unset;
+  box-shadow: inset 0 0 145px 34px rgb(202 41 41 / 91%);
+  border-radius: 20px;
+  mix-blend-mode: overlay;
+  scale: 1.1;
+  translate: 5px -1px;
+  pointer-events: none;
+}
+.border2:has(> .critical):after {
+  translate: 0px 2px;
+}
+:is(.border1, .border2):has(> .successful):after {
+  background-color: unset;
+  box-shadow: inset 0 0 145px 20px #008142;
 }
 
 .v-ruler,
@@ -74,11 +109,25 @@ const isEnemyField = type == "enemy";
 const hletters = ["A", "Б", "В", "Г", "Д", "E", "Ж", "З", "И", "К"];
 
 const root = useTemplateRef("root");
+const game = useGameStore();
+const boardIsDisabled = computed(() => {
+  const player = game.isHost ? "host" : "guest";
+  return (
+    isPlayerField &&
+    game.gameStatus != "arrangement" &&
+    game.gameStatus != `${player}ArrangementWaiting`
+  );
+});
 
 const { fieldState } = usePlayfield(root, type);
 </script>
 <template>
-  <div class="playfield" v-bind="$attrs" ref="root">
+  <div
+    class="playfield"
+    v-bind="$attrs"
+    ref="root"
+    :class="{ 'field-disabled': boardIsDisabled }"
+  >
     <div :class="type == 'player' ? 'border1' : 'border2'" />
     <div class="h-ruler">
       <div v-for="letter in hletters">

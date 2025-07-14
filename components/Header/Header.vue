@@ -4,5 +4,15 @@
 }
 </style>
 <template>
-  <div class="header container">header</div>
+  <button @click="handleResetGame">reset game</button>
 </template>
+
+<script setup lang="ts">
+const gameStore = useGameStore();
+const fieldStore = useFieldStore();
+
+function handleResetGame() {
+  gameStore.resetGame();
+  fieldStore.resetPlayerField();
+}
+</script>

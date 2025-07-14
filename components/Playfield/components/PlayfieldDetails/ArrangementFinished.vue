@@ -2,7 +2,7 @@
 @use "./styles.scss" as *;
 </style>
 <script setup lang="ts">
-const { count } = useCountdown(10);
+const { count } = useCountdown(15);
 </script>
 <template>
   <div :class="$style.details">

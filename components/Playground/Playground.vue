@@ -19,6 +19,14 @@
   }
 }
 .player-field {
+  &.only-player-message {
+    left: calc(
+      max(
+          var(--cell-size),
+          var(--horizontal-center) - var(--fcell-size) * 5 - var(--cell-size)
+        ) - 1px
+    );
+  }
   @media (width >= 1024px) {
     left: calc(
       max(
@@ -42,10 +50,38 @@
   }
 }
 </style>
-
+<script setup lang="ts">
+const gameStore = useGameStore();
+const isOnlyPlayerMessage = computed(() => {
+  const player = gameStore.isHost ? "host" : "guest";
+  const enemy = gameStore.isHost ? "guest" : "host";
+  return (
+    gameStore.currentGame &&
+    [
+      `${enemy}ConnectionRepairingWaiting`,
+      `${enemy}Exited`,
+      `${enemy}TurnLost`,
+      `${player}TurnLost`,
+      "arrangementFinished",
+      "finished",
+    ].includes(gameStore.gameStatus)
+  );
+});
+</script>
 <template>
   <div>
-    <Playfield type="player" class="player-field" />
-    <Playfield type="enemy" class="enemy-field" />
+    <TransitionGroup name="fade" mode="out-in">
+      <Playfield
+        key="player"
+        type="player"
+        :class="['player-field', isOnlyPlayerMessage && 'only-player-message']"
+      />
+      <Playfield
+        key="enemy"
+        type="enemy"
+        v-if="!isOnlyPlayerMessage"
+        class="enemy-field"
+      />
+    </TransitionGroup>
   </div>
 </template>

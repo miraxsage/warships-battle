@@ -12,7 +12,7 @@ defineProps<{
 <template>
   <div
     :class="[$style.energomoduleContainer, $style[mode]]"
-    :style="`--progress: ${progress / 100}`"
+    :style="`--progress: ${progress / 100};`"
   >
     <div :class="$style.missileUnderlay">
       <SpriteSymbol name="game/missile-thin" />

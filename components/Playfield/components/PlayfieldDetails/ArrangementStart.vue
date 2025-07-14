@@ -4,26 +4,12 @@
 <script setup lang="ts">
 import * as _ from "lodash-es";
 import { formatTime } from "./utils";
-
-const game = useGameStore();
-const fieldState = useFieldStore();
+import useSendArrangement from "./composables/useSendArrangement";
 
 const { count } = useCountdown();
 const timeString = computed(() => formatTime(count.value));
 
-const arrangementIsSent = ref(false);
-const sendArrangement = () => {
-  if (arrangementIsSent.value) {
-    return;
-  }
-  arrangementIsSent.value = true;
-  game.sendMessage({
-    type: "game:arranged",
-    data: {
-      arrangement: fieldState.player.ships.map((ship) => _.omit(ship, "id")),
-    },
-  });
-};
+const { arrangementIsSent, sendArrangement } = useSendArrangement();
 
 const startPhrases = [
   "Капитан, грядет большая битва!",
@@ -70,7 +56,7 @@ const startPhrase = _.sample(startPhrases);
       <span>Противник разворачивает свои орудия...</span>
     </p>
     <p :class="$style.text">
-      <span>Дислокация занимает: {{ timeString }}</span>
+      <span>Дислокация идет: {{ timeString }}</span>
     </p>
     <Button
       text="В бой!"

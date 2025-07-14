@@ -23,6 +23,7 @@ export async function handleDisconnection(peer: WebSocketPeer): Promise<void> {
     removeGamePeer(peer);
     return;
   }
+  room.deferredOperation()?.stop();
 
   const gameId = gamePeer.gameId;
 
@@ -39,15 +40,19 @@ export async function handleDisconnection(peer: WebSocketPeer): Promise<void> {
   const repairStatus = `${
     gamePeer.isHost ? "host" : "guest"
   }ConnectionRepairingWaiting` as GameStatus;
-  updateRoomStatus(gameId, repairStatus, room.status);
+
+  // Сохраняем текущий статус перед потерей соединения
+  if (!room.status.endsWith("ConnectionRepairingWaiting")) {
+    room.beforeLostConnectionStatus = room.status;
+  }
+
+  updateRoomStatus(gameId, repairStatus);
 
   // Уведомляем других игроков о потере соединения
   broadcastToRoom(gameId, {
     type: "game:update",
     data: {
-      game: {
-        status: repairStatus,
-      },
+      status: repairStatus,
     },
   });
 
@@ -77,15 +82,15 @@ export async function handleDisconnection(peer: WebSocketPeer): Promise<void> {
     // Остался один игрок - уведомляем его
     broadcastToRoom(gameId, {
       type: "game:left",
-      data: { userId: gamePeer.userId },
+      data: { userId: gamePeer.userId, status: updatedRoom.status },
     });
 
     // Если игра была в процессе, помечаем как завершенную
     if (
-      updatedRoom.prevStatus &&
-      (updatedRoom.prevStatus === "hostTurn" ||
-        updatedRoom.prevStatus === "guestTurn" ||
-        updatedRoom.prevStatus.match(/arrangement/i)) &&
+      updatedRoom.beforeLostConnectionStatus &&
+      (updatedRoom.beforeLostConnectionStatus === "hostTurn" ||
+        updatedRoom.beforeLostConnectionStatus === "guestTurn" ||
+        updatedRoom.beforeLostConnectionStatus.match(/arrangement/i)) &&
       updatedRoom.guestUser
     ) {
       try {
@@ -107,23 +112,32 @@ export async function handleDisconnection(peer: WebSocketPeer): Promise<void> {
   }
 }
 
-export function handleReconnection(gameId: string, userId: number): void {
-  const room = getGameRoom(gameId);
-  if (!room) return;
+// export function handleReconnection(gameId: string, userId: number): void {
+//   const room = getGameRoom(gameId);
+//   if (!room) return;
 
-  // Проверяем, был ли этот игрок в состоянии переподключения
-  const isHostReconnecting =
-    room.status === "hostConnectionRepairingWaiting" &&
-    room.hostUser?.id === userId;
-  const isGuestReconnecting =
-    room.status === "guestConnectionRepairingWaiting" &&
-    room.guestUser?.id === userId;
+//   console.log(
+//     "Reconnecting to game:",
+//     gameId,
+//     "user:",
+//     userId,
+//     room.deferredOperation() ? "hasDefOp" : "noDefOp"
+//   );
 
-  if (isHostReconnecting || isGuestReconnecting) {
-    // Восстанавливаем предыдущий статус
-    if (room.prevStatus) {
-      updateRoomStatus(gameId, room.prevStatus);
-      console.log(`Player ${userId} reconnected to game ${gameId}`);
-    }
-  }
-}
+//   // Проверяем, был ли этот игрок в состоянии переподключения
+//   const isHostReconnecting =
+//     room.status === "hostConnectionRepairingWaiting" &&
+//     room.hostUser?.id === userId;
+//   const isGuestReconnecting =
+//     room.status === "guestConnectionRepairingWaiting" &&
+//     room.guestUser?.id === userId;
+
+//   if (isHostReconnecting || isGuestReconnecting) {
+//     // Восстанавливаем предыдущий статус
+//     if (room.beforeLostConnectionStatus) {
+//       updateRoomStatus(gameId, room.beforeLostConnectionStatus);
+//       room.deferredOperation()?.start();
+//       console.log(`Player ${userId} reconnected to game ${gameId}`);
+//     }
+//   }
+// }

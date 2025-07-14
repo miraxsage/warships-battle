@@ -18,20 +18,19 @@ defineProps<{ fullDamage?: boolean }>();
     </p>
     <p :class="[$style.text, $style.center]"><span>УРААА!!!</span></p>
     <p :class="[$style.text, $style.center]">
-      <span
-        >Капитан, мы полностью <br />
-        уничтожили вражеский флот<br />
-      </span>
-      <span :class="$style.warning">Победа</span><span> за нами!</span>
+      <span>Капитан, мы успели полностью </span>
+      <span :class="$style.warning">испепелить </span>
+      <br />
+      <span>врага мощным импульсным </span>
+      <span :class="$style.warning">зарядом, </span>
+      <br />
+      <span>пока тот искал кнопку старта!</span>
+      <br />
+      <span :class="$style.warning">Так держать!</span>
     </p>
-    <p :class="[$style.text]">
-      <span>Всего выстрелов: 31</span>
-      <br />
-      <span>Мимо: 23</span>
-      <br />
-      <span>В цель: 8</span>
-      <br />
-      <span>Общий счет: </span><span :class="$style.success">+86 баллов</span>
+    <p :class="[$style.text, $style.center]">
+      <span :class="$style.success">+10</span>
+      <span> очков за медлительность врага </span>
     </p>
     <Button text="К статистике" variant="2" :class="$style.fightButton" />
   </div>

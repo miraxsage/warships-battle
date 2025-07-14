@@ -15,13 +15,23 @@ const startPhrases = [
   "Противник активировал боевой протокол!",
   "Противник выходит на огневой рубеж!",
 ];
-const startPhrase = _.sample(startPhrases);
-const { count } = useCountdown(30);
+
+const gameStore = useGameStore();
+const turnNumber = computed(() => gameStore.currentGame?.turnNumber ?? 0);
+const waitTime = computed(() =>
+  (gameStore.currentGame?.turnNumber ?? 0) <= 2 ? 45 : 30
+);
+const startPhrase =
+  turnNumber.value == 1
+    ? "Враг наносит удар по нам первым!"
+    : _.sample(startPhrases);
+
+const { count } = useCountdown(waitTime.value);
 </script>
 <template>
   <div :class="$style.details">
     <p :class="[$style.text, $style.center]">
-      <SpriteSymbol name="fire" :class="[$style.info, $style.warning]" />
+      <SpriteSymbol name="fire" :class="[$style.info, $style.error]" />
       <span>{{ startPhrase }}</span>
     </p>
     <p :class="$style.text">
@@ -41,9 +51,9 @@ const { count } = useCountdown(30);
       <span>Вражеский удар ожидается в пределах: {{ count }} сек.</span>
     </p>
     <EnergomoduleProgress
-      :progress="Math.floor((100 * count) / 30)"
+      :progress="Math.floor((100 * count) / waitTime)"
       mode="error"
-      :progressText="`${100 - Math.floor((100 * count) / 30)}%`"
+      :progressText="`${100 - Math.floor((100 * count) / waitTime)}%`"
       hint="Потеря стабилизации"
     />
   </div>

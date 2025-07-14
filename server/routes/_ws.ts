@@ -2,6 +2,7 @@ import {
   handleGameJoin,
   handleGameMove,
   handleGameArranged,
+  handleGameReset,
 } from "~/server/websocket/messageHandlers";
 import { handleDisconnection } from "~/server/websocket/connectionManager";
 import {
@@ -26,7 +27,11 @@ export default defineWebSocketHandler({
         return;
       }
 
-      logMessage(wsMessage.type, peer.id, wsMessage.data);
+      logMessage(
+        wsMessage.type,
+        peer.id,
+        "data" in wsMessage ? wsMessage.data : wsMessage.error
+      );
 
       const webSocketPeer = toPeer(peer);
 
@@ -41,6 +46,10 @@ export default defineWebSocketHandler({
 
         case "game:move":
           await handleGameMove(webSocketPeer, wsMessage.data, wsMessage);
+          break;
+
+        case "game:reset":
+          await handleGameReset(webSocketPeer);
           break;
 
         default:

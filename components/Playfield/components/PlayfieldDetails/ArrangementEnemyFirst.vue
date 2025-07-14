@@ -5,17 +5,12 @@
 import * as _ from "lodash-es";
 import { formatTime } from "./utils";
 import EnergomoduleProgress from "./EnergomoduleProgress.vue";
+import useSendArrangement from "./composables/useSendArrangement";
 
 const { count } = useCountdown(30);
 const timeString = computed(() => formatTime(count.value));
 
-const arrangementIsSent = ref(false);
-const sendArrangement = () => {
-  if (arrangementIsSent.value) {
-    return;
-  }
-  arrangementIsSent.value = true;
-};
+const { arrangementIsSent, sendArrangement } = useSendArrangement();
 </script>
 <template>
   <div :class="$style.details">
@@ -49,8 +44,7 @@ const sendArrangement = () => {
     />
     <Button
       text="В бой!"
-      :class="$style.fightButton"
-      :disabled="arrangementIsSent"
+      :class="[$style.fightButton, arrangementIsSent && 'disabled']"
       @click="sendArrangement"
     />
   </div>

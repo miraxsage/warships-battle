@@ -13,8 +13,12 @@ const state = computed(() => {
   const enemy = game.isHost ? "guest" : "host";
   if (type == "player") {
     if (
-      [`${enemy}Turn`].includes(status) ||
-      ["arrangement", `${player}ArrangementWaiting`].includes(status)
+      [
+        "arrangement",
+        `${player}ArrangementWaiting`,
+        `${enemy}ArrangementWaiting`,
+        `${enemy}Turn`,
+      ].includes(status)
     ) {
       return "board";
     }
@@ -27,8 +31,18 @@ const state = computed(() => {
 });
 </script>
 <template>
-  <Transition name="fade">
-    <PlayfieldBoard v-if="state == 'board'" v-bind="$attrs" :type="type" />
-    <PlayfieldDetails v-else v-bind="$attrs" :type="type" />
+  <Transition name="fade" mode="out-in">
+    <PlayfieldBoard
+      v-if="state == 'board'"
+      v-bind="$attrs"
+      :type="type"
+      key="board"
+    />
+    <PlayfieldDetails
+      v-else
+      v-bind="$attrs"
+      :key="`${game.gameStatus}Details`"
+      :type="type"
+    />
   </Transition>
 </template>

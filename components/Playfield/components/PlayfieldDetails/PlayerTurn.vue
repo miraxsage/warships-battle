@@ -13,8 +13,18 @@ const startPhrases = [
   "Время нанести удар по врагу!",
   "Враг в зоне поражения!",
 ];
-const startPhrase = _.sample(startPhrases);
-const { count } = useCountdown(30);
+
+const gameStore = useGameStore();
+const turnNumber = computed(() => gameStore.currentGame?.turnNumber ?? 0);
+const waitTime = computed(() =>
+  (gameStore.currentGame?.turnNumber ?? 0) <= 2 ? 45 : 30
+);
+const startPhrase =
+  turnNumber.value == 1
+    ? "Мы наносим удар по врагу первыми!"
+    : _.sample(startPhrases);
+
+const { count } = useCountdown(waitTime.value);
 </script>
 <template>
   <div :class="$style.details">
@@ -27,7 +37,10 @@ const { count } = useCountdown(30);
     </p>
     <p :class="$style.text">
       <SpriteSymbol name="info" :class="[$style.info, $style.neutral]" />
-      <span> Наводи локатор цели на позиции врага и жми пуск ЛКМ! </span>
+      <span>
+        Наводи локатор цели на позиции врага, указав <br />
+        тем самым координаты запуска и жми пуск ЛКМ!
+      </span>
     </p>
     <p :class="$style.text">
       <SpriteSymbol name="error" :class="[$style.info, $style.error]" />
@@ -38,9 +51,9 @@ const { count } = useCountdown(30);
       >
     </p>
     <EnergomoduleProgress
-      :progress="Math.floor((100 * count) / 30)"
+      :progress="Math.floor((100 * count) / waitTime)"
       mode="success"
-      :progressText="`${100 - Math.floor((100 * count) / 30)}%`"
+      :progressText="`${100 - Math.floor((100 * count) / waitTime)}%`"
       hint="Потеря стабилизации"
     />
   </div>
