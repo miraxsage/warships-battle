@@ -1,6 +1,11 @@
-import type { WSMessage, Game, GameUser, GameStatus } from "~/types/game";
+import type {
+  WSMessage,
+  Game,
+  GameUser,
+  GameStatus,
+  FieldTurn,
+} from "~/types/game";
 import type { ShipState } from "~/types/game";
-import { Scheduler } from "./scheduler";
 
 export interface WebSocketPeer {
   id: string;
@@ -21,14 +26,15 @@ export interface GameRoom {
   hostUser: GameUser;
   guestUser?: GameUser;
   hostArrangement?: ShipState[];
+  hostTurnsMap?: FieldTurn[][];
   guestArrangement?: ShipState[];
+  guestTurnsMap?: FieldTurn[][];
   firstArranged?: "host" | "guest";
   status: GameStatus;
   beforeLostConnectionStatus?: GameStatus;
-  prevStatus?: GameStatus;
   turnNumber?: number;
-  deferredOperation: () => Scheduler | undefined;
-  deferOperation: (handler: () => void, delay: number) => Scheduler;
+  deferredOperation: () => any;
+  deferOperation: (handler: () => void, delay: number) => any;
   gameData?: any;
   createdAt: Date;
   players: Set<GamePeer>;

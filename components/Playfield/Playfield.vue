@@ -11,6 +11,8 @@ const state = computed(() => {
   const status = game.gameStatus;
   const player = game.isHost ? "host" : "guest";
   const enemy = game.isHost ? "guest" : "host";
+  // TODO: remove this
+  return "board";
   if (type == "player") {
     if (
       [

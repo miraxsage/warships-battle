@@ -98,6 +98,8 @@
 }
 </style>
 <script setup lang="ts">
+import Pelengator from "./Pelengator/Pelengator.vue";
+
 defineOptions({
   inheritAttrs: false,
 });
@@ -119,14 +121,47 @@ const boardIsDisabled = computed(() => {
   );
 });
 
+const hitIsSent = ref(false);
+const isPelengatorDisabled = computed(() => {
+  return hitIsSent.value;
+});
+
+const handlePelengatorHit = (coords: { x: number; y: number }) => {
+  if (hitIsSent.value) return;
+  hitIsSent.value = true;
+  //TODO: remove this
+  game.setLastTurn({
+    player: "host",
+    x: coords.x,
+    y: coords.y,
+    result: "miss",
+  });
+  game.setGameStatus("hostTurnFinished");
+  return;
+  game.sendMessage({
+    type: "game:turn",
+    data: { x: coords.x, y: coords.y },
+  });
+};
+
+const resetPelengator = () => {
+  hitIsSent.value = false;
+  game.setGameStatus("hostTurn");
+};
+
 const { fieldState } = usePlayfield(root, type);
 </script>
 <template>
+  <button v-if="isEnemyField" @click="resetPelengator">reset pelengator</button>
   <div
     class="playfield"
     v-bind="$attrs"
     ref="root"
-    :class="{ 'field-disabled': boardIsDisabled }"
+    :class="{
+      'field-disabled':
+        (isPelengatorDisabled && boardIsDisabled) ||
+        (isEnemyField && isPelengatorDisabled),
+    }"
   >
     <div :class="type == 'player' ? 'border1' : 'border2'" />
     <div class="h-ruler">
@@ -148,7 +183,7 @@ const { fieldState } = usePlayfield(root, type);
       />
     </template>
     <template v-if="isEnemyField">
-      <Pelengator />
+      <Pelengator @hit="handlePelengatorHit" :hitIsSent="hitIsSent" />
     </template>
   </div>
 </template>

@@ -17,6 +17,7 @@ export const useGameStore = defineStore("game", () => {
   const enemyRole = computed(() => (!isHost.value ? "host" : "guest"));
   const gameStatus = ref<GameStatus>("initial");
   const turnNumber = computed(() => currentGame.value?.turnNumber || 0);
+  const lastTurn = computed(() => currentGame.value?.lastTurn || null);
   let ws: WebSocket | null = null;
   let reconnectAttempts = 0;
   const maxReconnectAttempts = 5;
@@ -118,6 +119,30 @@ export const useGameStore = defineStore("game", () => {
         }
         break;
 
+      case "game:turned":
+        {
+          const data = message.data;
+          if (data) {
+            console.log(
+              `${data.status.replace("TurnFinished", "")} turned:`,
+              data.x,
+              data.y,
+              data.turn,
+              data.turnsMap
+            );
+            gameStatus.value = data.status || gameStatus.value;
+            currentGame.value!.lastTurn = {
+              player: data.status.replace("TurnFinished", "").toLowerCase() as
+                | "host"
+                | "guest",
+              x: data.x,
+              y: data.y,
+              result: data.turn?.type || "miss",
+            };
+          }
+        }
+        break;
+
       case "game:left":
         {
           const data = message.data;
@@ -185,10 +210,17 @@ export const useGameStore = defineStore("game", () => {
     enemyRole,
     gameStatus: readonly(gameStatus),
     turnNumber: readonly(turnNumber),
+    lastTurn: readonly(lastTurn),
     connect,
     disconnect,
     sendMessage,
     createGame,
     resetGame,
+    setGameStatus: (status: GameStatus) => {
+      gameStatus.value = status;
+    },
+    setLastTurn: (turn: Game["lastTurn"]) => {
+      currentGame.value!.lastTurn = turn;
+    },
   };
 });

@@ -1,0 +1,109 @@
+@mixin pelengatorScale($size: null) {
+  @if $size == null {
+    left: calc(
+      var(--fcell-size) *
+        (var(--x) - var(--pelengator-size-to)) -
+        var(--fcell-size) *
+        0.23
+    ) !important;
+    top: calc(
+      var(--fcell-size) *
+        (var(--y) - var(--pelengator-size-to)) -
+        var(--fcell-size) *
+        0.22
+    ) !important;
+    width: calc(
+      var(--fcell-size) * (var(--pelengator-size-to) * 2 + 1.5)
+    ) !important;
+    height: calc(
+      var(--fcell-size) * (var(--pelengator-size-to) * 2 + 1.5)
+    ) !important;
+  } @else {
+    left: calc(
+      var(--fcell-size) * (var(--x) - #{$size}) - var(--fcell-size) * 0.23
+    ) !important;
+    top: calc(
+      var(--fcell-size) * (var(--y) - #{$size}) - var(--fcell-size) * 0.22
+    ) !important;
+    width: calc(var(--fcell-size) * (#{$size} * 2 + 1.5)) !important;
+    height: calc(var(--fcell-size) * (#{$size} * 2 + 1.5)) !important;
+  }
+}
+
+@mixin pelengatorLineLeftPos($size: null) {
+  @if $size == null {
+    right: calc(
+      (10 - var(--x) + var(--pelengator-size-to)) *
+        var(--fcell-size) +
+        var(--fcell-size) *
+        0.3
+    ) !important;
+  } @else {
+    right: calc(
+      (10 - var(--x) + #{$size}) * var(--fcell-size) + var(--fcell-size) * 0.3
+    ) !important;
+  }
+}
+
+@mixin pelengatorLineTopPos($size: null) {
+  @if $size == null {
+    bottom: calc(
+      (10 - var(--y) + var(--pelengator-size-to)) *
+        var(--fcell-size) +
+        var(--fcell-size) *
+        0.3
+    ) !important;
+  } @else {
+    bottom: calc(
+      (10 - var(--y) + #{$size}) * var(--fcell-size) + var(--fcell-size) * 0.3
+    ) !important;
+  }
+}
+
+@mixin pelengatorLineRightPos($size: null) {
+  @if $size == null {
+    left: calc(
+      (var(--x) + var(--pelengator-size-to) + 1) *
+        var(--fcell-size) +
+        var(--fcell-size) *
+        0.25
+    ) !important;
+  } @else {
+    left: calc(
+      (var(--x) + #{$size} + 1) * var(--fcell-size) + var(--fcell-size) * 0.25
+    ) !important;
+  }
+}
+
+@mixin pelengatorLineBottomPos($size: null) {
+  @if $size == null {
+    top: calc(
+      (var(--y) + var(--pelengator-size-to) + 1) *
+        var(--fcell-size) +
+        var(--fcell-size) *
+        0.3
+    ) !important;
+  } @else {
+    top: calc(
+      (var(--y) + #{$size} + 1) * var(--fcell-size) + var(--fcell-size) * 0.3
+    ) !important;
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

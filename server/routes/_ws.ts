@@ -1,6 +1,6 @@
 import {
   handleGameJoin,
-  handleGameMove,
+  handleGameTurn,
   handleGameArranged,
   handleGameReset,
 } from "~/server/websocket/messageHandlers";
@@ -44,8 +44,8 @@ export default defineWebSocketHandler({
           await handleGameArranged(webSocketPeer, wsMessage.data);
           break;
 
-        case "game:move":
-          await handleGameMove(webSocketPeer, wsMessage.data, wsMessage);
+        case "game:turn":
+          await handleGameTurn(webSocketPeer, wsMessage);
           break;
 
         case "game:reset":

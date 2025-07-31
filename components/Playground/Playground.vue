@@ -55,6 +55,8 @@ const gameStore = useGameStore();
 const isOnlyPlayerMessage = computed(() => {
   const player = gameStore.isHost ? "host" : "guest";
   const enemy = gameStore.isHost ? "guest" : "host";
+  // TODO: remove this
+  return false;
   return (
     gameStore.currentGame &&
     [
@@ -65,6 +67,12 @@ const isOnlyPlayerMessage = computed(() => {
       "arrangementFinished",
       "finished",
     ].includes(gameStore.gameStatus)
+  );
+});
+const isMissileLaunch = computed(() => {
+  return (
+    gameStore.gameStatus === "guestTurnFinished" ||
+    gameStore.gameStatus === "hostTurnFinished"
   );
 });
 </script>
@@ -83,5 +91,6 @@ const isOnlyPlayerMessage = computed(() => {
         class="enemy-field"
       />
     </TransitionGroup>
+    <MissileLaunch v-if="isMissileLaunch" />
   </div>
 </template>

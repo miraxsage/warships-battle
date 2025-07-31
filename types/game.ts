@@ -26,6 +26,8 @@ export type GameStatus =
   | "hostConnectionRepairingWaiting"
   | "hostTurn"
   | "guestTurn"
+  | "hostTurnFinished"
+  | "guestTurnFinished"
   | "hostTurnLost"
   | "guestTurnLost"
   | "finished"
@@ -37,9 +39,15 @@ export interface Game {
   hostUser: GameUser;
   guestUser?: GameUser;
   status: GameStatus;
-  gameData?: any;
+  // gameData?: any;
   createdAt: string;
   updatedAt?: string;
+  lastTurn?: {
+    player: "host" | "guest";
+    x: number;
+    y: number;
+    result: "hit" | "miss";
+  };
   turnNumber?: number;
   // Поля для завершенных игр
   hostScore?: number;
@@ -55,7 +63,8 @@ export type WSMessageType =
   | "game:arranged"
   | "game:left"
   | "game:update"
-  | "game:move"
+  | "game:turn"
+  | "game:turned"
   | "game:end"
   | "game:reset"
   | "error";
@@ -66,7 +75,8 @@ export type WSMessage =
   | { type: "game:arranged"; gameId?: string; data: WSGameArrangedData }
   | { type: "game:left"; gameId?: string; data: WSGameLeftData }
   | { type: "game:update"; gameId?: string; data: WSGameUpdateData }
-  | { type: "game:move"; gameId?: string; data: WSGameMoveData }
+  | { type: "game:turn"; gameId?: string; data: WSGameTurnData }
+  | { type: "game:turned"; gameId?: string; data: WSGameTurnedData }
   | { type: "game:end"; gameId?: string; data: WSGameEndData }
   | { type: "game:reset"; gameId?: string; data: WSGameResetData }
   | { type: "error"; gameId?: string; error: string };
@@ -95,8 +105,24 @@ export interface WSGameArrangedData {
   arrangement: ShipState[]; // массив кораблей без id
 }
 
-export interface WSGameMoveData {
-  [key: string]: unknown;
+export type FieldTurn =
+  | {
+      type: "hit" | "miss";
+      count: number;
+    }
+  | undefined;
+
+export interface WSGameTurnData {
+  x: number;
+  y: number;
+}
+
+export interface WSGameTurnedData {
+  x: number;
+  y: number;
+  status: GameStatus;
+  turn: FieldTurn;
+  turnsMap: FieldTurn[][];
 }
 
 export interface WSGameLeftData {

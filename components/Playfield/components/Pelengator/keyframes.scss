@@ -1,0 +1,196 @@
+@use "./mixins.scss" as *;
+
+@keyframes pelengator-hit-step-1 {
+  0% {
+    @include pelengatorScale(0);
+  }
+  15% {
+    @include pelengatorScale(1);
+  }
+  100% {
+    @include pelengatorScale(0);
+  }
+}
+
+@keyframes pelengator-hit-step-2 {
+  0% {
+    rotate: 0deg;
+  }
+  10% {
+    rotate: -25deg;
+  }
+  100% {
+    rotate: 360deg;
+  }
+}
+
+@keyframes pelengator-hit-step-3 {
+  0% {
+    @include pelengatorScale(0);
+  }
+  100% {
+    @include pelengatorScale;
+  }
+}
+
+@keyframes pelengator-line-top-step-1 {
+  0% {
+    @include pelengatorLineTopPos(0);
+  }
+  15% {
+    @include pelengatorLineTopPos(1);
+  }
+  100% {
+    @include pelengatorLineTopPos(0);
+  }
+}
+
+@keyframes pelengator-line-right-step-1 {
+  0% {
+    @include pelengatorLineRightPos(0);
+  }
+  15% {
+    @include pelengatorLineRightPos(1);
+  }
+  100% {
+    @include pelengatorLineRightPos(0);
+  }
+}
+
+@keyframes pelengator-line-bottom-step-1 {
+  0% {
+    @include pelengatorLineBottomPos(0);
+  }
+  15% {
+    @include pelengatorLineBottomPos(1);
+  }
+  100% {
+    @include pelengatorLineBottomPos(0);
+  }
+}
+
+@keyframes pelengator-line-left-step-1 {
+  0% {
+    @include pelengatorLineLeftPos(0);
+  }
+  15% {
+    @include pelengatorLineLeftPos(1);
+  }
+  100% {
+    @include pelengatorLineLeftPos(0);
+  }
+}
+
+@keyframes pelengator-line-top-step-3 {
+  0% {
+    @include pelengatorLineTopPos(0);
+  }
+  100% {
+    @include pelengatorLineTopPos;
+  }
+}
+
+@keyframes pelengator-line-right-step-3 {
+  0% {
+    @include pelengatorLineRightPos(0);
+  }
+  100% {
+    @include pelengatorLineRightPos;
+  }
+}
+
+@keyframes pelengator-line-bottom-step-3 {
+  0% {
+    @include pelengatorLineBottomPos(0);
+  }
+  100% {
+    @include pelengatorLineBottomPos;
+  }
+}
+
+@keyframes pelengator-line-left-step-3 {
+  0% {
+    @include pelengatorLineLeftPos(0);
+  }
+  100% {
+    @include pelengatorLineLeftPos;
+  }
+}
+
+@keyframes pelengator-sight-step-4 {
+  0% {
+    rotate: 0deg;
+  }
+  5% {
+    rotate: -25deg;
+  }
+  50% {
+    rotate: 360deg;
+  }
+  55% {
+    rotate: 385deg;
+  }
+  100% {
+    rotate: 0deg;
+  }
+}
+
+@keyframes pelengator-arrow-line-step-4 {
+  0% {
+    clip-path: inset(0 0 0 calc(100% - var(--cell-size) * 1.5));
+  }
+  50% {
+    clip-path: inset(0 0 0 calc(100% - var(--cell-size)));
+  }
+  100% {
+    clip-path: inset(0 0 0 calc(100% - var(--cell-size) * 1.5));
+  }
+}
+
+@keyframes pelengator-top-arrow-step-4 {
+  0% {
+    translate: 0 0;
+  }
+  50% {
+    translate: 0 calc(var(--cell-size) * -2 / 3);
+  }
+  100% {
+    translate: 0 0;
+  }
+}
+
+@keyframes pelengator-left-arrow-step-4 {
+  0% {
+    translate: 0 0;
+  }
+  50% {
+    translate: calc(var(--cell-size) * -2 / 3) 0;
+  }
+  100% {
+    translate: 0 0;
+  }
+}
+
+@keyframes pelengator-right-arrow-step-4 {
+  0% {
+    translate: 0 0;
+  }
+  50% {
+    translate: calc(var(--cell-size) * 2 / 3) 0;
+  }
+  100% {
+    translate: 0 0;
+  }
+}
+
+@keyframes pelengator-bottom-arrow-step-4 {
+  0% {
+    translate: 0 0;
+  }
+  50% {
+    translate: 0 calc(var(--cell-size) * 2 / 3);
+  }
+  100% {
+    translate: 0 0;
+  }
+}

@@ -1,5 +1,6 @@
-import type { ShipState } from "~/stores/field";
-import type { ShipProps } from "../types";
+import { SHIP_DIRECTION_INCREMENTS } from "~/constants/common";
+import type { PlayerField } from "~/stores/field";
+import type { ShipState } from "~/types/game";
 
 export function rotatePoint(
   x: number | string,
@@ -41,4 +42,20 @@ export function shipClipPath(
     }
   }
   return `polygon(${result})`;
+}
+
+export function getFieldMap(fieldState: PlayerField, withoutShipId: string) {
+  const map: string[][] = [];
+  for (let ship of fieldState.ships) {
+    if (ship.id == withoutShipId) {
+      continue;
+    }
+    (map[ship.x] || (map[ship.x] = []))[ship.y] = ship.id;
+    const [dx, dy] = SHIP_DIRECTION_INCREMENTS[ship.rotation];
+    for (let i = 1; i < ship.type; i++) {
+      (map[ship.x + dx * i] || (map[ship.x + dx * i] = []))[ship.y + dy * i] =
+        ship.id;
+    }
+  }
+  return map;
 }

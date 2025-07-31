@@ -1,0 +1,845 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 260.67 231.89">
+<style>
+	<style>
+		.tcenter { transform-origin: center; }
+    </style>
+</style>
+<g transform="translate(60,10) scale(0.5)">
+	<g>
+		<animateTransform 
+			attributeName="transform"
+			type="translate" 
+			from="0,100" to="0,0" 
+			dur="2s" 
+			begin="0s"
+			calcMode="spline"
+			keyTimes="0;1"
+			keySplines="0 0 0.58 1"
+			fill="freeze" />
+		<animate 
+			attributeName="opacity" 
+			from="1" to="0" 
+			dur="0.5s" 
+			begin="0.5s" 
+			fill="freeze" />
+		<path class="tcenter" d="M17.78,72.24a17.4,17.4,0,0,1,21.71.46c-6.89-3.92-9.34-13.58-6.11-20.83s11.1-11.8,19-12.21,15.72,2.88,21.9,7.85C64.53,44.45,60,32,63.23,22.24S75.69,5.77,85.44,2.61C95.67-.72,107.68-.46,116.32,5.94s12.15,19.91,5.57,28.42C129.7,19.69,149.67,13,164.76,20s22.91,26.53,16.8,42c7.38-10.33,22.09-15,33.82-10.14S234.23,71,230.31,83.1s-18.8,19.54-30.6,14.81c13.46-2.25,27.84-2.35,40.13,3.58s21.82,19.09,20.14,32.63c-1.51,12.2-11.57,22-22.92,26.7s-23.92,5.32-36.2,5.85c-6.17.27-12.52.51-18.36-1.49s-11.15-6.81-11.87-13,4.82-12.76,10.89-11.63A19.69,19.69,0,0,1,153.29,115c-4.62,1.75-6,7.72-5.4,12.63s2.46,9.79,1.59,14.65a13.31,13.31,0,0,1-22.88,6.66c3,2.24,2.78,7.13.36,10s-6.3,3.95-10,4.22a30,30,0,0,1-31.87-33.86c-4.71,6.1-9.86,12.51-17.19,14.89s-17.17-1.6-17.83-9.28c-5.8,3.72-11.71,7.49-18.34,9.37S17.51,145.9,11.82,142s-8.64-12-5.38-18.09c2.45-4.56,7.78-7,13-7.17s10.14,1.69,14.45,4.21c-5.19-1.39-7-6.94-8.22-11.55-1.23-4.83-2.22-6.75-6.19-10C11,92.6,8.21,80,17.78,72.24Z" style="fill:#6c5b57;stroke:#1c1b38;stroke-miterlimit:10;opacity:0;">
+			 <animate 
+				attributeName="opacity" 
+				from="0" to="1" 
+				dur="0.2s" 
+				begin="0s" 
+				fill="freeze" />
+
+			<animateTransform attributeName="transform"
+				 type="scale"
+				 from="0 0"
+				 to="1 1"
+				 begin="0s"
+				 dur="1s"
+				 calcMode="spline"
+				 keyTimes="0;1"
+				 keySplines="0 0 0.58 1"
+				 fill="freeze"
+				/>
+		</path>
+	</g>
+	<g>
+		<animateTransform 
+			attributeName="transform"
+			type="translate" 
+			from="0,100" to="0,-100" 
+			dur="2s" 
+			calcMode="spline"
+			keyTimes="0;1"
+			keySplines="0 0 0.58 1"
+			fill="freeze" />
+		<animate 
+			attributeName="opacity" 
+			from="1" to="0" 
+			dur="0.7s" 
+			begin="0.6s" 
+			fill="freeze" />
+		<path class="tcenter" d="M71.9,200.8c-2.2,4.63-8.38,6.32-13.25,4.73s-8.54-5.68-11.19-10.07c1.11,6.06-3.79,12-9.68,13.84s-12.32.28-17.94-2.23C12.94,204,6.53,199.2,3,192.51s-3.58-15.46,1.1-21.4,14.41-7.65,20.05-2.63c-7.39-3.25-10-14.09-4.93-20.37s16.23-6,21,.6c-4.43-5.72-7.56-12.71-7.45-20s3.88-14.62,10.35-17.86,15.43-1.3,19.06,5A10.1,10.1,0,0,1,81,122.1c.89-6.15,1.89-12.57,5.56-17.58s10.9-8,16.28-4.92A33.18,33.18,0,0,1,152.07,95a22.09,22.09,0,0,1,38.7,4.93,23.52,23.52,0,0,1,45.11,8.28c5.27-2.57,11.5,2.47,13.14,8.1,2.65,9.17-3.38,19.92-12.59,22.43a19.61,19.61,0,0,1,1.06,35.75,19.66,19.66,0,0,1-7.28,37.58c3.76,4.85,1.43,12.52-3.58,16.07s-11.68,3.76-17.72,2.68c-7.87-1.41-15.9-5.31-19.47-12.47s-.43-17.67,7.34-19.55a16.13,16.13,0,0,1-15.61-25.09c-7.71-5.35-9.22-17.7-3-24.75-8.44,6.84-22.89,3.78-27.84-5.89a17.76,17.76,0,0,1-26.14,22.32c4.61,1.55,6.71,7.48,5.13,12.08s-5.94,7.8-10.56,9.32a24.5,24.5,0,0,1-32.09-25l-10.87,2.82c-2.53.66-7.11.94-9.24,2.44s-2,1.65-.6,3.76c2.72,4.25,10.61,6.29,11,12.08s-7.56,7-11.75,7.38C70.39,189.68,74.08,196.43,71.9,200.8Z" style="fill:#7d6666;stroke:#1c1b38;stroke-miterlimit:10;opacity:0;">
+				<animate 
+					attributeName="opacity" 
+					from="0" to="1" 
+					dur="0.2s" 
+					begin="0s" 
+					fill="freeze" />
+
+				<animateTransform attributeName="transform"
+					 type="scale"
+					 from="0 0"
+					 to="1 1"
+					 begin="0s"
+					 dur="1s"
+					 calcMode="spline"
+					 keyTimes="0;1"
+					 keySplines="0 0 0.58 1"
+					 fill="freeze"
+					/>
+		</path>
+	</g>
+	<g>
+		<animateTransform 
+			attributeName="transform"
+			type="translate" 
+			from="0,100" to="0,0" 
+			dur="2s" 
+			begin="0.1s"
+			calcMode="spline"
+			keyTimes="0;1"
+			keySplines="0 0 0.58 1"
+			fill="freeze" />
+		<animate 
+			attributeName="opacity" 
+			from="1" to="0" 
+			dur="1s" 
+			begin="0.6s" 
+			fill="freeze" />
+		<path class="tcenter" d="M17.78,72.24a17.4,17.4,0,0,1,21.71.46c-6.89-3.92-9.34-13.58-6.11-20.83s11.1-11.8,19-12.21,15.72,2.88,21.9,7.85C64.53,44.45,60,32,63.23,22.24S75.69,5.77,85.44,2.61C95.67-.72,107.68-.46,116.32,5.94s12.15,19.91,5.57,28.42C129.7,19.69,149.67,13,164.76,20s22.91,26.53,16.8,42c7.38-10.33,22.09-15,33.82-10.14S234.23,71,230.31,83.1s-18.8,19.54-30.6,14.81c13.46-2.25,27.84-2.35,40.13,3.58s21.82,19.09,20.14,32.63c-1.51,12.2-11.57,22-22.92,26.7s-23.92,5.32-36.2,5.85c-6.17.27-12.52.51-18.36-1.49s-11.15-6.81-11.87-13,4.82-12.76,10.89-11.63A19.69,19.69,0,0,1,153.29,115c-4.62,1.75-6,7.72-5.4,12.63s2.46,9.79,1.59,14.65a13.31,13.31,0,0,1-22.88,6.66c3,2.24,2.78,7.13.36,10s-6.3,3.95-10,4.22a30,30,0,0,1-31.87-33.86c-4.71,6.1-9.86,12.51-17.19,14.89s-17.17-1.6-17.83-9.28c-5.8,3.72-11.71,7.49-18.34,9.37S17.51,145.9,11.82,142s-8.64-12-5.38-18.09c2.45-4.56,7.78-7,13-7.17s10.14,1.69,14.45,4.21c-5.19-1.39-7-6.94-8.22-11.55-1.23-4.83-2.22-6.75-6.19-10C11,92.6,8.21,80,17.78,72.24Z" style="fill:#7b706f;stroke:#1c1b38;stroke-miterlimit:10;opacity:0;">
+			 <animate 
+				attributeName="opacity" 
+				from="0" to="1" 
+				dur="0.2s" 
+				begin="0.1s" 
+				fill="freeze" />
+
+			<animateTransform attributeName="transform"
+				 type="scale"
+				 from="0 0"
+				 to="1 1"
+				 begin="0.1s"
+				 dur="1.3s"
+				 calcMode="spline"
+				 keyTimes="0;1"
+				 keySplines="0 0 0.58 1"
+				 fill="freeze"
+				/>
+		</path>
+	</g>
+	<g>
+		<animateTransform 
+			attributeName="transform"
+			type="translate" 
+			from="0,100" to="0,-100" 
+			dur="2s" 
+			begin="0.3s"
+			calcMode="spline"
+			keyTimes="0;1"
+			keySplines="0 0 0.58 1"
+			fill="freeze" />
+		<animate 
+			attributeName="opacity" 
+			from="1" to="0" 
+			dur="0.9s" 
+			begin="0.9s" 
+			fill="freeze" />
+		<path class="tcenter" d="M71.9,200.8c-2.2,4.63-8.38,6.32-13.25,4.73s-8.54-5.68-11.19-10.07c1.11,6.06-3.79,12-9.68,13.84s-12.32.28-17.94-2.23C12.94,204,6.53,199.2,3,192.51s-3.58-15.46,1.1-21.4,14.41-7.65,20.05-2.63c-7.39-3.25-10-14.09-4.93-20.37s16.23-6,21,.6c-4.43-5.72-7.56-12.71-7.45-20s3.88-14.62,10.35-17.86,15.43-1.3,19.06,5A10.1,10.1,0,0,1,81,122.1c.89-6.15,1.89-12.57,5.56-17.58s10.9-8,16.28-4.92A33.18,33.18,0,0,1,152.07,95a22.09,22.09,0,0,1,38.7,4.93,23.52,23.52,0,0,1,45.11,8.28c5.27-2.57,11.5,2.47,13.14,8.1,2.65,9.17-3.38,19.92-12.59,22.43a19.61,19.61,0,0,1,1.06,35.75,19.66,19.66,0,0,1-7.28,37.58c3.76,4.85,1.43,12.52-3.58,16.07s-11.68,3.76-17.72,2.68c-7.87-1.41-15.9-5.31-19.47-12.47s-.43-17.67,7.34-19.55a16.13,16.13,0,0,1-15.61-25.09c-7.71-5.35-9.22-17.7-3-24.75-8.44,6.84-22.89,3.78-27.84-5.89a17.76,17.76,0,0,1-26.14,22.32c4.61,1.55,6.71,7.48,5.13,12.08s-5.94,7.8-10.56,9.32a24.5,24.5,0,0,1-32.09-25l-10.87,2.82c-2.53.66-7.11.94-9.24,2.44s-2,1.65-.6,3.76c2.72,4.25,10.61,6.29,11,12.08s-7.56,7-11.75,7.38C70.39,189.68,74.08,196.43,71.9,200.8Z" style="fill:#9b8b8c;stroke:#1c1b38;stroke-miterlimit:10;opacity:0;">
+			<animate 
+				attributeName="opacity" 
+				from="0" to="1" 
+				dur="0.4s" 
+				begin="0.3s" 
+				fill="freeze" />
+
+			<animateTransform attributeName="transform"
+				 type="scale"
+				 from="0 0"
+				 to="1 1"
+				 begin="0.3s"
+				 dur="1.2s"
+				 calcMode="spline"
+				 keyTimes="0;1"
+				 keySplines="0 0 0.58 1"
+				 fill="freeze"
+				/>
+		</path>
+	</g>
+	
+	<g>
+		<animateTransform 
+			attributeName="transform"
+			type="translate" 
+			from="0,100" to="0,0" 
+			dur="2s" 
+			begin="0.5s"
+			calcMode="spline"
+			keyTimes="0;1"
+			keySplines="0 0 0.58 1"
+			fill="freeze" />
+		<animate 
+			attributeName="opacity" 
+			from="1" to="0" 
+			dur="1s" 
+			begin="0.9s" 
+			fill="freeze" />
+		<path class="tcenter" d="M17.78,72.24a17.4,17.4,0,0,1,21.71.46c-6.89-3.92-9.34-13.58-6.11-20.83s11.1-11.8,19-12.21,15.72,2.88,21.9,7.85C64.53,44.45,60,32,63.23,22.24S75.69,5.77,85.44,2.61C95.67-.72,107.68-.46,116.32,5.94s12.15,19.91,5.57,28.42C129.7,19.69,149.67,13,164.76,20s22.91,26.53,16.8,42c7.38-10.33,22.09-15,33.82-10.14S234.23,71,230.31,83.1s-18.8,19.54-30.6,14.81c13.46-2.25,27.84-2.35,40.13,3.58s21.82,19.09,20.14,32.63c-1.51,12.2-11.57,22-22.92,26.7s-23.92,5.32-36.2,5.85c-6.17.27-12.52.51-18.36-1.49s-11.15-6.81-11.87-13,4.82-12.76,10.89-11.63A19.69,19.69,0,0,1,153.29,115c-4.62,1.75-6,7.72-5.4,12.63s2.46,9.79,1.59,14.65a13.31,13.31,0,0,1-22.88,6.66c3,2.24,2.78,7.13.36,10s-6.3,3.95-10,4.22a30,30,0,0,1-31.87-33.86c-4.71,6.1-9.86,12.51-17.19,14.89s-17.17-1.6-17.83-9.28c-5.8,3.72-11.71,7.49-18.34,9.37S17.51,145.9,11.82,142s-8.64-12-5.38-18.09c2.45-4.56,7.78-7,13-7.17s10.14,1.69,14.45,4.21c-5.19-1.39-7-6.94-8.22-11.55-1.23-4.83-2.22-6.75-6.19-10C11,92.6,8.21,80,17.78,72.24Z" style="fill:#bcaaaa;stroke:#1c1b38;stroke-miterlimit:10;opacity:0;">
+			 <animate 
+				attributeName="opacity" 
+				from="0" to="1" 
+				dur="0.5s" 
+				begin="0.5s" 
+				fill="freeze" />
+
+			<animateTransform attributeName="transform"
+				 type="scale"
+				 from="0 0"
+				 to="1 1"
+				 begin="0.5s"
+				 dur="1.4s"
+				 calcMode="spline"
+				 keyTimes="0;1"
+				 keySplines="0 0 0.58 1"
+				 fill="freeze"
+				/>
+		</path>
+	</g>
+
+
+	<g transform="translate(0,90)">
+		<animateTransform 
+			attributeName="transform"
+			type="translate" 
+			from="0,90" to="0,-90" 
+			dur="2s" 
+			begin="0.7s"
+			calcMode="spline"
+			keyTimes="0;1"
+			keySplines="0 0 0.58 1"
+			fill="freeze" />
+		<animate 
+			attributeName="opacity" 
+			from="1" to="0" 
+			dur="0.9s" 
+			begin="1.2s" 
+			fill="freeze" />
+		<path class="tcenter"  style="fill:#bcaba4;stroke:#1c1b38;stroke-miterlimit:10;opacity:0;" d="M80.27,191.29c-4.09-1.82-7.55-5.72-7.54-10.19a8.84,8.84,0,0,1,15.71-5.56c-3.79-1.85-7.65-3.74-10.73-6.61s-5.34-6.94-5-11.15A10.63,10.63,0,0,1,91,151.24a13.55,13.55,0,0,1,7.39-15,13.53,13.53,0,0,1,16.47,20.39A20.62,20.62,0,0,1,131.22,145c5.52-.54,11.55,1.56,14.5,6.26s1.64,11.93-3.35,14.35A36.65,36.65,0,0,1,159,155.43c4.7-1.34,9.82-1.7,14.43-.07s8.6,5.48,9.51,10.28a12.11,12.11,0,0,1-9.29,13.64c4.11-1.84,9.37.62,11.17,4.75s.38,9.22-2.83,12.38a16.54,16.54,0,0,1-12.41,4.25,30,30,0,0,1-12.75-4.06,51.46,51.46,0,0,1-12.12-9.2c3.31,1.72,6.68,3.49,9.27,6.17s4.29,6.51,3.51,10.16c-1.27,5.93-8.63,8.81-14.54,7.43s-10.59-5.73-15-9.91a11.82,11.82,0,0,1-22.57.23,8.11,8.11,0,0,1-10.31,2.22c-4.12-2.41-2.11-6-4.11-9.07C89.21,191.92,83.36,192.66,80.27,191.29Z">
+			<animate 
+				attributeName="opacity" 
+				from="0" to="1" 
+				dur="0.5s" 
+				begin="0.6s" 
+				fill="freeze" />
+
+			<animateTransform attributeName="transform"
+				 type="scale"
+				 from="0 0"
+				 to="1.2 1.2"
+				 begin="0.6s"
+				 dur="1.5s"
+				 calcMode="spline"
+				 keyTimes="0;1"
+				 keySplines="0 0 0.58 1"
+				 fill="freeze"
+				/>
+		</path>
+	</g>
+
+	
+	<!-- Детали -->
+<g transform="scale(0.2)" class="tcenter">
+		<animateTransform attributeName="transform"
+		 type="scale"
+		 from="0.4 0.4"
+		 to="0.3 0.3"
+		 begin="0.2s"
+		 dur="1.3s"
+		 calcMode="spline"
+		 keyTimes="0;1"
+		 keySplines="0.32 0.57 0.61 0.96"
+		 fill="freeze"
+		/>
+		<g class="tcenter">
+			<animateTransform attributeName="transform"
+			  type="translate"
+			  from="90 350"
+			  to="600 50"
+			  begin="0.2s"
+			  dur="1.3s"
+			  calcMode="spline"
+			  keyTimes="0;1"
+			  keySplines="0.32 0.57 0.61 0.96"
+			  fill="freeze"/>
+
+		  <path d="M33,.94,56,.52a22.63,22.63,0,0,0-2.18,21.6L69.1,28.4,27.76,41.94c2.3-5.63,7.28-13.2,6.57-19.4C33.52,15.36,33.28,8.16,33,.94Z" 
+				style="fill:#bdc4d4;stroke:#1d1d1b;stroke-width:2;opacity:0;">
+			<animateTransform attributeName="transform"
+			 type="rotate"
+			 from="0"
+			 to="260"
+			 begin="0.2s"
+			 dur="1.6s"
+			 calcMode="spline"
+			 keyTimes="0;1"
+			 keySplines="0.32 0.57 0.61 0.96"
+			 fill="freeze"
+			/>
+			<animate 
+				attributeName="opacity" 
+				from="0" to="1" 
+				dur="0.01s" 
+				begin="0.2s" 
+				fill="freeze" />
+			<animate 
+				attributeName="opacity" 
+				from="1" to="0" 
+				dur="1s" 
+				begin="0.2s" 
+				fill="freeze" />
+		  </path>
+		</g>
+	</g>
+	
+	
+	
+	<g transform="scale(0.2)" class="tcenter">
+		<animateTransform attributeName="transform"
+		 type="scale"
+		 from="0.4 0.4"
+		 to="0.3 0.3"
+		 begin="0.4s"
+		 dur="1.5s"
+		 calcMode="spline"
+		 keyTimes="0;1"
+		 keySplines="0.32 0.57 0.61 0.96"
+		 fill="freeze"
+		/>
+		<g class="tcenter">
+		<animateTransform attributeName="transform"
+		  type="translate"
+		  from="90 300"
+		  to="800 350"
+		  begin="0.4s"
+		  dur="1.8s"
+		  calcMode="spline"
+		  keyTimes="0;1"
+		  keySplines="0.32 0.57 0.61 0.96"
+		  fill="freeze"/>
+	  <path d="M188.31,40.17a88.6,88.6,0,0,1,32.72,3l6.25-23-15.59.91,1.05-8.24c-.13,1.06-7.42,4.18-8.56,4.82a96.59,96.59,0,0,1-8.94,5c.14-2.35,1.4-5.21.5-7.48C192.27,22.81,190.69,32.06,188.31,40.17Z" 
+			style="fill:#939baa;stroke:#1d1d1b;stroke-width:2;opacity:0;transform-origin:center;">
+				<animateTransform attributeName="transform"
+				 type="rotate"
+				 from="0"
+				 to="90"
+				 begin="0.6s"
+				 dur="2.6s"
+				 calcMode="spline"
+				 keyTimes="0;1"
+				 keySplines="0.32 0.57 0.61 0.96"
+				 fill="freeze"
+				/>
+		<animate 
+			attributeName="opacity" 
+			from="0" to="1" 
+			dur="0.01s" 
+			begin="0.4s" 
+			fill="freeze" />
+		<animate 
+			attributeName="opacity" 
+			from="1" to="0" 
+			dur="1s" 
+			begin="0.4s" 
+			fill="freeze" />
+	  </path>
+	</g>
+	</g>
+	
+	
+		<g transform="scale(0.2)" class="tcenter">
+		<animateTransform attributeName="transform"
+		 type="scale"
+		 from="0.3 0.3"
+		 to="0.2 0.2"
+		 begin="0.4s"
+		 dur="1.3s"
+		 calcMode="spline"
+		 keyTimes="0;1"
+		 keySplines="0.32 0.57 0.61 0.96"
+		 fill="freeze"
+		/>
+		<g class="tcenter">
+			<animateTransform attributeName="transform"
+			  type="translate"
+			  from="90 350"
+			  to="1200 -50"
+			  begin="0.4s"
+			  dur="2.3s"
+			  calcMode="spline"
+			  keyTimes="0;1"
+			  keySplines="0.32 0.57 0.61 0.96"
+			  fill="freeze"/>
+
+		  <path d="M214.44,105.75l45.39,0-8.72-17.53-7.36,9.69L228.67,68.6c-5.81,5.71-13.42,9.32-21.28,11.51s-16,3-24.11,3.86c4.07,0,8.72,1.6,12.73,2.34,3.56.66,7.32,1,10.81,1.93,2.62.69,3.56,2,4.36,4.51C212.51,97,213.36,101.44,214.44,105.75Z" 
+				style="fill:#bdc4d4;stroke:#1d1d1b;stroke-width:2;opacity:0;">
+
+			<animate 
+				attributeName="opacity" 
+				from="0" to="1" 
+				dur="0.01s" 
+				begin="0.4s" 
+				fill="freeze" />
+			<animate 
+				attributeName="opacity" 
+				from="1" to="0" 
+				dur="1s" 
+				begin="0.4s" 
+				fill="freeze" />
+		  </path>
+		</g>
+	</g>
+	
+	
+	<g transform="scale(0.2)" class="tcenter">
+		<animateTransform attributeName="transform"
+		 type="scale"
+		 from="0.3 0.3"
+		 to="0.2 0.2"
+		 begin="0.4s"
+		 dur="1.8s"
+		 calcMode="spline"
+		 keyTimes="0;1"
+		 keySplines="0.32 0.57 0.61 0.96"
+		 fill="freeze"
+		/>	
+		<g class="tcenter">
+			<animateTransform attributeName="transform"
+		  type="translate"
+		  from="90 250"
+		  to="1300 390"
+		  begin="0.4s"
+		  dur="2s"
+		  calcMode="spline"
+		  keyTimes="0;1"
+		  keySplines="0.32 0.57 0.61 0.96"
+		  fill="freeze"/>
+
+		  <path d="M9.66,64.28c2-3.2,6.46-3.44,10.22-3.32,4.78.16,9.75.38,13.94,2.67S41.11,71,39.56,75.49l27.11.68-5.85,7.91c-.43.57-6.17,0-7.06,0-2.53,0-5.07,0-7.6.1q-7.6.15-15.2.55c-10,.53-20.16,2.2-30.17,2.46,1.67-3.66-.13-7.06.89-10.66,1.07-3.78,5.82-2.16,8.8-2.43C9.59,70.9,7.68,67.52,9.66,64.28Z" 
+				style="fill:#939baa;stroke:#bdc4d4;stroke-width:2;opacity:0;">
+				<animateTransform attributeName="transform"
+				 type="rotate"
+				 from="0"
+				 to="180"
+				 begin="0.4s"
+				 dur="1.6s"
+				 calcMode="spline"
+				 keyTimes="0;1"
+				 keySplines="0.32 0.57 0.61 0.96"
+				 fill="freeze"
+				/>
+			<animate 
+				attributeName="opacity" 
+				from="0" to="1" 
+				dur="0.01s" 
+				begin="0.5s" 
+				fill="freeze" />
+			<animate 
+				attributeName="opacity" 
+				from="1" to="0" 
+				dur="1.2s" 
+				begin="0.5s" 
+				fill="freeze" />
+		  </path>
+		</g>
+	</g>
+	
+
+	
+	<!-- Детали слева -->
+	<g transform="scale(-1, 1)" class="tcenter">
+
+	<g transform="scale(0.2)" class="tcenter">
+		<animateTransform attributeName="transform"
+		 type="scale"
+		 from="0.4 0.4"
+		 to="0.3 0.3"
+		 begin="0.2s"
+		 dur="1.3s"
+		 calcMode="spline"
+		 keyTimes="0;1"
+		 keySplines="0.32 0.57 0.61 0.96"
+		 fill="freeze"
+		/>
+		<g class="tcenter">
+			<animateTransform attributeName="transform"
+			  type="translate"
+			  from="90 350"
+			  to="600 50"
+			  begin="0.2s"
+			  dur="1.3s"
+			  calcMode="spline"
+			  keyTimes="0;1"
+			  keySplines="0.32 0.57 0.61 0.96"
+			  fill="freeze"/>
+
+		  <path d="M33,.94,56,.52a22.63,22.63,0,0,0-2.18,21.6L69.1,28.4,27.76,41.94c2.3-5.63,7.28-13.2,6.57-19.4C33.52,15.36,33.28,8.16,33,.94Z" 
+				style="fill:#bdc4d4;stroke:#1d1d1b;stroke-width:2;opacity:0;">
+			<animateTransform attributeName="transform"
+			 type="rotate"
+			 from="0"
+			 to="260"
+			 begin="0.2s"
+			 dur="1.6s"
+			 calcMode="spline"
+			 keyTimes="0;1"
+			 keySplines="0.32 0.57 0.61 0.96"
+			 fill="freeze"
+			/>
+			<animate 
+				attributeName="opacity" 
+				from="0" to="1" 
+				dur="0.01s" 
+				begin="0.2s" 
+				fill="freeze" />
+			<animate 
+				attributeName="opacity" 
+				from="1" to="0" 
+				dur="1s" 
+				begin="0.2s" 
+				fill="freeze" />
+		  </path>
+		</g>
+	</g>
+	
+	<g transform="scale(0.2)" class="tcenter">
+		<animateTransform attributeName="transform"
+		 type="scale"
+		 from="0.3 0.3"
+		 to="0.2 0.2"
+		 begin="0.25s"
+		 dur="1.3s"
+		 calcMode="spline"
+		 keyTimes="0;1"
+		 keySplines="0.32 0.57 0.61 0.96"
+		 fill="freeze"
+		/>	
+		<g class="tcenter">
+			<animateTransform attributeName="transform"
+		  type="translate"
+		  from="90 350"
+		  to="1400 50"
+		  begin="0.25s"
+		  dur="1.3s"
+		  calcMode="spline"
+		  keyTimes="0;1"
+		  keySplines="0.32 0.57 0.61 0.96"
+		  fill="freeze"/>
+
+		  <path d="M114.76,11.11,132.36,37l17.28-1.89a30.87,30.87,0,0,0-1.13,15.66c-.39-1.26-2.33-1.45-3.23-.49a3.23,3.23,0,0,0-.18,3.69,9.38,9.38,0,0,0,2.77,2.77l15.71,11.85L100.42,80.36a49.59,49.59,0,0,1,6.27-10.71A22.06,22.06,0,0,1,114.08,63c4.43-2.19,9.66-1.9,14.54-1.18s9.84,1.83,14.73,1.13c-1.59,0-4.78-2.7-6.19-3.49l-6.66-3.76c-4-2.25-8.69-4.19-12.23-7.1-5-4.13-3-14.41-3.16-20.09Z" 
+				style="fill:#939baa;stroke:#1d1d1b;stroke-width:2;opacity:0;">
+				<animateTransform attributeName="transform"
+				 type="rotate"
+				 from="0"
+				 to="180"
+				 begin="0.25s"
+				 dur="1.6s"
+				 calcMode="spline"
+				 keyTimes="0;1"
+				 keySplines="0.32 0.57 0.61 0.96"
+				 fill="freeze"
+				/>
+			<animate 
+				attributeName="opacity" 
+				from="0" to="1" 
+				dur="0.01s" 
+				begin="0.25s" 
+				fill="freeze" />
+			<animate 
+				attributeName="opacity" 
+				from="1" to="0" 
+				dur="1s" 
+				begin="0.25s" 
+				fill="freeze" />
+		  </path>
+		</g>
+	</g>
+	
+	
+	<g transform="scale(0.2)" class="tcenter">
+		<animateTransform attributeName="transform"
+		 type="scale"
+		 from="0.4 0.4"
+		 to="0.3 0.3"
+		 begin="0.4s"
+		 dur="1.5s"
+		 calcMode="spline"
+		 keyTimes="0;1"
+		 keySplines="0.32 0.57 0.61 0.96"
+		 fill="freeze"
+		/>
+		<g class="tcenter">
+		<animateTransform attributeName="transform"
+		  type="translate"
+		  from="90 300"
+		  to="800 350"
+		  begin="0.4s"
+		  dur="1.8s"
+		  calcMode="spline"
+		  keyTimes="0;1"
+		  keySplines="0.32 0.57 0.61 0.96"
+		  fill="freeze"/>
+	  <path d="M188.31,40.17a88.6,88.6,0,0,1,32.72,3l6.25-23-15.59.91,1.05-8.24c-.13,1.06-7.42,4.18-8.56,4.82a96.59,96.59,0,0,1-8.94,5c.14-2.35,1.4-5.21.5-7.48C192.27,22.81,190.69,32.06,188.31,40.17Z" 
+			style="fill:#939baa;stroke:#1d1d1b;stroke-width:2;opacity:0;transform-origin:center;">
+				<animateTransform attributeName="transform"
+				 type="rotate"
+				 from="0"
+				 to="90"
+				 begin="0.6s"
+				 dur="2.6s"
+				 calcMode="spline"
+				 keyTimes="0;1"
+				 keySplines="0.32 0.57 0.61 0.96"
+				 fill="freeze"
+				/>
+		<animate 
+			attributeName="opacity" 
+			from="0" to="1" 
+			dur="0.01s" 
+			begin="0.4s" 
+			fill="freeze" />
+		<animate 
+			attributeName="opacity" 
+			from="1" to="0" 
+			dur="1s" 
+			begin="0.4s" 
+			fill="freeze" />
+	  </path>
+	</g>
+	</g>
+	
+
+	
+	
+		<g transform="scale(0.2)" class="tcenter">
+		<animateTransform attributeName="transform"
+		 type="scale"
+		 from="0.3 0.3"
+		 to="0.2 0.2"
+		 begin="0.5s"
+		 dur="1.8s"
+		 calcMode="spline"
+		 keyTimes="0;1"
+		 keySplines="0.32 0.57 0.61 0.96"
+		 fill="freeze"
+		/>	
+		<g class="tcenter">
+			<animateTransform attributeName="transform"
+		  type="translate"
+		  from="90 250"
+		  to="1300 690"
+		  begin="0.5s"
+		  dur="2s"
+		  calcMode="spline"
+		  keyTimes="0;1"
+		  keySplines="0.32 0.57 0.61 0.96"
+		  fill="freeze"/>
+
+		  <path d="M33,.94,56,.52a22.63,22.63,0,0,0-2.18,21.6L69.1,28.4,27.76,41.94c2.3-5.63,7.28-13.2,6.57-19.4C33.52,15.36,33.28,8.16,33,.94Z" 
+				style="fill:#939baa;stroke:#bdc4d4;stroke-width:2;opacity:0;">
+				<animateTransform attributeName="transform"
+				 type="rotate"
+				 from="0"
+				 to="360"
+				 begin="0.5s"
+				 dur="1.6s"
+				 calcMode="spline"
+				 keyTimes="0;1"
+				 keySplines="0.32 0.57 0.61 0.96"
+				 fill="freeze"
+				/>
+			<animate 
+				attributeName="opacity" 
+				from="0" to="1" 
+				dur="0.01s" 
+				begin="0.6s" 
+				fill="freeze" />
+			<animate 
+				attributeName="opacity" 
+				from="1" to="0" 
+				dur="1.4s" 
+				begin="0.6s" 
+				fill="freeze" />
+		  </path>
+		</g>
+	</g>
+	</g>
+	
+	<!-- Вспышка -->
+	<g class="tcenter" transform="translate(0,90) scale(0.8)">
+		<animate 
+			attributeName="opacity" 
+			from="1" to="0" 
+			dur="0.3s" 
+			begin="0.2s" 
+			fill="freeze" />
+		<polygon class="tcenter" points="126.03 60.51 126.61 57.89 126.61 57.89 126.97 58.87 126.61 57.89 130.85 74.35 135.53 92.52 148.76 75.22 169.24 47.36 164 61.3 160.16 71.29 153.93 87.51 150.46 96.52 168.34 91.64 177.41 89.52 183.99 87.36 190.37 85.45 179.7 92.79 170.93 99.05 164.63 103.54 161.54 105.75 170.68 112.78 178.76 119 186.92 125.28 195.66 131.47 187.24 128.61 173.6 124.12 159.84 119.59 151.18 116.74 146.77 115.29 156.58 152.84 148.43 142.06 136.79 126.67 122.52 142.92 106.91 160.69 113.29 139.81 118.14 123.91 99.51 125.8 90.4 127.42 74.56 128.61 115.68 113.75 98.03 104.98 84.55 98.28 76.88 94.47 71.25 91.84 95.16 96.74 110.22 99.67 102.19 86.98 96.6 78.14 93.47 71.23 91.77 70.27 98 73.78 103.56 76.92 109.92 80.5 114.31 82.98 119.29 85.79 120.3 86.36 121.55 80.7 123.1 73.71 124.67 66.65 125.55 62.68 126.03 60.51" style="fill:white;stroke-miterlimit:10">
+			<animateTransform attributeName="transform"
+             type="scale"
+             from="0 0"
+             to="1 1"
+             begin="0s"
+             dur="0.4s"
+			 calcMode="spline"
+			 keyTimes="0;1"
+			 keySplines="0 0 0.58 1"
+			/>
+			<animate attributeName="points" 
+				dur="0.85s" 
+				begin="0.1s" 
+				fill="freeze"
+				calcMode="spline"
+				keyTimes="0;1"
+				keySplines="0 0 0.58 1"
+			to="85.19 28.95 93.44 24.48 100.21 17.97 105.1 9.96 107.69 0.94 127.03 19.96 151.84 29.77 178.52 29.71 203.47 19.08 200.28 28.64 200.88 38.8 204.61 48.58 210.81 57.04 218.67 63.7 227.53 69.02 237.01 73.41 246.72 77.27 236.51 81.98 228.85 90.36 224.28 101.01 223.31 112.55 225.87 123.69 231.14 133.87 238.52 142.86 247.37 150.43 226.01 155.29 209.34 168.44 199.49 187.25 198.63 209.13 173.25 199.14 146.12 196 119.06 199.69 93.89 210.18 87.04 188.06 74.06 173.11 55.67 165.68 32.63 166.12 37.61 155.72 39.08 144.22 37.47 132.49 33.2 121.44 26.89 111.6 19.15 102.8 10.47 94.79 1.28 87.36 12.87 86.35 23.92 82.71 33.88 76.69 42.18 68.55 46.43 57.12 47.01 42.94 45.9 30.87 45.09 25.76 49.99 26.83 54.88 27.89 59.78 28.95 64.67 30.02 66.96 30.19 72.48 30.39 79.23 30.14 85.19 28.95 85.19 28.95" />
+			<animateTransform attributeName="transform"
+			fill="freeze"
+             type="scale"
+             from="1 1"
+             to="1.4 1.4"
+             begin="0.4s"
+             dur="1.5s"
+			 calcMode="spline"
+			 keyTimes="0;1"
+			 keySplines="0 0 0.58 1"
+			/>
+			<animate 
+				attributeName="fill" 
+				from="white" to="ffc200" 
+				dur="0.6s" 
+				begin="0.1s" 
+				fill="freeze" />
+		</polygon>
+	</g>
+	
+	<g class="tcenter" transform="translate(0,90) scale(0.8)">
+		<animate 
+			attributeName="opacity" 
+			from="1" to="0" 
+			dur="0.3s" 
+			begin="0.3s" 
+			fill="freeze" />
+		<polygon transform="scale(0)" class="tcenter" points="126.03 60.51 126.61 57.89 126.61 57.89 126.97 58.87 126.61 57.89 130.85 74.35 135.53 92.52 148.76 75.22 169.24 47.36 164 61.3 160.16 71.29 153.93 87.51 150.46 96.52 168.34 91.64 177.41 89.52 183.99 87.36 190.37 85.45 179.7 92.79 170.93 99.05 164.63 103.54 161.54 105.75 170.68 112.78 178.76 119 186.92 125.28 195.66 131.47 187.24 128.61 173.6 124.12 159.84 119.59 151.18 116.74 146.77 115.29 156.58 152.84 148.43 142.06 136.79 126.67 122.52 142.92 106.91 160.69 113.29 139.81 118.14 123.91 99.51 125.8 90.4 127.42 74.56 128.61 115.68 113.75 98.03 104.98 84.55 98.28 76.88 94.47 71.25 91.84 95.16 96.74 110.22 99.67 102.19 86.98 96.6 78.14 93.47 71.23 91.77 70.27 98 73.78 103.56 76.92 109.92 80.5 114.31 82.98 119.29 85.79 120.3 86.36 121.55 80.7 123.1 73.71 124.67 66.65 125.55 62.68 126.03 60.51" style="fill:white;stroke-miterlimit:10;">
+			<animateTransform attributeName="transform"
+             type="scale"
+             from="0 0"
+             to="1 1"
+             begin="0.1s"
+             dur="0.4s"
+			 calcMode="spline"
+			 keyTimes="0;1"
+			 keySplines="0 0 0.58 1"
+			/>
+			<animate attributeName="points" 
+				dur="0.85s" 
+				begin="0.2s" 
+				fill="freeze"
+				calcMode="spline"
+				keyTimes="0;1"
+				keySplines="0 0 0.58 1"
+				style="opacity:0"
+			to="85.19 28.95 93.44 24.48 100.21 17.97 105.1 9.96 107.69 0.94 127.03 19.96 151.84 29.77 178.52 29.71 203.47 19.08 200.28 28.64 200.88 38.8 204.61 48.58 210.81 57.04 218.67 63.7 227.53 69.02 237.01 73.41 246.72 77.27 236.51 81.98 228.85 90.36 224.28 101.01 223.31 112.55 225.87 123.69 231.14 133.87 238.52 142.86 247.37 150.43 226.01 155.29 209.34 168.44 199.49 187.25 198.63 209.13 173.25 199.14 146.12 196 119.06 199.69 93.89 210.18 87.04 188.06 74.06 173.11 55.67 165.68 32.63 166.12 37.61 155.72 39.08 144.22 37.47 132.49 33.2 121.44 26.89 111.6 19.15 102.8 10.47 94.79 1.28 87.36 12.87 86.35 23.92 82.71 33.88 76.69 42.18 68.55 46.43 57.12 47.01 42.94 45.9 30.87 45.09 25.76 49.99 26.83 54.88 27.89 59.78 28.95 64.67 30.02 66.96 30.19 72.48 30.39 79.23 30.14 85.19 28.95 85.19 28.95" />
+			<animateTransform attributeName="transform"
+			fill="freeze"
+             type="scale"
+             from="1 1"
+             to="1.1 1.1"
+             begin="0.5s"
+             dur="1.5s"
+			 calcMode="spline"
+			 keyTimes="0;1"
+			 keySplines="0 0 0.58 1"
+			/>
+			<animate 
+				attributeName="fill" 
+				from="white" to="ff3000" 
+				dur="0.6s" 
+				begin="0.2s" 
+				fill="freeze" />
+		</polygon>
+	</g>
+	
+	<g class="tcenter" transform="translate(0,90) scale(0.8)">
+		<animate 
+			attributeName="opacity" 
+			from="1" to="0" 
+			dur="0.3s" 
+			begin="0.4s" 
+			fill="freeze" />
+		<polygon transform="scale(0)" class="tcenter" points="126.03 60.51 126.61 57.89 126.61 57.89 126.97 58.87 126.61 57.89 130.85 74.35 135.53 92.52 148.76 75.22 169.24 47.36 164 61.3 160.16 71.29 153.93 87.51 150.46 96.52 168.34 91.64 177.41 89.52 183.99 87.36 190.37 85.45 179.7 92.79 170.93 99.05 164.63 103.54 161.54 105.75 170.68 112.78 178.76 119 186.92 125.28 195.66 131.47 187.24 128.61 173.6 124.12 159.84 119.59 151.18 116.74 146.77 115.29 156.58 152.84 148.43 142.06 136.79 126.67 122.52 142.92 106.91 160.69 113.29 139.81 118.14 123.91 99.51 125.8 90.4 127.42 74.56 128.61 115.68 113.75 98.03 104.98 84.55 98.28 76.88 94.47 71.25 91.84 95.16 96.74 110.22 99.67 102.19 86.98 96.6 78.14 93.47 71.23 91.77 70.27 98 73.78 103.56 76.92 109.92 80.5 114.31 82.98 119.29 85.79 120.3 86.36 121.55 80.7 123.1 73.71 124.67 66.65 125.55 62.68 126.03 60.51" style="fill:white;stroke-miterlimit:10;">
+			<animateTransform attributeName="transform"
+             type="scale"
+             from="0 0"
+             to="0.8 0.8"
+             begin="0.2s"
+             dur="0.4s"
+			 calcMode="spline"
+			 keyTimes="0;1"
+			 keySplines="0 0 0.58 1"
+			/>
+			<animate attributeName="points" 
+				dur="0.85s" 
+				begin="0.3s" 
+				fill="freeze"
+				calcMode="spline"
+				keyTimes="0;1"
+				keySplines="0 0 0.58 1"
+			to="85.19 28.95 93.44 24.48 100.21 17.97 105.1 9.96 107.69 0.94 127.03 19.96 151.84 29.77 178.52 29.71 203.47 19.08 200.28 28.64 200.88 38.8 204.61 48.58 210.81 57.04 218.67 63.7 227.53 69.02 237.01 73.41 246.72 77.27 236.51 81.98 228.85 90.36 224.28 101.01 223.31 112.55 225.87 123.69 231.14 133.87 238.52 142.86 247.37 150.43 226.01 155.29 209.34 168.44 199.49 187.25 198.63 209.13 173.25 199.14 146.12 196 119.06 199.69 93.89 210.18 87.04 188.06 74.06 173.11 55.67 165.68 32.63 166.12 37.61 155.72 39.08 144.22 37.47 132.49 33.2 121.44 26.89 111.6 19.15 102.8 10.47 94.79 1.28 87.36 12.87 86.35 23.92 82.71 33.88 76.69 42.18 68.55 46.43 57.12 47.01 42.94 45.9 30.87 45.09 25.76 49.99 26.83 54.88 27.89 59.78 28.95 64.67 30.02 66.96 30.19 72.48 30.39 79.23 30.14 85.19 28.95 85.19 28.95" />
+			<animateTransform attributeName="transform"
+			fill="freeze"
+             type="scale"
+             from="0.8 0.8"
+             to="1 1"
+             begin="0.6s"
+             dur="1.5s"
+			 calcMode="spline"
+			 keyTimes="0;1"
+			 keySplines="0 0 0.58 1"
+			/>
+			<animate 
+				attributeName="fill" 
+				from="white" to="ffc200" 
+				dur="0.6s" 
+				begin="0.3s" 
+				fill="freeze" />
+		</polygon>
+	</g>
+	
+	<g class="tcenter" transform="translate(0,90) scale(0.8)">
+		<animate 
+			attributeName="opacity" 
+			from="1" to="0" 
+			dur="0.3s" 
+			begin="0.3s" 
+			fill="freeze" />
+		<polygon transform="scale(0)" class="tcenter" points="126.03 60.51 126.61 57.89 126.61 57.89 126.97 58.87 126.61 57.89 130.85 74.35 135.53 92.52 148.76 75.22 169.24 47.36 164 61.3 160.16 71.29 153.93 87.51 150.46 96.52 168.34 91.64 177.41 89.52 183.99 87.36 190.37 85.45 179.7 92.79 170.93 99.05 164.63 103.54 161.54 105.75 170.68 112.78 178.76 119 186.92 125.28 195.66 131.47 187.24 128.61 173.6 124.12 159.84 119.59 151.18 116.74 146.77 115.29 156.58 152.84 148.43 142.06 136.79 126.67 122.52 142.92 106.91 160.69 113.29 139.81 118.14 123.91 99.51 125.8 90.4 127.42 74.56 128.61 115.68 113.75 98.03 104.98 84.55 98.28 76.88 94.47 71.25 91.84 95.16 96.74 110.22 99.67 102.19 86.98 96.6 78.14 93.47 71.23 91.77 70.27 98 73.78 103.56 76.92 109.92 80.5 114.31 82.98 119.29 85.79 120.3 86.36 121.55 80.7 123.1 73.71 124.67 66.65 125.55 62.68 126.03 60.51" style="fill:white;stroke-miterlimit:10;">
+			<animateTransform attributeName="transform"
+             type="scale"
+             from="0 0"
+             to="0.8 0.8"
+             begin="0.3s"
+             dur="0.4s"
+			 calcMode="spline"
+			 keyTimes="0;1"
+			 keySplines="0 0 0.58 1"
+			/>
+			<animate attributeName="points" 
+				dur="0.85s" 
+				begin="0.4s" 
+				fill="freeze"
+				calcMode="spline"
+				keyTimes="0;1"
+				keySplines="0 0 0.58 1"
+			to="85.19 28.95 93.44 24.48 100.21 17.97 105.1 9.96 107.69 0.94 127.03 19.96 151.84 29.77 178.52 29.71 203.47 19.08 200.28 28.64 200.88 38.8 204.61 48.58 210.81 57.04 218.67 63.7 227.53 69.02 237.01 73.41 246.72 77.27 236.51 81.98 228.85 90.36 224.28 101.01 223.31 112.55 225.87 123.69 231.14 133.87 238.52 142.86 247.37 150.43 226.01 155.29 209.34 168.44 199.49 187.25 198.63 209.13 173.25 199.14 146.12 196 119.06 199.69 93.89 210.18 87.04 188.06 74.06 173.11 55.67 165.68 32.63 166.12 37.61 155.72 39.08 144.22 37.47 132.49 33.2 121.44 26.89 111.6 19.15 102.8 10.47 94.79 1.28 87.36 12.87 86.35 23.92 82.71 33.88 76.69 42.18 68.55 46.43 57.12 47.01 42.94 45.9 30.87 45.09 25.76 49.99 26.83 54.88 27.89 59.78 28.95 64.67 30.02 66.96 30.19 72.48 30.39 79.23 30.14 85.19 28.95 85.19 28.95" />
+
+			<animate 
+				attributeName="fill" 
+				from="ffc200" to="white" 
+				dur="0.6s" 
+				begin="0.2s" 
+				fill="freeze" />
+		</polygon>
+	</g>
+	
+</g>
+
+</svg>

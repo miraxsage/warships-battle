@@ -4,7 +4,9 @@
 }
 </style>
 <template>
-  <button @click="handleResetGame">reset game</button>
+  <div class="header">
+    <button @click="handleResetGame">reset game</button>
+  </div>
 </template>
 
 <script setup lang="ts">

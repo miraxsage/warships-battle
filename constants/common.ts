@@ -62,3 +62,13 @@ export const NEXT_ROTATION: Record<Rotation, Rotation> = {
 };
 
 export const AVATARS_COUNT = 9;
+
+export const SHIP_DIRECTION_INCREMENTS: Record<
+  Rotation,
+  [x: number, y: number]
+> = {
+  top: [0, 1],
+  right: [-1, 0],
+  down: [0, -1],
+  left: [1, 0],
+};

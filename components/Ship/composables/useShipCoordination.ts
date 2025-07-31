@@ -1,8 +1,12 @@
 import type { ShallowRef } from "vue";
 import * as _ from "lodash-es";
-import type { Coord, Rotation } from "~/types/common";
-import { rotatePoint } from "../utils/helpers";
-import { ACTUAL_COORDS, ROTATION_ANGLE } from "~/constants/common";
+import type { Coord } from "~/types/common";
+import { getFieldMap, rotatePoint } from "../utils/helpers";
+import {
+  ACTUAL_COORDS,
+  ROTATION_ANGLE,
+  SHIP_DIRECTION_INCREMENTS,
+} from "~/constants/common";
 
 type UseCoordinationOptions = {
   shipId: string;
@@ -13,29 +17,6 @@ type UseCoordinationOptions = {
     displaceY: number;
   };
 };
-
-const SHIP_DIRECTION_INCREMENTS: Record<Rotation, [x: number, y: number]> = {
-  top: [0, 1],
-  right: [-1, 0],
-  down: [0, -1],
-  left: [1, 0],
-};
-
-function getFieldMap(fieldState: PlayerField, withoutShipId: string) {
-  const map: string[][] = [];
-  for (let ship of fieldState.ships) {
-    if (ship.id == withoutShipId) {
-      continue;
-    }
-    (map[ship.x] || (map[ship.x] = []))[ship.y] = ship.id;
-    const [dx, dy] = SHIP_DIRECTION_INCREMENTS[ship.rotation];
-    for (let i = 1; i < ship.type; i++) {
-      (map[ship.x + dx * i] || (map[ship.x + dx * i] = []))[ship.y + dy * i] =
-        ship.id;
-    }
-  }
-  return map;
-}
 
 export function useShipCoordination<T extends HTMLElement>(
   _el: ShallowRef<T | null>,

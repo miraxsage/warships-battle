@@ -98,16 +98,9 @@ export function removePlayerFromRoom(
   return false;
 }
 
-export function updateRoomStatus(
-  gameId: string,
-  status: GameStatus,
-  prevStatus?: GameStatus
-): void {
+export function updateRoomStatus(gameId: string, status: GameStatus): void {
   const room = gameRooms.get(gameId);
   if (room) {
-    if (prevStatus !== undefined) {
-      room.prevStatus = prevStatus;
-    }
     room.status = status;
   }
 }

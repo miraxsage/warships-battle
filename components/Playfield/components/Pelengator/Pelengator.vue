@@ -1,5 +1,7 @@
 <style lang="scss">
 @use "@/styles/colors.scss" as *;
+@use "./mixins.scss" as *;
+@use "./keyframes.scss" as *;
 
 .left-line,
 .right-line,
@@ -17,7 +19,7 @@
   width: 100%;
   height: 100%;
   background-color: var(--pen-color);
-  mask-image: url("./images/dash-line.svg");
+  mask-image: url("/images/dash-line.svg");
   mask-repeat: no-repeat;
   mask-position: center;
 }
@@ -54,6 +56,10 @@
   rotate: 90deg;
 }
 .pelengator-container {
+  &,
+  & * {
+    will-change: transform, opacity, left, top, width, height;
+  }
   --shift: calc(var(--fcell-size) * 0.38);
   position: absolute;
   width: calc(100% + var(--shift) * 2);
@@ -80,10 +86,46 @@
   left: 12px;
   top: 16px;
   position: absolute;
-  background-color: var(--pen-color);
-  mask-image: url("./images/pelengator.svg");
-  mask-size: 100% 100%;
   transition: all 0.5s cubic-bezier(0.12, 0.61, 0.4, 0.95);
+}
+
+.hit-sent {
+  .pelengator-sight {
+    animation: pelengator-hit-step-1 2s cubic-bezier(0.12, 0.61, 0.4, 0.95)
+        forwards,
+      pelengator-hit-step-2 3.3s 1s cubic-bezier(0.12, 0.61, 0.4, 0.95) forwards,
+      pelengator-hit-step-3 7s 3s forwards;
+  }
+  .top-line {
+    animation: pelengator-line-top-step-1 2s cubic-bezier(0.12, 0.61, 0.4, 0.95)
+        forwards,
+      pelengator-line-top-step-3 7s 3s forwards;
+  }
+  .left-line {
+    animation: pelengator-line-left-step-1 2s
+        cubic-bezier(0.12, 0.61, 0.4, 0.95) forwards,
+      pelengator-line-left-step-3 7s 3s forwards;
+  }
+  .right-line {
+    animation: pelengator-line-right-step-1 2s
+        cubic-bezier(0.12, 0.61, 0.4, 0.95) forwards,
+      pelengator-line-right-step-3 7s 3s forwards;
+  }
+  .bottom-line {
+    animation: pelengator-line-bottom-step-1 2s
+        cubic-bezier(0.12, 0.61, 0.4, 0.95) forwards,
+      pelengator-line-bottom-step-3 7s 3s forwards;
+  }
+  .sight {
+    transition: all 2s;
+    opacity: 1 !important;
+    left: calc((var(--x) + 0.5) * var(--fcell-size)) !important;
+    top: calc((var(--y) + 0.5) * var(--fcell-size)) !important;
+    &.sight-hidden {
+      transition: opacity 3s;
+      opacity: 0 !important;
+    }
+  }
 }
 .sight {
   position: absolute;
@@ -92,7 +134,12 @@
   background-color: var(--pen-color);
   mask-image: url("./images/sight.svg");
   translate: -50% -50%;
+  transition: opacity 0.4s;
+  opacity: 0;
   cursor: none;
+}
+.pelengator:hover .sight {
+  opacity: 1;
 }
 .ruler-pos-v,
 .ruler-pos-h {
@@ -118,18 +165,64 @@
   width: var(--fcell-size);
   border-width: 0px 2px 0px 2px;
 }
+.ruler-pos-hidden {
+  transition: all 2s;
+  opacity: 0;
+}
 </style>
-<script setup>
+<script setup lang="ts">
 import { templateRef } from "@vueuse/core";
 import { usePelengatorDragging } from "./composables/usePelengatorDragging";
+import PelengatorSight from "./PelengatorSight.vue";
+
+const emit = defineEmits<{
+  hit: [{ x: number; y: number }];
+}>();
+
+const props = defineProps<{
+  hitIsSent?: boolean;
+}>();
 const pelengatorRef = templateRef("pelengator");
 const scaleState = useScaleStore();
+const game = useGameStore();
 const coords = usePelengatorDragging(pelengatorRef);
 const fcellSz = computed(() => scaleState.fcellSize);
+const isSightHidden = ref(false);
+watchEffect(() => {
+  console.log(game.gameStatus);
+  if (
+    game.gameStatus === "hostTurnFinished" ||
+    game.gameStatus == "guestTurnFinished"
+  ) {
+    setTimeout(() => {
+      isSightHidden.value = true;
+    }, 8000);
+  } else {
+    isSightHidden.value = false;
+  }
+});
+const handleHit = () => {
+  emit("hit", { x: coords.x, y: coords.y });
+};
 </script>
 <template>
   <div class="pelengator-container">
-    <div class="pelengator" ref="pelengator">
+    <div
+      class="pelengator"
+      ref="pelengator"
+      :class="{ 'hit-sent': props.hitIsSent }"
+      :style="{
+        '--x': coords.x,
+        '--y': coords.y,
+        '--pelengator-size-to': Math.max(
+          coords.x,
+          9 - coords.x,
+          coords.y,
+          9 - coords.y
+        ),
+      }"
+      @click="handleHit"
+    >
       <div
         class="top-line"
         :style="{
@@ -158,24 +251,26 @@ const fcellSz = computed(() => scaleState.fcellSize);
           top: `${(coords.y + 0.5) * fcellSz}px`,
         }"
       />
-      <div
+      <PelengatorSight
         class="pelengator-sight"
+        :isHit="props.hitIsSent"
+        :hide="isSightHidden"
         :style="{
           left: `${coords.x * fcellSz - fcellSz * 0.23}px`,
           top: `${coords.y * fcellSz - fcellSz * 0.22}px`,
         }"
       />
       <div
-        class="sight"
+        :class="['sight', { 'sight-hidden': isSightHidden }]"
         :style="{ left: `${coords.realX}px`, top: `${coords.realY}px` }"
       />
     </div>
     <div
-      class="ruler-pos-v"
+      :class="['ruler-pos-v', { 'ruler-pos-hidden': isSightHidden }]"
       :style="{ top: `${(coords.y + 0.4) * fcellSz}px` }"
     />
     <div
-      class="ruler-pos-h"
+      :class="['ruler-pos-h', { 'ruler-pos-hidden': isSightHidden }]"
       :style="{ left: `${(coords.x + 0.3) * fcellSz}px` }"
     />
   </div>

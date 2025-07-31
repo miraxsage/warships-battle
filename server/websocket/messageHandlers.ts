@@ -1,4 +1,5 @@
 import type { WSMessage, GameUser, WebSocketPeer, GameRoom } from "./types";
+import type { FieldTurn } from "~/types/game";
 import { addGamePeer, getGamePeer, isPeerConnected } from "./peerManager";
 import {
   getGameRoom,
@@ -10,6 +11,9 @@ import {
   broadcastToRoom,
 } from "./gameRoom";
 import { sendMessage, sendError } from "./utils";
+import type { ShipState, WSGameTurnData } from "~/types/game";
+import { SHIP_DIRECTION_INCREMENTS } from "~/constants/common";
+import * as _ from "lodash-es";
 
 function scheduleGameTurn(
   game: GameRoom,
@@ -43,6 +47,21 @@ function scheduleGameTurn(
       game.turnNumber == 1 ? 46000 : 31000
     );
   }, delay);
+}
+
+export function getFieldMap(ships: ShipState[]) {
+  const map: FieldTurn[][] = [];
+  for (let ship of ships) {
+    (map[ship.x] || (map[ship.x] = []))[ship.y] = { type: "hit", count: 0 };
+    const [dx, dy] = SHIP_DIRECTION_INCREMENTS[ship.rotation];
+    for (let i = 1; i < ship.type; i++) {
+      (map[ship.x + dx * i] || (map[ship.x + dx * i] = []))[ship.y + dy * i] = {
+        type: "hit",
+        count: 0,
+      };
+    }
+  }
+  return map;
 }
 
 export async function handleGameJoin(
@@ -107,7 +126,7 @@ export async function handleGameJoin(
     if (isHost) {
       // Хост переподключается
       if (room.status == "hostConnectionRepairingWaiting") {
-        updateRoomStatus(gameId, room.beforeLostConnectionStatus!, room.status);
+        updateRoomStatus(gameId, room.beforeLostConnectionStatus!);
         room.deferredOperation()?.start();
         console.log(`${data.username} host connection repaired`);
       } else {
@@ -116,7 +135,7 @@ export async function handleGameJoin(
     } else {
       // Гость подключается или переподключается
       if (room.status == "guestConnectionRepairingWaiting") {
-        updateRoomStatus(gameId, room.beforeLostConnectionStatus!, room.status);
+        updateRoomStatus(gameId, room.beforeLostConnectionStatus!);
         room.deferredOperation()?.start();
         console.log(`${data.username} guest connection repaired`);
       } else {
@@ -174,23 +193,55 @@ export async function handleGameJoin(
   );
 }
 
-export async function handleGameMove(
+export async function handleGameTurn(
   peer: WebSocketPeer,
-  data: any,
   wsMessage: WSMessage
 ): Promise<void> {
+  if (wsMessage.type !== "game:turn") return;
   const gamePeer = getGamePeer(peer);
   if (!gamePeer?.gameId) return;
   const game = getGameRoom(gamePeer.gameId);
   if (!game) return;
+  const player = gamePeer.isHost ? "host" : "guest";
+  const enemy = gamePeer.isHost ? "guest" : "host";
+  if (game.status != `${player}Turn`) {
+    return;
+  }
 
-  // Увеличиваем номер хода
+  const turnMap =
+    game[`${enemy}TurnsMap`] || getFieldMap(game[`${enemy}Arrangement`] || []);
+  const x = _.clamp(wsMessage.data.x, 0, 9);
+  const y = _.clamp(wsMessage.data.y, 0, 9);
+  let turn = turnMap[x][y];
+  if (turn) {
+    turn.count++;
+  } else {
+    turn = { type: "miss", count: 0 };
+    turnMap[x][y] = turn;
+  }
+
+  game[`${enemy}TurnsMap`] = turnMap;
+
   if (game.turnNumber) {
     game.turnNumber++;
   }
 
-  // Пересылаем сообщение другим игрокам в комнате
-  broadcastToRoom(gamePeer.gameId, wsMessage, peer);
+  const turnMapToShow = _.map(turnMap, (row) =>
+    _.map(row, (cell) => ((cell?.count ?? 0) > 0 ? cell : undefined))
+  );
+
+  broadcastToRoom(gamePeer.gameId, {
+    type: "game:turned",
+    data: {
+      x,
+      y,
+      turn,
+      status: `${player}TurnFinished`,
+      turnsMap: turnMapToShow,
+    },
+  });
+
+  scheduleGameTurn(game, enemy, 16000);
 }
 
 export async function handleGameArranged(
@@ -201,7 +252,6 @@ export async function handleGameArranged(
   if (!gamePeer?.gameId) return;
   const game = getGameRoom(gamePeer.gameId);
   if (!game) return;
-  const gameId = gamePeer.gameId;
 
   console.log(`Player ${gamePeer.username} arranged ships:`, data.arrangement);
 
@@ -223,7 +273,7 @@ export async function handleGameArranged(
   if (game.status == "arrangementFinished") {
     // Ожидение уведомления пользователей о готовности к игре
     // и планирование следующего сообщения о начале игры
-    scheduleGameTurn(game, game.firstArranged!, 16000);
+    scheduleGameTurn(game, game.firstArranged!, 11000);
   }
 }
 
