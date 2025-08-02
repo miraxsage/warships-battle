@@ -141,24 +141,33 @@ $fixed-size: 15px;
 .is-hit {
   .pelengator-part {
     opacity: 0;
-    transition: opacity 3s 8s;
+    transition: opacity calc(var(--turn-animation-duration) * 0.3)
+      calc(var(--turn-animation-duration) * 0.8);
   }
   :is(.left-arrow, .right-arrow, .top-arrow, .bottom-arrow) {
-    transition: all 7s 3s;
+    transition: all calc(var(--turn-animation-duration) * 0.7)
+      calc(var(--turn-animation-duration) * 0.3);
     transition-property: top, left, clip-path;
-    animation: pelengator-sight-step-4 12s 8s forwards infinite;
+    animation: pelengator-sight-step-4
+      calc(var(--turn-animation-duration) * 1.2)
+      calc(var(--turn-animation-duration) * 0.8) forwards infinite;
   }
   .top-arrow {
     transform-origin: 50% calc(var(--cell-size) * 3 + 1%);
     top: calc(var(--cell-size) * (var(--pelengator-size-to) * 2 + 15.8));
     clip-path: inset(0 0 calc(var(--cell-size) * 16) 0);
     &:before {
-      animation: pelengator-arrow-line-step-4 6s 8s forwards infinite;
-      transition: clip-path 2.3s 6s;
+      animation: pelengator-arrow-line-step-4
+        calc(var(--turn-animation-duration) * 0.6)
+        calc(var(--turn-animation-duration) * 0.8) forwards infinite;
+      transition: clip-path calc(var(--turn-animation-duration) * 0.23)
+        calc(var(--turn-animation-duration) * 0.6);
       clip-path: inset(0 0 0 calc(100% - var(--cell-size) * 1.5));
     }
     &:after {
-      animation: pelengator-top-arrow-step-4 6s 8s forwards infinite;
+      animation: pelengator-top-arrow-step-4
+        calc(var(--turn-animation-duration) * 0.6)
+        calc(var(--turn-animation-duration) * 0.8) forwards infinite;
     }
   }
   .right-arrow {
@@ -169,12 +178,17 @@ $fixed-size: 15px;
     );
     clip-path: inset(0 0 0 calc(var(--cell-size) * 16));
     &:before {
-      animation: pelengator-arrow-line-step-4 6s 8s forwards infinite;
-      transition: clip-path 2.3s 6s;
+      animation: pelengator-arrow-line-step-4
+        calc(var(--turn-animation-duration) * 0.6)
+        calc(var(--turn-animation-duration) * 0.8) forwards infinite;
+      transition: clip-path calc(var(--turn-animation-duration) * 0.23)
+        calc(var(--turn-animation-duration) * 0.6);
       clip-path: inset(0 0 0 calc(100% - var(--cell-size) * 1.5));
     }
     &:after {
-      animation: pelengator-right-arrow-step-4 6s 8s forwards infinite;
+      animation: pelengator-right-arrow-step-4
+        calc(var(--turn-animation-duration) * 0.6)
+        calc(var(--turn-animation-duration) * 0.8) forwards infinite;
     }
   }
   .bottom-arrow {
@@ -185,12 +199,17 @@ $fixed-size: 15px;
     );
     clip-path: inset(calc(var(--cell-size) * 16) 0 0 0);
     &:before {
-      animation: pelengator-arrow-line-step-4 6s 8s forwards infinite;
-      transition: clip-path 2.3s 6s;
+      animation: pelengator-arrow-line-step-4
+        calc(var(--turn-animation-duration) * 0.6)
+        calc(var(--turn-animation-duration) * 0.8) forwards infinite;
+      transition: clip-path calc(var(--turn-animation-duration) * 0.23)
+        calc(var(--turn-animation-duration) * 0.6);
       clip-path: inset(0 0 0 calc(100% - var(--cell-size) * 1.5));
     }
     &:after {
-      animation: pelengator-bottom-arrow-step-4 6s 8s forwards infinite;
+      animation: pelengator-bottom-arrow-step-4
+        calc(var(--turn-animation-duration) * 0.6)
+        calc(var(--turn-animation-duration) * 0.8) forwards infinite;
     }
   }
   .left-arrow {
@@ -198,18 +217,24 @@ $fixed-size: 15px;
     left: calc(var(--cell-size) * (var(--pelengator-size-to) * 2 - 2.2));
     clip-path: inset(0 calc(var(--cell-size) * 16) 0 0);
     &:before {
-      animation: pelengator-arrow-line-step-4 6s 8s forwards infinite;
-      transition: clip-path 2.3s 6s;
+      animation: pelengator-arrow-line-step-4
+        calc(var(--turn-animation-duration) * 0.6)
+        calc(var(--turn-animation-duration) * 0.8) forwards infinite;
+      transition: clip-path calc(var(--turn-animation-duration) * 0.23)
+        calc(var(--turn-animation-duration) * 0.6);
       clip-path: inset(0 0 0 calc(100% - var(--cell-size) * 1.5));
     }
     &:after {
-      animation: pelengator-left-arrow-step-4 6s 8s forwards infinite;
+      animation: pelengator-left-arrow-step-4
+        calc(var(--turn-animation-duration) * 0.6)
+        calc(var(--turn-animation-duration) * 0.8) forwards infinite;
     }
   }
 }
 .is-hidden {
   opacity: 0;
-  transition: opacity 2.5s 1s;
+  transition: opacity calc(var(--turn-animation-duration) * 0.25)
+    calc(var(--turn-animation-duration) * 0.1);
 }
 </style>
 

@@ -46,7 +46,7 @@
   width: 100%;
   height: 100%;
   transform: scale(2.5) translate(3%, 30%);
-  animation: missAnimation 6s forwards;
+  animation: missAnimation calc(var(--turn-animation-duration) * 0.6) forwards;
 }
 .hitImage,
 .hitFlame {
@@ -54,17 +54,21 @@
   width: 100%;
   height: 100%;
   transform: scale(2, 1.8) translate(0%, 0%);
-  animation: hitAnimation 6s cubic-bezier(0, 0.59, 0.42, 1.01) forwards;
+  animation: hitAnimation calc(var(--turn-animation-duration) * 0.6)
+    cubic-bezier(0, 0.59, 0.42, 1.01) forwards;
   &.hitDelayed {
-    animation: hitAnimation 6s cubic-bezier(0, 0.59, 0.42, 1.01) 1s forwards;
+    animation: hitAnimation calc(var(--turn-animation-duration) * 0.6)
+      cubic-bezier(0, 0.59, 0.42, 1.01) 1s forwards;
   }
 }
 .hitFlame {
   position: absolute;
   top: 0;
   left: 0;
-  animation: hitFlameAnimation 6s forwards,
-    hitFlameSizeAnimation 10s cubic-bezier(0, 0.37, 0.66, 0.99) forwards;
+  animation: hitFlameAnimation calc(var(--turn-animation-duration) * 0.6)
+      forwards,
+    hitFlameSizeAnimation var(--turn-animation-duration)
+      cubic-bezier(0, 0.37, 0.66, 0.99) forwards;
 }
 .cellState {
   position: absolute;
@@ -75,6 +79,8 @@
 }
 </style>
 <script setup lang="ts">
+import { TURN_ANIMATION_DURATION } from "~/constants/common";
+
 const props = defineProps<{
   x: number;
   y: number;
@@ -100,12 +106,9 @@ const isShown = ref(!isLastTurnCellState.value);
 onMounted(() => {
   if (isLastTurnCellState.value) {
     const status = gameStore.lastTurn?.result;
-    setTimeout(
-      () => {
-        isShown.value = true;
-      },
-      status == "miss" ? 11500 : 9500
-    );
+    setTimeout(() => {
+      isShown.value = true;
+    }, (status == "miss" ? 1.15 : 0.95) * TURN_ANIMATION_DURATION);
   }
 });
 </script>

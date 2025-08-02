@@ -128,12 +128,18 @@ body {
 <script setup lang="ts">
 import { useElementSize, useWindowSize } from "@vueuse/core";
 import { storeToRefs } from "pinia";
+import { TURN_ANIMATION_DURATION } from "@/constants/common";
 
 const layoutRef = useTemplateRef("layoutRef");
 
 const isLoaded = ref(false);
 onMounted(() => {
   isLoaded.value = true;
+
+  document.body.style.setProperty(
+    "--turn-animation-duration",
+    `${TURN_ANIMATION_DURATION}ms`
+  );
 });
 
 const bgVerticalCells = 46;

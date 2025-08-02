@@ -132,6 +132,7 @@ const handlePelengatorHit = (coords: { x: number; y: number }) => {
   if (hitIsSent.value) return;
   hitIsSent.value = true;
   //TODO: remove this
+  console.log("role", game.playerRole);
   game.setLastTurn({
     performer: "player",
     role: game.playerRole,
@@ -139,7 +140,7 @@ const handlePelengatorHit = (coords: { x: number; y: number }) => {
     y: coords.y,
     result: "hit",
   });
-  game.setGameStatus("hostTurnFinished");
+  game.setGameStatus(`${game.playerRole}TurnFinished`);
   return;
   game.sendMessage({
     type: "game:turn",

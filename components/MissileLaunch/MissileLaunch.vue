@@ -1,6 +1,6 @@
 <style module lang="scss">
 $easing: cubic-bezier(0.85, 0.61, 0.93, 0.69);
-$duration: 10s;
+$duration: var(--turn-animation-duration);
 
 @keyframes missile-flight {
   0% {
@@ -88,6 +88,7 @@ import { templateRef } from "@vueuse/core";
 import { computed, ref, watchEffect } from "vue";
 import MissileHitMissAnimation from "./MissileHitMissAnimation.vue";
 import { useGameStore } from "@/stores/game";
+import { TURN_ANIMATION_DURATION } from "@/constants/common";
 
 const gameStore = useGameStore();
 const x = computed(() => gameStore.lastTurn?.x ?? 0);
@@ -103,7 +104,7 @@ const direction = computed(() =>
 
 setTimeout(() => {
   hideTrack.value = true;
-}, 9000);
+}, 0.9 * TURN_ANIMATION_DURATION);
 
 const missileLaunch = templateRef<HTMLDivElement>("missileLaunch");
 const scale = useScaleStore();
@@ -147,7 +148,7 @@ const startPreciseTimer = () => {
 
   const checkTime = () => {
     const elapsed = performance.now() - animationStartTime.value;
-    if (elapsed >= 9800) {
+    if (elapsed >= 0.98 * TURN_ANIMATION_DURATION) {
       showHitMiss.value = true;
     } else {
       requestAnimationFrame(checkTime);

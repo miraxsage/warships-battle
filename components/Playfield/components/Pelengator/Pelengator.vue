@@ -91,30 +91,41 @@
 
 .hit-sent {
   .pelengator-sight {
-    animation: pelengator-hit-step-1 2s cubic-bezier(0.12, 0.61, 0.4, 0.95)
-        forwards,
-      pelengator-hit-step-2 3.3s 1s cubic-bezier(0.12, 0.61, 0.4, 0.95) forwards,
-      pelengator-hit-step-3 7s 3s forwards;
+    animation: pelengator-hit-step-1 calc(var(--turn-animation-duration) * 0.2)
+        cubic-bezier(0.12, 0.61, 0.4, 0.95) forwards,
+      pelengator-hit-step-2 calc(var(--turn-animation-duration) * 0.33)
+        calc(var(--turn-animation-duration) * 0.1)
+        cubic-bezier(0.12, 0.61, 0.4, 0.95) forwards,
+      pelengator-hit-step-3 calc(var(--turn-animation-duration) * 0.7)
+        calc(var(--turn-animation-duration) * 0.3) forwards;
   }
   .top-line {
-    animation: pelengator-line-top-step-1 2s cubic-bezier(0.12, 0.61, 0.4, 0.95)
-        forwards,
-      pelengator-line-top-step-3 7s 3s forwards;
+    animation: pelengator-line-top-step-1
+        calc(var(--turn-animation-duration) * 0.2)
+        cubic-bezier(0.12, 0.61, 0.4, 0.95) forwards,
+      pelengator-line-top-step-3 calc(var(--turn-animation-duration) * 0.7)
+        calc(var(--turn-animation-duration) * 0.3) forwards;
   }
   .left-line {
-    animation: pelengator-line-left-step-1 2s
+    animation: pelengator-line-left-step-1
+        calc(var(--turn-animation-duration) * 0.2)
         cubic-bezier(0.12, 0.61, 0.4, 0.95) forwards,
-      pelengator-line-left-step-3 7s 3s forwards;
+      pelengator-line-left-step-3 calc(var(--turn-animation-duration) * 0.7)
+        calc(var(--turn-animation-duration) * 0.3) forwards;
   }
   .right-line {
-    animation: pelengator-line-right-step-1 2s
+    animation: pelengator-line-right-step-1
+        calc(var(--turn-animation-duration) * 0.2)
         cubic-bezier(0.12, 0.61, 0.4, 0.95) forwards,
-      pelengator-line-right-step-3 7s 3s forwards;
+      pelengator-line-right-step-3 calc(var(--turn-animation-duration) * 0.7)
+        calc(var(--turn-animation-duration) * 0.3) forwards;
   }
   .bottom-line {
-    animation: pelengator-line-bottom-step-1 2s
+    animation: pelengator-line-bottom-step-1
+        calc(var(--turn-animation-duration) * 0.2)
         cubic-bezier(0.12, 0.61, 0.4, 0.95) forwards,
-      pelengator-line-bottom-step-3 7s 3s forwards;
+      pelengator-line-bottom-step-3 calc(var(--turn-animation-duration) * 0.7)
+        calc(var(--turn-animation-duration) * 0.3) forwards;
   }
   .sight {
     transition: all 2s;
@@ -174,6 +185,7 @@
 import { templateRef } from "@vueuse/core";
 import { usePelengatorDragging } from "./composables/usePelengatorDragging";
 import PelengatorSight from "./PelengatorSight.vue";
+import { TURN_ANIMATION_DURATION } from "~/constants/common";
 
 const emit = defineEmits<{
   hit: [{ x: number; y: number }];
@@ -196,7 +208,7 @@ watchEffect(() => {
   ) {
     setTimeout(() => {
       isSightHidden.value = true;
-    }, 8000);
+    }, 0.8 * TURN_ANIMATION_DURATION);
   } else {
     isSightHidden.value = false;
   }

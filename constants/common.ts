@@ -1,6 +1,6 @@
 import type { Point, Rect, Rotation } from "~/types/common";
 
-export const TURN_ANIMATION_DURATION = 10000;
+export const TURN_ANIMATION_DURATION = 7500;
 
 export const ROTATION_ANGLE: Record<Rotation, number> = {
   top: 0,
