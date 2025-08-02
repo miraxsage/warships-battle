@@ -23,6 +23,7 @@ export const useGameStore = defineStore("game", () => {
   const maxReconnectAttempts = 5;
 
   const userStore = useUserStore();
+  const fieldStore = useFieldStore();
 
   function connect(gameId: string) {
     const game = {
@@ -131,14 +132,23 @@ export const useGameStore = defineStore("game", () => {
               data.turnsMap
             );
             gameStatus.value = data.status || gameStatus.value;
-            currentGame.value!.lastTurn = {
-              player: data.status.replace("TurnFinished", "").toLowerCase() as
-                | "host"
-                | "guest",
+            const role = data.status
+              .replace("TurnFinished", "")
+              .toLowerCase() as "host" | "guest";
+            const performer = role == playerRole.value ? "player" : "enemy";
+            const lastTurn = {
+              role,
+              performer,
               x: data.x,
               y: data.y,
               result: data.turn?.type || "miss",
-            };
+            } as const;
+            currentGame.value!.lastTurn = lastTurn;
+            if (lastTurn.performer == "player" && data.turnsMap) {
+              fieldStore.player.turnsMap = data.turnsMap;
+            } else if (lastTurn.performer == "enemy" && data.turnsMap) {
+              fieldStore.enemy.turnsMap = data.turnsMap;
+            }
           }
         }
         break;
@@ -221,6 +231,19 @@ export const useGameStore = defineStore("game", () => {
     },
     setLastTurn: (turn: Game["lastTurn"]) => {
       currentGame.value!.lastTurn = turn;
+      if (turn?.performer == "player") {
+        if (!fieldStore.player.turnsMap[turn.x]) {
+          fieldStore.player.turnsMap[turn.x] = [];
+        }
+        fieldStore.player.turnsMap[turn.x]![turn.y] = {
+          type: turn.result,
+          count: 1,
+        };
+      }
+    },
+    clearTurnsMap: () => {
+      fieldStore.player.turnsMap = [];
+      fieldStore.enemy.turnsMap = [];
     },
   };
 });

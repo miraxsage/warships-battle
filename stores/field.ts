@@ -1,6 +1,6 @@
 import { defineStore } from "pinia";
-import type { ShipProps } from "~/components/Ship/types";
-import type { ShipState } from "~/types/game";
+import type { ShipProps } from "~/components/Playfield/components/Ship/types";
+import type { FieldTurn, ShipState } from "~/types/game";
 
 export type ShipStateDetailed = ShipProps &
   ShipState & {
@@ -28,9 +28,11 @@ export const useFieldStore = defineStore("field", () => {
         { id: "1-ship-3", type: 1, x: 8, y: 9, rotation: "top" },
         { id: "1-ship-4", type: 1, x: 9, y: 9, rotation: "top" },
       ] as ShipStateDetailed[],
+      turnsMap: [] as FieldTurn[][],
     },
     enemy: {
       fieldCoords: {} as DOMRect,
+      turnsMap: [] as FieldTurn[][],
     },
   });
   function resetPlayerField() {

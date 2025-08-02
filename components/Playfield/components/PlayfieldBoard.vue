@@ -99,12 +99,14 @@
 </style>
 <script setup lang="ts">
 import Pelengator from "./Pelengator/Pelengator.vue";
+import { Ship, ShipPlaceholder, PlayboardCellState } from ".";
 
 defineOptions({
   inheritAttrs: false,
 });
 
 const { type } = defineProps<{ type: "player" | "enemy" }>();
+
 const isPlayerField = type == "player";
 const isEnemyField = type == "enemy";
 
@@ -131,10 +133,11 @@ const handlePelengatorHit = (coords: { x: number; y: number }) => {
   hitIsSent.value = true;
   //TODO: remove this
   game.setLastTurn({
-    player: "host",
+    performer: "player",
+    role: game.playerRole,
     x: coords.x,
     y: coords.y,
-    result: "miss",
+    result: "hit",
   });
   game.setGameStatus("hostTurnFinished");
   return;
@@ -146,10 +149,18 @@ const handlePelengatorHit = (coords: { x: number; y: number }) => {
 
 const resetPelengator = () => {
   hitIsSent.value = false;
+  game.clearTurnsMap();
   game.setGameStatus("hostTurn");
 };
 
 const { fieldState } = usePlayfield(root, type);
+const turnsMap = computed(() => {
+  if (isPlayerField) {
+    return fieldState.enemy.turnsMap;
+  }
+  return fieldState.player.turnsMap;
+});
+console.log("turnsMap" + isPlayerField, turnsMap.value);
 </script>
 <template>
   <button v-if="isEnemyField" @click="resetPelengator">reset pelengator</button>
@@ -181,6 +192,16 @@ const { fieldState } = usePlayfield(root, type);
         v-bind="props"
         :key="props.id"
       />
+    </template>
+    <template v-for="col in 10" :key="`${type}-${col}-states`">
+      <template v-for="row in 10" :key="`${type}-${col}-${row}-state`">
+        <PlayboardCellState
+          v-if="turnsMap[col - 1]?.[row - 1]?.count"
+          :x="col - 1"
+          :y="row - 1"
+          :holder="type == 'player' ? 'enemy' : 'player'"
+        />
+      </template>
     </template>
     <template v-if="isEnemyField">
       <Pelengator @hit="handlePelengatorHit" :hitIsSent="hitIsSent" />

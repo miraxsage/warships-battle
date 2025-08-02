@@ -74,6 +74,10 @@ $duration: 10s;
   opacity: 0;
   transition: opacity 7s;
 }
+
+.invert {
+  scale: -1 1;
+}
 </style>
 
 <script setup lang="ts">
@@ -91,6 +95,11 @@ const y = computed(() => gameStore.lastTurn?.y ?? 0);
 const isHit = computed(() => gameStore.lastTurn?.result === "hit");
 const showHitMiss = ref(false);
 const hideTrack = ref(false);
+const direction = computed(() =>
+  gameStore.gameStatus == `${gameStore.enemyRole}TurnFinished`
+    ? "rightToLeft"
+    : "leftToRight"
+);
 
 setTimeout(() => {
   hideTrack.value = true;
@@ -106,12 +115,14 @@ const pathLength = getPathLength(selectedPath.path);
 const startY = computed(() => _.random(3, 7) * scale.fcellSize);
 const startX = 0;
 
-const endX = computed(
-  () =>
+const endX = computed(() => {
+  const X = direction.value == "rightToLeft" ? 9 - x.value : x.value;
+  return (
     missileLaunch.value?.clientWidth -
-    (9 - x.value) * scale.fcellSize -
+    (9 - X) * scale.fcellSize -
     scale.cellSize
-);
+  );
+});
 const endY = computed(
   () =>
     missileLaunch.value?.clientHeight -
@@ -183,7 +194,10 @@ watchEffect(() => {
 
 <template>
   <div
-    :class="$style['missile-launch']"
+    :class="[
+      $style['missile-launch'],
+      { [$style['invert']]: direction == 'rightToLeft' },
+    ]"
     ref="missileLaunch"
     :style="`mix-blend-mode: darken; --path-length: ${pathLength}`"
   >
@@ -238,7 +252,12 @@ watchEffect(() => {
       </svg>
     </div>
   </div>
-  <div :class="$style['missile-launch']">
+  <div
+    :class="[
+      $style['missile-launch'],
+      { [$style['invert']]: direction == 'rightToLeft' },
+    ]"
+  >
     <div
       :style="`
         transform-origin: ${selectedPath.startPoint.x}px ${selectedPath.startPoint.y}px;

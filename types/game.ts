@@ -43,7 +43,8 @@ export interface Game {
   createdAt: string;
   updatedAt?: string;
   lastTurn?: {
-    player: "host" | "guest";
+    performer: "player" | "enemy";
+    role: "host" | "guest";
     x: number;
     y: number;
     result: "hit" | "miss";

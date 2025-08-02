@@ -202,33 +202,40 @@ export async function handleGameTurn(
   if (!gamePeer?.gameId) return;
   const game = getGameRoom(gamePeer.gameId);
   if (!game) return;
-  const player = gamePeer.isHost ? "host" : "guest";
-  const enemy = gamePeer.isHost ? "guest" : "host";
-  if (game.status != `${player}Turn`) {
+
+  const performerRole = gamePeer.isHost ? "host" : "guest";
+  const enemyRole = gamePeer.isHost ? "guest" : "host";
+  if (game.status != `${performerRole}Turn`) {
     return;
   }
 
-  const turnMap =
-    game[`${enemy}TurnsMap`] || getFieldMap(game[`${enemy}Arrangement`] || []);
+  const turnsMap =
+    game[`${performerRole}TurnsMap`] ||
+    getFieldMap(game[`${enemyRole}Arrangement`] || []);
   const x = _.clamp(wsMessage.data.x, 0, 9);
   const y = _.clamp(wsMessage.data.y, 0, 9);
-  let turn = turnMap[x][y];
+  let turn = turnsMap[x][y];
   if (turn) {
     turn.count++;
   } else {
-    turn = { type: "miss", count: 0 };
-    turnMap[x][y] = turn;
+    turnsMap[x][y] = { type: "miss", count: 0 };
   }
 
-  game[`${enemy}TurnsMap`] = turnMap;
+  game[`${performerRole}TurnsMap`] = turnsMap;
 
   if (game.turnNumber) {
     game.turnNumber++;
   }
 
-  const turnMapToShow = _.map(turnMap, (row) =>
-    _.map(row, (cell) => ((cell?.count ?? 0) > 0 ? cell : undefined))
-  );
+  const turnsMapToShow = _.map(turnsMap, (row) => {
+    const rowToShow: FieldTurn[] = [];
+    _.forEach(row, (cell, index) => {
+      if ((cell?.count ?? 0) > 0) {
+        rowToShow[index] = cell;
+      }
+    });
+    return rowToShow;
+  });
 
   broadcastToRoom(gamePeer.gameId, {
     type: "game:turned",
@@ -236,12 +243,12 @@ export async function handleGameTurn(
       x,
       y,
       turn,
-      status: `${player}TurnFinished`,
-      turnsMap: turnMapToShow,
+      status: `${performerRole}TurnFinished`,
+      turnsMap: turnsMapToShow,
     },
   });
 
-  scheduleGameTurn(game, enemy, 16000);
+  scheduleGameTurn(game, enemyRole, 20000);
 }
 
 export async function handleGameArranged(
