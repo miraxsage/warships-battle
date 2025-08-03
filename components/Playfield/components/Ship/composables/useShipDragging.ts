@@ -12,11 +12,12 @@ const lodash = _;
 
 export function useShipDragging<T extends HTMLElement>(
   el: ShallowRef<T | null>,
-  shipId: string
+  shipId: string,
+  owner: "player" | "enemy"
 ) {
   const scaleState = useScaleStore();
   const { player: fieldState } = useFieldStore();
-  const shipState = useShip(shipId)!;
+  const { ship: shipState } = useShip(shipId, owner)!;
 
   const coords = reactive({
     x: `calc(var(--fcell-size) * ${shipState.x})`,
@@ -34,7 +35,7 @@ export function useShipDragging<T extends HTMLElement>(
         return;
       }
       const dragHandler = (event: MouseEvent) => {
-        if (!shipState || !fieldState || !scaleState) {
+        if (!shipState || !fieldState || !scaleState || event.button !== 0) {
           return;
         }
         fieldState.shipPlaceholder = { ...shipState };

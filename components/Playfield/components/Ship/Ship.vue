@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import * as _ from "lodash-es";
 import { ROTATION_ANGLE } from "~/constants/common";
 import ShipSvg1 from "./components/ShipSvg1.vue";
 import ShipSvg2 from "./components/ShipSvg2.vue";
@@ -6,7 +7,7 @@ import ShipSvg3 from "./components/ShipSvg3.vue";
 import ShipSvg4 from "./components/ShipSvg4.vue";
 import { useShipDragging } from "./composables/useShipDragging";
 import type { ShipProps } from "./types";
-import { shipClipPath } from "./utils/helpers";
+import { shipMaskImage } from "./utils/helpers";
 
 const ShipsComponents = {
   1: ShipSvg1,
@@ -15,8 +16,8 @@ const ShipsComponents = {
   4: ShipSvg4,
 };
 
-const { id } = defineProps<ShipProps>();
-const ship = useShip(id)!;
+const { id, owner } = defineProps<ShipProps>();
+const { ship, damagedParts, isDestroyed, isDamaged } = useShip(id, owner)!;
 
 const rotationDegree = ref(0);
 watchEffect(() => {
@@ -31,19 +32,42 @@ watchEffect(() => {
 });
 
 const el = useTemplateRef<HTMLDivElement>("el");
-const { coords, shipCoordination } = useShipDragging(el, ship.id);
+const { coords, shipCoordination } = useShipDragging(el, ship.id, owner);
+
+const invalidParts = computed(() => {
+  return _.isEmpty(shipCoordination?.invalidParts)
+    ? damagedParts.value
+    : shipCoordination?.invalidParts;
+});
+
+const subTheme = computed(() => {
+  return isDestroyed.value ? "destroyed" : isDamaged.value ? "fire" : "error";
+});
+const theme = computed(() => {
+  return isDestroyed.value ? "fire" : "normal";
+});
 </script>
 <template>
+  {{ subTheme }}
   <component
     :is="ShipsComponents[ship.type]"
-    :class="['ship', `ship${ship.type}`]"
-    theme="error"
+    :class="[
+      'ship',
+      `ship${ship.type}`,
+      `subShip`,
+      `${subTheme}Theme`,
+      owner == 'enemy' ? 'enemyOwned' : 'playerOwned',
+    ]"
+    :theme="subTheme"
+    :key="subTheme"
     :style="{
       left: coords.x,
       top: coords.y,
       zIndex: ship.isDragging ? 100 : 1,
-      opacity: (shipCoordination?.invalidParts.length ?? 0) > 0 ? 1 : 0,
-      clipPath: shipClipPath(ship, shipCoordination?.invalidParts ?? [], true),
+      opacity: !_.isEmpty(invalidParts) ? 1 : 0,
+      maskImage: isDestroyed
+        ? 'unset'
+        : shipMaskImage(ship, invalidParts, true, isDamaged ? 75 : 20),
       rotate: `${rotationDegree}deg`,
       ...(coords.displaceX || coords.displaceY
         ? { transformOrigin: `${coords.displaceX}px ${coords.displaceY}px` }
@@ -53,12 +77,23 @@ const { coords, shipCoordination } = useShipDragging(el, ship.id);
   <component
     :is="ShipsComponents[ship.type]"
     ref="el"
-    :class="['ship', `ship${ship.type}`, { smooth: ship.isSmooth }]"
+    :theme="theme"
+    :key="theme"
+    :class="[
+      'ship',
+      `ship${ship.type}`,
+      `mainShip`,
+      `${theme}Theme`,
+      owner == 'player' ? 'playerOwned' : 'enemyOwned',
+      { smooth: ship.isSmooth },
+    ]"
     :style="{
       zIndex: ship.isDragging ? 100 : 1,
       left: coords.x,
       top: coords.y,
-      clipPath: shipClipPath(ship, shipCoordination?.invalidParts ?? []),
+      maskImage: isDestroyed
+        ? 'unset'
+        : shipMaskImage(ship, invalidParts, false, isDestroyed ? 75 : 20),
       rotate: `${rotationDegree}deg`,
       ...(coords.displaceX || coords.displaceY
         ? { transformOrigin: `${coords.displaceX}px ${coords.displaceY}px` }
@@ -70,6 +105,22 @@ const { coords, shipCoordination } = useShipDragging(el, ship.id);
 .smooth.smooth {
   transition: all 0.5s;
 }
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+@keyframes fadeOut {
+  0% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
 .ship {
   background-size: 100% 100%;
   width: calc(var(--fcell-size));
@@ -80,6 +131,22 @@ const { coords, shipCoordination } = useShipDragging(el, ship.id);
   mix-blend-mode: multiply;
   transform-origin: calc(var(--fcell-size) / 2) calc(var(--fcell-size) / 2);
   transition: rotate 0.5s;
+  &.destroyedTheme {
+    transform: translate(-8px, -6px) scale(0.96);
+    animation: fadeIn 10s forwards;
+    mask-image: unset !important;
+    & + .ship {
+      animation: fadeOut 10s forwards;
+      mask-image: unset !important;
+    }
+  }
+  &.subShip.fireTheme.enemyOwned {
+    opacity: 0;
+    animation: fadeIn 2s forwards;
+  }
+  &.mainShip.normalTheme.enemyOwned {
+    opacity: 0;
+  }
 }
 .ship4 {
   height: calc(var(--fcell-size) * 4);

@@ -1,12 +1,11 @@
 import { defineStore } from "pinia";
-import type { ShipProps } from "~/components/Playfield/components/Ship/types";
 import type { FieldTurn, ShipState } from "~/types/game";
 
-export type ShipStateDetailed = ShipProps &
-  ShipState & {
-    isDragging?: boolean;
-    isSmooth?: boolean;
-  };
+export type ShipStateDetailed = ShipState & {
+  id: string;
+  isDragging?: boolean;
+  isSmooth?: boolean;
+};
 
 export type PlayerField = ReturnType<typeof useFieldStore>["player"];
 export type EnemyField = ReturnType<typeof useFieldStore>["enemy"];
@@ -33,6 +32,7 @@ export const useFieldStore = defineStore("field", () => {
     enemy: {
       fieldCoords: {} as DOMRect,
       turnsMap: [] as FieldTurn[][],
+      ships: [] as ShipStateDetailed[],
     },
   });
   function resetPlayerField() {
@@ -48,7 +48,7 @@ export const useFieldStore = defineStore("field", () => {
       { id: "1-ship-2", type: 1, x: 7, y: 9, rotation: "top" },
       { id: "1-ship-3", type: 1, x: 8, y: 9, rotation: "top" },
       { id: "1-ship-4", type: 1, x: 9, y: 9, rotation: "top" },
-    ];
+    ] as ShipStateDetailed[];
     field.player.shipPlaceholder = undefined;
   }
 

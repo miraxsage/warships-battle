@@ -1,3 +1,4 @@
+import * as _ from "lodash-es";
 import { SHIP_DIRECTION_INCREMENTS } from "~/constants/common";
 import type { PlayerField } from "~/stores/field";
 import type { ShipState } from "~/types/game";
@@ -23,25 +24,40 @@ export function rotatePoint(
   return { x: xRotated, y: yRotated };
 }
 
-export function shipClipPath(
+export function shipMaskImage(
   ship: ShipState,
   invalidParts: number[],
-  remainInvalid: boolean = false
+  remainInvalid: boolean = false,
+  smoothness: number = 0
 ) {
-  if (!invalidParts.length) {
-    return "unset";
-  }
-  let result = "0% 0%";
-  let yInc = 100 / ship.type;
-  let curY = 0;
+  let mask = `linear-gradient(180deg, `;
+  const partSize = _.round(100 / ship.type, 2);
+  const smooth = _.round(
+    (partSize * 0.5 * _.clamp(smoothness, 0, 100)) / 100,
+    2
+  );
+  let prevPartIsVisible = false;
   for (let i = 0; i < ship.type; i++) {
     if (invalidParts.includes(i) ? remainInvalid : !remainInvalid) {
-      result += `, 100% ${curY}%, 100% ${(curY += yInc)}%, 0% ${curY}%`;
+      if (!prevPartIsVisible || !i) {
+        if (i) {
+          mask += `transparent ${partSize * i - smooth}%, `;
+        }
+        mask += `black ${partSize * i + smooth}%, `;
+      }
+      prevPartIsVisible = true;
     } else {
-      result += `, 0% ${(curY += yInc)}%`;
+      if (prevPartIsVisible || !i) {
+        if (i) {
+          mask += `black ${partSize * i - smooth}%, `;
+        }
+        mask += `transparent ${partSize * i + smooth}%, `;
+      }
+      prevPartIsVisible = false;
     }
   }
-  return `polygon(${result})`;
+  mask += `${prevPartIsVisible ? "black" : "transparent"} 100%)`;
+  return mask;
 }
 
 export function getFieldMap(fieldState: PlayerField, withoutShipId: string) {

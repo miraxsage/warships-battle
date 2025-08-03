@@ -100,6 +100,7 @@
 <script setup lang="ts">
 import Pelengator from "./Pelengator/Pelengator.vue";
 import { Ship, ShipPlaceholder, PlayboardCellState } from ".";
+import type { Coord } from "~/types/common";
 
 defineOptions({
   inheritAttrs: false,
@@ -133,6 +134,16 @@ const handlePelengatorHit = (coords: { x: number; y: number }) => {
   hitIsSent.value = true;
   //TODO: remove this
   console.log("role", game.playerRole);
+  let ship: ShipStateDetailed | null = null;
+  if (game.lastTurn) {
+    ship = {
+      type: 2,
+      x: game.lastTurn.x as Coord,
+      y: game.lastTurn.y as Coord,
+      rotation: "top",
+      id: "test",
+    };
+  }
   game.setLastTurn({
     performer: "player",
     role: game.playerRole,
@@ -140,6 +151,9 @@ const handlePelengatorHit = (coords: { x: number; y: number }) => {
     y: coords.y,
     result: "hit",
   });
+  if (ship) {
+    game.setEmemyShip(ship);
+  }
   game.setGameStatus(`${game.playerRole}TurnFinished`);
   return;
   game.sendMessage({
@@ -148,9 +162,11 @@ const handlePelengatorHit = (coords: { x: number; y: number }) => {
   });
 };
 
-const resetPelengator = () => {
+const resetPelengator = (full = false) => {
   hitIsSent.value = false;
-  game.clearTurnsMap();
+  if (full) {
+    game.clearTurnsMap();
+  }
   game.setGameStatus("hostTurn");
 };
 
@@ -164,7 +180,12 @@ const turnsMap = computed(() => {
 console.log("turnsMap" + isPlayerField, turnsMap.value);
 </script>
 <template>
-  <button v-if="isEnemyField" @click="resetPelengator">reset pelengator</button>
+  <button v-if="isEnemyField" @click="resetPelengator(false)">
+    reset pelengator
+  </button>
+  <button v-if="isEnemyField" @click="resetPelengator(true)">
+    FULL reset pelengator
+  </button>
   <div
     class="playfield"
     v-bind="$attrs"
@@ -186,21 +207,20 @@ console.log("turnsMap" + isPlayerField, turnsMap.value);
         {{ digit }}
       </div>
     </div>
-    <template v-if="isPlayerField">
-      <ShipPlaceholder />
-      <Ship
-        v-for="props in fieldState.player.ships"
-        v-bind="props"
-        :key="props.id"
-      />
-    </template>
+    <ShipPlaceholder v-if="isPlayerField" />
+    <Ship
+      :key="props.id"
+      v-for="props in fieldState[type].ships"
+      v-bind="props"
+      :owner="type"
+    />
     <template v-for="col in 10" :key="`${type}-${col}-states`">
       <template v-for="row in 10" :key="`${type}-${col}-${row}-state`">
         <PlayboardCellState
           v-if="turnsMap[col - 1]?.[row - 1]?.count"
           :x="col - 1"
           :y="row - 1"
-          :holder="type == 'player' ? 'enemy' : 'player'"
+          :owner="type"
         />
       </template>
     </template>

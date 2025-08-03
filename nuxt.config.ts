@@ -42,7 +42,7 @@ const forceCurrentColorAdvanced = () => (svg: any) => {
 
 export default defineNuxtConfig({
   // compatibilityDate: '2025-05-15',
-  devtools: { enabled: false },
+  devtools: { enabled: true },
   modules: [
     "@nuxt/fonts",
     "@pinia/nuxt",

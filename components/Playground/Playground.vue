@@ -51,6 +51,8 @@
 }
 </style>
 <script setup lang="ts">
+import DamageVariants from "./DamageVariants.vue";
+
 const gameStore = useGameStore();
 const isOnlyPlayerMessage = computed(() => {
   const player = gameStore.isHost ? "host" : "guest";
@@ -78,6 +80,7 @@ const isMissileLaunch = computed(() => {
 </script>
 <template>
   <div>
+    <DamageVariants />
     <TransitionGroup name="fade" mode="out-in">
       <Playfield
         key="player"

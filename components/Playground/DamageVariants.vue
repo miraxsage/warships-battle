@@ -1,0 +1,66 @@
+<template>
+  <svg width="0" height="0" style="position: absolute">
+    <defs>
+      <filter
+        id="ship-distort-heavy-4"
+        x="-40%"
+        y="-40%"
+        width="180%"
+        height="180%"
+      >
+        <feTurbulence
+          type="turbulence"
+          baseFrequency="0.03"
+          numOctaves="1.5"
+          result="noise"
+        />
+        <feDisplacementMap in="SourceGraphic" in2="noise" scale="20" />
+      </filter>
+      <filter
+        id="ship-distort-heavy-3"
+        x="-40%"
+        y="-40%"
+        width="180%"
+        height="180%"
+      >
+        <feTurbulence
+          type="turbulence"
+          baseFrequency="0.039"
+          numOctaves="1"
+          result="noise"
+        />
+        <feDisplacementMap in="SourceGraphic" in2="noise" scale="20" />
+      </filter>
+      <filter
+        id="ship-distort-heavy-2"
+        x="-40%"
+        y="-40%"
+        width="180%"
+        height="180%"
+      >
+        <feTurbulence
+          type="turbulence"
+          baseFrequency="0.03"
+          numOctaves="1.3"
+          result="noise"
+        />
+        <feDisplacementMap in="SourceGraphic" in2="noise" scale="25" />
+      </filter>
+      <filter
+        id="ship-distort-heavy-1"
+        x="-40%"
+        y="-40%"
+        width="180%"
+        height="180%"
+      >
+        <feTurbulence
+          type="turbulence"
+          baseFrequency="0.04"
+          numOctaves="1.3"
+          result="noise"
+        />
+        <feDisplacementMap in="SourceGraphic" in2="noise" scale="28" />
+      </filter>
+    </defs>
+  </svg>
+</template>

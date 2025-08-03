@@ -148,7 +148,7 @@ const startPreciseTimer = () => {
 
   const checkTime = () => {
     const elapsed = performance.now() - animationStartTime.value;
-    if (elapsed >= 0.98 * TURN_ANIMATION_DURATION) {
+    if (elapsed >= 0.97 * TURN_ANIMATION_DURATION) {
       showHitMiss.value = true;
     } else {
       requestAnimationFrame(checkTime);

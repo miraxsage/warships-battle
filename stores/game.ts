@@ -6,6 +6,7 @@ import type {
   WSGameUpdateData,
   WSGameLeftData,
   WSGameResetData,
+  ShipState,
 } from "~/types/game";
 import * as _ from "lodash-es";
 
@@ -230,16 +231,22 @@ export const useGameStore = defineStore("game", () => {
       gameStatus.value = status;
     },
     setLastTurn: (turn: Game["lastTurn"]) => {
-      currentGame.value!.lastTurn = turn;
-      if (turn?.performer == "player") {
-        if (!fieldStore.player.turnsMap[turn.x]) {
-          fieldStore.player.turnsMap[turn.x] = [];
-        }
-        fieldStore.player.turnsMap[turn.x]![turn.y] = {
-          type: turn.result,
-          count: 1,
-        };
+      if (!turn) {
+        return;
       }
+      currentGame.value!.lastTurn = turn;
+      const performerFieldStore =
+        turn?.performer == "player" ? fieldStore.player : fieldStore.enemy;
+      if (!performerFieldStore.turnsMap[turn.x]) {
+        performerFieldStore.turnsMap[turn.x] = [];
+      }
+      performerFieldStore.turnsMap[turn.x]![turn.y] = {
+        type: turn.result,
+        count: 1,
+      };
+    },
+    setEmemyShip: (ship: ShipStateDetailed) => {
+      fieldStore.enemy.ships.push(ship);
     },
     clearTurnsMap: () => {
       fieldStore.player.turnsMap = [];

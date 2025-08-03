@@ -13,6 +13,13 @@ export type ShipState = {
   rotation: Rotation;
 };
 
+export type ShipPart = {
+  x: Coord;
+  y: Coord;
+  part: 0 | 1 | 2 | 3;
+  ship: ShipState;
+};
+
 export type GameStatus =
   | "initial"
   | "connecting"

@@ -28,7 +28,7 @@
   }
   100% {
     opacity: 1;
-    transform: scale(2, 1.8) translate(0%, 7%);
+    transform: scale(2, 1.8) translate(0%, 4%);
     filter: blur(0px);
   }
 }
@@ -40,6 +40,18 @@
   100% {
     opacity: 1;
     transform: scale(2.5) translate(3%, 30%);
+  }
+}
+@keyframes fadeOut {
+  0% {
+    opacity: 1;
+    filter: blur(0px);
+    transform: scale(2, 1.8) translate(0%, 4%);
+  }
+  100% {
+    opacity: 0;
+    filter: blur(5px);
+    transform: scale(3, 3) translate(0%, 4%);
   }
 }
 .missImage {
@@ -60,6 +72,9 @@
     animation: hitAnimation calc(var(--turn-animation-duration) * 0.6)
       cubic-bezier(0, 0.59, 0.42, 1.01) 1s forwards;
   }
+  &.fadeOut {
+    animation: fadeOut 17s forwards;
+  }
 }
 .hitFlame {
   position: absolute;
@@ -72,6 +87,7 @@
 }
 .cellState {
   position: absolute;
+  z-index: 1;
   top: calc(var(--fcell-size) * var(--y));
   left: calc(var(--fcell-size) * var(--x));
   width: var(--fcell-size);
@@ -84,12 +100,15 @@ import { TURN_ANIMATION_DURATION } from "~/constants/common";
 const props = defineProps<{
   x: number;
   y: number;
-  holder: "player" | "enemy";
+  owner: "player" | "enemy";
 }>();
 const fieldState = useFieldStore();
 const gameStore = useGameStore();
+const counterOwner = computed(() =>
+  props.owner == "player" ? "enemy" : "player"
+);
 const cellState = computed(() => {
-  if (props.holder == "player") {
+  if (counterOwner.value == "player") {
     return fieldState.player.turnsMap[props.x]?.[props.y]?.type ?? "empty";
   }
   return fieldState.enemy.turnsMap[props.x]?.[props.y]?.type ?? "empty";
@@ -97,7 +116,7 @@ const cellState = computed(() => {
 const isLastTurnCellState = computed(() => {
   const lastTurn = gameStore.currentGame?.lastTurn;
   return (
-    lastTurn?.performer == props.holder &&
+    lastTurn?.performer == counterOwner.value &&
     lastTurn?.x == props.x &&
     lastTurn?.y == props.y
   );
@@ -109,6 +128,53 @@ onMounted(() => {
     setTimeout(() => {
       isShown.value = true;
     }, (status == "miss" ? 1.15 : 0.95) * TURN_ANIMATION_DURATION);
+  }
+});
+
+const fadeOut = ref(false);
+
+watchEffect(() => {
+  const cellField =
+    props.owner == "player" ? fieldState.player : fieldState.enemy;
+  const cellTurnsMap =
+    counterOwner.value == "player"
+      ? fieldState.player.turnsMap
+      : fieldState.enemy.turnsMap;
+  const cellState = cellTurnsMap[props.x]?.[props.y];
+  if (!cellState || cellState.type != "hit") {
+    return;
+  }
+  let actualShipState = "normal";
+  let damagedParts: number[] = [];
+  const ship = cellField.ships.find((ship) =>
+    someShipPart(ship, ({ x, y }) => x == props.x && y == props.y)
+  );
+  if (!ship) {
+    return;
+  }
+  let isLastTurnDamagedShip = false;
+  forEachShipPart(ship, ({ part, x, y }) => {
+    if (!!cellTurnsMap[x]?.[y]?.count) {
+      damagedParts.push(part);
+      if (gameStore.lastTurn?.x == x && gameStore.lastTurn?.y == y) {
+        isLastTurnDamagedShip = true;
+      }
+    }
+  });
+  if (damagedParts.length == ship.type) {
+    actualShipState = "destroyed";
+  } else {
+    actualShipState = "damaged";
+  }
+  console.log("actualShipState", actualShipState);
+  if (actualShipState == "destroyed") {
+    if (isLastTurnDamagedShip) {
+      setTimeout(() => {
+        fadeOut.value = true;
+      }, TURN_ANIMATION_DURATION * 1.6);
+    } else {
+      fadeOut.value = true;
+    }
   }
 });
 </script>
@@ -124,7 +190,13 @@ onMounted(() => {
       v-if="cellState == 'hit' && isShown"
       src="/images/fire.svg"
       alt="hit"
-      :class="[$style.hitImage, { [$style.hitDelayed]: isLastTurnCellState }]"
+      :class="[
+        $style.hitImage,
+        {
+          [$style.hitDelayed]: isLastTurnCellState,
+          [$style.fadeOut]: fadeOut,
+        },
+      ]"
     />
     <img
       v-if="cellState == 'miss' && isShown"
