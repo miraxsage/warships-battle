@@ -32,35 +32,13 @@
   scale: -1.09 -1.09;
 }
 
-:is(.border1, .border2):has(> .critical):before {
+:is(.border1, .border2):has(> .critical:first-of-type):before {
   background-color: $error;
   mix-blend-mode: multiply;
 }
-:is(.border1, .border2):has(> .successful):before {
+:is(.border1, .border2):has(> .successful:first-of-type):before {
   background-color: #959595;
   mix-blend-mode: multiply;
-}
-:is(.border1, .border2):has(> :is(.critical, .successful)):after {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: unset;
-  box-shadow: inset 0 0 145px 34px rgb(202 41 41 / 91%);
-  border-radius: 20px;
-  mix-blend-mode: overlay;
-  scale: 1.1;
-  translate: 5px -1px;
-  pointer-events: none;
-}
-.border2:has(> .critical):after {
-  translate: 0px 2px;
-}
-:is(.border1, .border2):has(> .successful):after {
-  background-color: unset;
-  box-shadow: inset 0 0 145px 20px #008142;
 }
 
 .v-ruler,
@@ -100,7 +78,6 @@
 <script setup lang="ts">
 import Pelengator from "./Pelengator/Pelengator.vue";
 import { Ship, ShipPlaceholder, PlayboardCellState } from ".";
-import type { Coord } from "~/types/common";
 
 defineOptions({
   inheritAttrs: false,
@@ -110,6 +87,15 @@ const { type } = defineProps<{ type: "player" | "enemy" }>();
 
 const isPlayerField = type == "player";
 const isEnemyField = type == "enemy";
+
+const shipsCount = computed(() => {
+  console.log(
+    `${type} ships count:`,
+    fieldState[type].ships.length,
+    fieldState[type].ships
+  );
+  return fieldState[type].ships.length;
+});
 
 const hletters = ["A", "Б", "В", "Г", "Д", "E", "Ж", "З", "И", "К"];
 
@@ -132,42 +118,10 @@ const isPelengatorDisabled = computed(() => {
 const handlePelengatorHit = (coords: { x: number; y: number }) => {
   if (hitIsSent.value) return;
   hitIsSent.value = true;
-  //TODO: remove this
-  console.log("role", game.playerRole);
-  let ship: ShipStateDetailed | null = null;
-  if (game.lastTurn) {
-    ship = {
-      type: 2,
-      x: game.lastTurn.x as Coord,
-      y: game.lastTurn.y as Coord,
-      rotation: "top",
-      id: "test",
-    };
-  }
-  game.setLastTurn({
-    performer: "player",
-    role: game.playerRole,
-    x: coords.x,
-    y: coords.y,
-    result: "hit",
-  });
-  if (ship) {
-    game.setEmemyShip(ship);
-  }
-  game.setGameStatus(`${game.playerRole}TurnFinished`);
-  return;
   game.sendMessage({
     type: "game:turn",
     data: { x: coords.x, y: coords.y },
   });
-};
-
-const resetPelengator = (full = false) => {
-  hitIsSent.value = false;
-  if (full) {
-    game.clearTurnsMap();
-  }
-  game.setGameStatus("hostTurn");
 };
 
 const { fieldState } = usePlayfield(root, type);
@@ -177,15 +131,8 @@ const turnsMap = computed(() => {
   }
   return fieldState.player.turnsMap;
 });
-console.log("turnsMap" + isPlayerField, turnsMap.value);
 </script>
 <template>
-  <button v-if="isEnemyField" @click="resetPelengator(false)">
-    reset pelengator
-  </button>
-  <button v-if="isEnemyField" @click="resetPelengator(true)">
-    FULL reset pelengator
-  </button>
   <div
     class="playfield"
     v-bind="$attrs"

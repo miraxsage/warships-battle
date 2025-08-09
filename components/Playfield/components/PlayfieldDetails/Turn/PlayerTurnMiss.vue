@@ -1,37 +1,38 @@
 <style lang="scss" module>
-@use "./styles.scss" as *;
+@use "../styles.scss" as *;
 </style>
 <script setup lang="ts">
 import * as _ from "lodash-es";
 
 const startPhrases = [
-  "Прямое попадание!",
-  "Точно в цель!",
-  "Есть урон по противнику!",
-  "Снаряд достиг цели!",
+  "Мимо!",
+  "Промах!",
+  "Цель не поражена!",
+  "Отсутствие попадания!",
 ];
 const startPhrase = _.sample(startPhrases);
-const { count } = useCountdown(5);
+const { count } = useCountdown(10);
 defineProps<{ fullDamage?: boolean }>();
 </script>
 <template>
   <div :class="$style.details">
     <p :class="[$style.text, $style.center]">
       <SpriteSymbol
-        name="fire"
+        name="reject"
         :style="{ minWidth: '40px', minHeight: '40px' }"
-        :class="[$style.info, $style.warning]"
+        :class="[$style.info, $style.error]"
       />
     </p>
     <p :class="[$style.text, $style.center]">
       <span>{{ startPhrase }}</span>
     </p>
     <p :class="[$style.text, $style.center]">
-      <span>Мы точно попали во вражеский корабль</span>
+      <span>Капитан! К сожалению нам</span>
       <br />
-      <span :class="$style.success" v-if="fullDamage">Он уничтожен! </span>
-      <span :class="$style.warning" v-else>Он поврежден! </span>
-      <span>Так держать, капитан!</span>
+      <span :class="$style.error"> не удалось </span>
+      <span>поразить цель...</span>
+      <br />
+      <span>Снаряд прошел мимо</span>
     </p>
     <p
       :style="{ opacity: count > 0 ? 1 : 0 }"

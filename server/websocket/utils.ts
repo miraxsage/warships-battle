@@ -51,40 +51,76 @@ export function logMessage(type: string, ...data: any[]): void {
 }
 
 /**
- * Обновляет игру в БД при завершении из-за отключения игрока
+ * Завершает игру когда игрок сбежал, очищает комнату и обновляет БД
  */
-export async function updateGameFinished(
+export async function finishGameAsEscaped(
   gameId: string,
-  hostUserId: number,
-  guestUserId: number,
-  escapedIsHost: boolean
+  hostIsLoser: boolean
+): Promise<void> {
+  const hostScore = hostIsLoser ? -10 : 10;
+  const guestScore = hostIsLoser ? 10 : -10;
+  const status = hostIsLoser ? "host_escaped" : "guest_escaped";
+  return finishGame(gameId, hostScore, guestScore, status);
+}
+
+/**
+ * Завершает игру когда игрок не успел вовремя разместить корабли
+ */
+export async function finishGameAsArrangementLose(
+  gameId: string,
+  hostIsLoser: boolean
+): Promise<void> {
+  const hostScore = hostIsLoser ? -5 : 5;
+  const guestScore = hostIsLoser ? 5 : -5;
+  const status = hostIsLoser
+    ? "host_arrangement_lose"
+    : "guest_arrangement_lose";
+  return finishGame(gameId, hostScore, guestScore, status);
+}
+
+/**
+ * Завершает игру, сохраняет результаты в БД и очищает комнату
+ */
+export async function finishGame(
+  gameId: string,
+  hostScore: number,
+  guestScore: number,
+  status?: string
 ): Promise<void> {
   const { db } = await import("~/server/db/database");
+  const { deleteGameRoom, getGameRoom } = await import("./gameRoom");
+
+  const room = getGameRoom(gameId);
+  if (!room?.hostUser?.id || !room?.guestUser?.id) {
+    console.error("Cannot finish game: missing user data", gameId);
+    return;
+  }
+
+  const finalWinnerId =
+    hostScore > guestScore ? room.hostUser.id : room.guestUser.id;
 
   return new Promise<void>((resolve, reject) => {
-    const hostScore = escapedIsHost ? -10 : 10;
-    const guestScore = escapedIsHost ? 10 : -10;
-    const winnerId = escapedIsHost ? guestUserId : hostUserId;
-
     db.run(
       `UPDATE games 
-       SET guest_user_id = ?, 
-           status = 'finished',
+       SET status = ?,
            host_score = ?,
            guest_score = ?,
            winner_id = ?,
            finished_at = CURRENT_TIMESTAMP
        WHERE id = ?`,
-      [guestUserId, hostScore, guestScore, winnerId, gameId],
+      [status ?? "finished", hostScore, guestScore, finalWinnerId, gameId],
       function (err) {
         if (err) {
-          console.error("Error updating game status:", err);
+          console.error("Error finishing game:", err);
           reject(err);
           return;
         }
 
+        // Очищаем комнату
+        deleteGameRoom(gameId);
+
         console.log(
-          `Game ${gameId} finished. Winner: ${winnerId}, Scores: host=${hostScore}, guest=${guestScore}`
+          `Game ${gameId} completed. Winner: ${finalWinnerId}, Scores: host=${hostScore}, guest=${guestScore}, Room cleared.`
         );
         resolve();
       }

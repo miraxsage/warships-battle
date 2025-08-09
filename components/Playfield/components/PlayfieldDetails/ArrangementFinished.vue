@@ -21,7 +21,7 @@ const { count } = useCountdown(10);
     </p>
     <p :class="$style.text">
       <span>
-        Все расчёты завершены, модули приведены в боевую готовность!
+        Все расчёты завершены и модули приведены в боевую готовность!
       </span>
     </p>
     <p :class="[$style.text, $style.center]">

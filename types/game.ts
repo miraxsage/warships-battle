@@ -28,6 +28,8 @@ export type GameStatus =
   | "arrangement"
   | "hostArrangementWaiting"
   | "guestArrangementWaiting"
+  | "guestArrangementLose"
+  | "hostArrangementLose"
   | "arrangementFinished"
   | "guestConnectionRepairingWaiting"
   | "hostConnectionRepairingWaiting"
@@ -55,6 +57,7 @@ export interface Game {
     x: number;
     y: number;
     result: "hit" | "miss";
+    isShipDestroyed?: boolean;
   };
   turnNumber?: number;
   // Поля для завершенных игр
@@ -130,6 +133,7 @@ export interface WSGameTurnedData {
   y: number;
   status: GameStatus;
   turn: FieldTurn;
+  destroyedShip?: ShipState;
   turnsMap: FieldTurn[][];
 }
 

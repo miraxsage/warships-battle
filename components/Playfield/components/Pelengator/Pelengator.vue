@@ -62,6 +62,7 @@
   }
   --shift: calc(var(--fcell-size) * 0.38);
   position: absolute;
+  z-index: 10;
   width: calc(100% + var(--shift) * 2);
   height: calc(100% + var(--shift) * 2);
   left: calc(-0.9 * var(--shift));

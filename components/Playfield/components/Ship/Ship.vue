@@ -17,7 +17,8 @@ const ShipsComponents = {
 };
 
 const { id, owner } = defineProps<ShipProps>();
-const { ship, damagedParts, isDestroyed, isDamaged } = useShip(id, owner)!;
+const { ship, damagedParts, isDestroyed, isDamaged, isLastTurnDamaged } =
+  useShip(id, owner)!;
 
 const rotationDegree = ref(0);
 watchEffect(() => {
@@ -48,7 +49,6 @@ const theme = computed(() => {
 });
 </script>
 <template>
-  {{ subTheme }}
   <component
     :is="ShipsComponents[ship.type]"
     :class="[
@@ -57,6 +57,7 @@ const theme = computed(() => {
       `subShip`,
       `${subTheme}Theme`,
       owner == 'enemy' ? 'enemyOwned' : 'playerOwned',
+      { hidden: _.isEmpty(invalidParts), fadeIn: isLastTurnDamaged },
     ]"
     :theme="subTheme"
     :key="subTheme"
@@ -64,7 +65,6 @@ const theme = computed(() => {
       left: coords.x,
       top: coords.y,
       zIndex: ship.isDragging ? 100 : 1,
-      opacity: !_.isEmpty(invalidParts) ? 1 : 0,
       maskImage: isDestroyed
         ? 'unset'
         : shipMaskImage(ship, invalidParts, true, isDamaged ? 75 : 20),
@@ -85,7 +85,7 @@ const theme = computed(() => {
       `mainShip`,
       `${theme}Theme`,
       owner == 'player' ? 'playerOwned' : 'enemyOwned',
-      { smooth: ship.isSmooth },
+      { smooth: ship.isSmooth, hidden: isDestroyed && !isLastTurnDamaged },
     ]"
     :style="{
       zIndex: ship.isDragging ? 100 : 1,
@@ -131,12 +131,16 @@ const theme = computed(() => {
   mix-blend-mode: multiply;
   transform-origin: calc(var(--fcell-size) / 2) calc(var(--fcell-size) / 2);
   transition: rotate 0.5s;
-  &.destroyedTheme {
+  &.subShip.destroyedTheme {
     transform: translate(-8px, -6px) scale(0.96);
-    animation: fadeIn 10s forwards;
     mask-image: unset !important;
+    &.fadeIn {
+      animation: fadeIn 6s;
+      & + .ship {
+        animation: fadeOut 6s forwards;
+      }
+    }
     & + .ship {
-      animation: fadeOut 10s forwards;
       mask-image: unset !important;
     }
   }
@@ -145,6 +149,9 @@ const theme = computed(() => {
     animation: fadeIn 2s forwards;
   }
   &.mainShip.normalTheme.enemyOwned {
+    opacity: 0;
+  }
+  &.hidden {
     opacity: 0;
   }
 }

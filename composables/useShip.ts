@@ -11,8 +11,10 @@ export function useShip(shipId: string, owner: "player" | "enemy") {
 
   const damagedParts = ref<number[]>([]);
   const isDestroyed = ref(false);
+  const isLastTurnDamaged = ref(false);
+
   watchEffect(() => {
-    let isLastTurnDamaged = false;
+    isLastTurnDamaged.value = false;
     const shipTurnsMap =
       owner == "player"
         ? fieldState.enemy.turnsMap
@@ -22,11 +24,11 @@ export function useShip(shipId: string, owner: "player" | "enemy") {
       if (!!shipTurnsMap[x]?.[y]?.count) {
         newDamagedParts.push(part);
         if (gameState.lastTurn?.x == x && gameState.lastTurn?.y == y) {
-          isLastTurnDamaged = true;
+          isLastTurnDamaged.value = true;
         }
       }
     });
-    if (isLastTurnDamaged) {
+    if (isLastTurnDamaged.value) {
       setTimeout(
         () => (damagedParts.value = newDamagedParts),
         TURN_ANIMATION_DURATION * 1.1
@@ -43,5 +45,5 @@ export function useShip(shipId: string, owner: "player" | "enemy") {
     }
   });
   const isDamaged = computed(() => damagedParts.value.length > 0);
-  return { ship, damagedParts, isDestroyed, isDamaged };
+  return { ship, damagedParts, isDestroyed, isDamaged, isLastTurnDamaged };
 }

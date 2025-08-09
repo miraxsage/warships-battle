@@ -42,6 +42,12 @@ export function getGamePeer(peer: WebSocketPeer): GamePeer | undefined {
 export function removeGamePeer(peer: WebSocketPeer): GamePeer | undefined {
   const gamePeer = gamePeers.get(peer);
   if (gamePeer) {
+    try {
+      peer.close();
+    } catch (error) {
+      console.error("Error closing WebSocket connection:", error);
+    }
+
     gamePeers.delete(peer);
     console.log(
       "Removed peer:",

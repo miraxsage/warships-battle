@@ -32,7 +32,7 @@
       <span>наc на атомы!</span>
     </p>
     <p :class="[$style.text, $style.center]">
-      <span :class="$style.error">-10 </span>
+      <span :class="$style.error">-5 </span>
       <span>к нашей карме за медлительность</span>
       <br />
       <span>Увидимся в следующей жизни!</span>

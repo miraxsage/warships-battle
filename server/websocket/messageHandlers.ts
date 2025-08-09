@@ -10,10 +10,15 @@ import {
   createGameResponse,
   broadcastToRoom,
 } from "./gameRoom";
-import { sendMessage, sendError } from "./utils";
+import { sendMessage, sendError, finishGameAsArrangementLose } from "./utils";
 import type { ShipState, WSGameTurnData } from "~/types/game";
-import { SHIP_DIRECTION_INCREMENTS } from "~/constants/common";
+import {
+  SHIP_DIRECTION_INCREMENTS,
+  TURN_ANIMATION_DURATION,
+} from "~/constants/common";
 import * as _ from "lodash-es";
+import { someShipPart } from "~/utils/someShipPart";
+import { forEachShipPart } from "~/utils/forEachShipPart";
 
 function scheduleGameTurn(
   game: GameRoom,
@@ -50,7 +55,9 @@ function scheduleGameTurn(
 }
 
 export function getFieldMap(ships: ShipState[]) {
-  const map: FieldTurn[][] = [];
+  const map: FieldTurn[][] = Array.from({ length: 10 }, () =>
+    Array(10).fill(undefined)
+  );
   for (let ship of ships) {
     (map[ship.x] || (map[ship.x] = []))[ship.y] = { type: "hit", count: 0 };
     const [dx, dy] = SHIP_DIRECTION_INCREMENTS[ship.rotation];
@@ -193,6 +200,50 @@ export async function handleGameJoin(
   );
 }
 
+export async function handleGameArranged(
+  peer: WebSocketPeer,
+  data: any
+): Promise<void> {
+  const gamePeer = getGamePeer(peer);
+  if (!gamePeer?.gameId) return;
+  const game = getGameRoom(gamePeer.gameId);
+  if (!game) return;
+
+  console.log(`Player ${gamePeer.username} arranged ships:`, data.arrangement);
+
+  game[gamePeer.isHost ? "hostArrangement" : "guestArrangement"] =
+    structuredClone(data.arrangement);
+  const isFirstArranged = !game.firstArranged;
+  if (isFirstArranged) {
+    game.firstArranged = gamePeer.isHost ? "host" : "guest";
+    game.status = `${gamePeer.isHost ? "guest" : "host"}ArrangementWaiting`;
+  } else {
+    game.status = "arrangementFinished";
+  }
+
+  broadcastToRoom(gamePeer.gameId, {
+    type: "game:update",
+    data: { status: game.status, firstArranged: game.firstArranged },
+  });
+
+  if (game.status == "arrangementFinished") {
+    // Ожидение уведомления пользователей о готовности к игре
+    // и планирование следующего сообщения о начале игры
+    scheduleGameTurn(game, game.firstArranged!, 11000);
+  } else {
+    // Планирование проигрыша игрока, не завершившего размещение кораблей вовремя
+    game.deferOperation(() => {
+      const loserRole = game.firstArranged! == "host" ? "guest" : "host";
+      game.status = `${loserRole}ArrangementLose`;
+      broadcastToRoom(game.id, {
+        type: "game:update",
+        data: { status: game.status },
+      });
+      // finishGameAsArrangementLose(game.id, loserRole == "host");
+    }, 30000);
+  }
+}
+
 export async function handleGameTurn(
   peer: WebSocketPeer,
   wsMessage: WSMessage
@@ -209,16 +260,33 @@ export async function handleGameTurn(
     return;
   }
 
+  let destroyedShip: ShipState | undefined = undefined;
+  const enemyArrangement = game[`${enemyRole}Arrangement`] || [];
   const turnsMap =
-    game[`${performerRole}TurnsMap`] ||
-    getFieldMap(game[`${enemyRole}Arrangement`] || []);
+    game[`${performerRole}TurnsMap`] || getFieldMap(enemyArrangement);
   const x = _.clamp(wsMessage.data.x, 0, 9);
   const y = _.clamp(wsMessage.data.y, 0, 9);
   let turn = turnsMap[x][y];
   if (turn) {
     turn.count++;
+    if (turn.type == "hit") {
+      const cellShip = enemyArrangement.find((ship) =>
+        someShipPart(ship, ({ x: partX, y: partY }) => partX == x && partY == y)
+      );
+      if (cellShip) {
+        let damagedParts = 0;
+        forEachShipPart(cellShip, ({ part, x, y }) => {
+          if (!!turnsMap[x]?.[y]?.count) {
+            damagedParts++;
+          }
+        });
+        if (damagedParts == cellShip.type) {
+          destroyedShip = cellShip;
+        }
+      }
+    }
   } else {
-    turnsMap[x][y] = { type: "miss", count: 0 };
+    turnsMap[x][y] = { type: "miss", count: 1 };
   }
 
   game[`${performerRole}TurnsMap`] = turnsMap;
@@ -245,43 +313,15 @@ export async function handleGameTurn(
       turn,
       status: `${performerRole}TurnFinished`,
       turnsMap: turnsMapToShow,
+      destroyedShip,
     },
   });
 
-  scheduleGameTurn(game, enemyRole, 20000);
-}
-
-export async function handleGameArranged(
-  peer: WebSocketPeer,
-  data: any
-): Promise<void> {
-  const gamePeer = getGamePeer(peer);
-  if (!gamePeer?.gameId) return;
-  const game = getGameRoom(gamePeer.gameId);
-  if (!game) return;
-
-  console.log(`Player ${gamePeer.username} arranged ships:`, data.arrangement);
-
-  game[gamePeer.isHost ? "hostArrangement" : "guestArrangement"] =
-    data.arrangement;
-  const isFirstArranged = !game.firstArranged;
-  if (isFirstArranged) {
-    game.firstArranged = gamePeer.isHost ? "host" : "guest";
-    game.status = `${gamePeer.isHost ? "guest" : "host"}ArrangementWaiting`;
-  } else {
-    game.status = "arrangementFinished";
-  }
-
-  broadcastToRoom(gamePeer.gameId, {
-    type: "game:update",
-    data: { status: game.status, firstArranged: game.firstArranged },
-  });
-
-  if (game.status == "arrangementFinished") {
-    // Ожидение уведомления пользователей о готовности к игре
-    // и планирование следующего сообщения о начале игры
-    scheduleGameTurn(game, game.firstArranged!, 11000);
-  }
+  scheduleGameTurn(
+    game,
+    enemyRole,
+    TURN_ANIMATION_DURATION + 11000 + (destroyedShip ? 5000 : 0)
+  );
 }
 
 export async function handleGameReset(peer: WebSocketPeer): Promise<void> {

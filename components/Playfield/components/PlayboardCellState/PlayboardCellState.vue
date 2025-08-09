@@ -58,7 +58,9 @@
   width: 100%;
   height: 100%;
   transform: scale(2.5) translate(3%, 30%);
-  animation: missAnimation calc(var(--turn-animation-duration) * 0.6) forwards;
+  &.fadeIn {
+    animation: missAnimation calc(var(--turn-animation-duration) * 0.6) forwards;
+  }
 }
 .hitImage,
 .hitFlame {
@@ -66,14 +68,19 @@
   width: 100%;
   height: 100%;
   transform: scale(2, 1.8) translate(0%, 0%);
-  animation: hitAnimation calc(var(--turn-animation-duration) * 0.6)
-    cubic-bezier(0, 0.59, 0.42, 1.01) forwards;
+  &:not(.hitDelayed) {
+    opacity: 1;
+    transform: scale(2, 1.8) translate(0%, 4%);
+  }
   &.hitDelayed {
-    animation: hitAnimation calc(var(--turn-animation-duration) * 0.6)
+    animation: hitAnimation calc(var(--turn-animation-duration) * 0.4)
       cubic-bezier(0, 0.59, 0.42, 1.01) 1s forwards;
   }
   &.fadeOut {
-    animation: fadeOut 17s forwards;
+    animation: fadeOut 15s forwards;
+  }
+  &.hidden {
+    opacity: 0;
   }
 }
 .hitFlame {
@@ -87,11 +94,18 @@
 }
 .cellState {
   position: absolute;
+  pointer-events: none;
   z-index: 1;
   top: calc(var(--fcell-size) * var(--y));
   left: calc(var(--fcell-size) * var(--x));
   width: var(--fcell-size);
   height: var(--fcell-size);
+  &:has(.hitFlame) {
+    z-index: 2;
+  }
+  &:has(.hitImage) {
+    z-index: 3;
+  }
 }
 </style>
 <script setup lang="ts">
@@ -127,11 +141,12 @@ onMounted(() => {
     const status = gameStore.lastTurn?.result;
     setTimeout(() => {
       isShown.value = true;
-    }, (status == "miss" ? 1.15 : 0.95) * TURN_ANIMATION_DURATION);
+    }, (status == "miss" ? 1.15 : 1.05) * TURN_ANIMATION_DURATION);
   }
 });
 
 const fadeOut = ref(false);
+const hidden = ref(false);
 
 watchEffect(() => {
   const cellField =
@@ -166,14 +181,13 @@ watchEffect(() => {
   } else {
     actualShipState = "damaged";
   }
-  console.log("actualShipState", actualShipState);
   if (actualShipState == "destroyed") {
     if (isLastTurnDamagedShip) {
       setTimeout(() => {
         fadeOut.value = true;
       }, TURN_ANIMATION_DURATION * 1.6);
     } else {
-      fadeOut.value = true;
+      hidden.value = true;
     }
   }
 });
@@ -195,14 +209,15 @@ watchEffect(() => {
         {
           [$style.hitDelayed]: isLastTurnCellState,
           [$style.fadeOut]: fadeOut,
+          [$style.hidden]: hidden,
         },
       ]"
     />
     <img
       v-if="cellState == 'miss' && isShown"
-      src="/images/missile-miss.svg"
+      :src="`/images/missile-miss${isLastTurnCellState ? '-starter' : ''}.svg`"
       alt="miss"
-      :class="$style.missImage"
+      :class="[$style.missImage, { [$style.fadeIn]: isLastTurnCellState }]"
     />
   </div>
 </template>

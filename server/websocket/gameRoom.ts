@@ -9,6 +9,7 @@ import type {
   WebSocketPeer,
 } from "./types";
 import { sendMessage } from "./utils";
+import { removeGamePeer } from "./peerManager";
 
 const gameRooms = new Map<string, GameRoom>();
 
@@ -115,4 +116,23 @@ export function createGameResponse(room: GameRoom): Game {
     updatedAt: new Date().toISOString(),
     turnNumber: room.turnNumber,
   };
+}
+
+export function deleteGameRoom(gameId: string) {
+  const room = gameRooms.get(gameId);
+  if (!room) return;
+
+  room.deferredOperation()?.stop();
+
+  for (const gamePeer of room.players) {
+    removeGamePeer(gamePeer.peer);
+  }
+
+  room.players.clear();
+
+  const deleted = gameRooms.delete(gameId);
+
+  if (deleted) {
+    console.log("Game room deleted with all resources cleaned:", gameId);
+  }
 }

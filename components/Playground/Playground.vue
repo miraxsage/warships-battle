@@ -49,6 +49,24 @@
     top: calc(var(--cell-size) * 9 + var(--fcell-size) * 11);
   }
 }
+
+.fadePlayfield-enter-active,
+.fadePlayfield-leave-active {
+  transition: color 0.3s;
+  &:after,
+  & > * {
+    transition: opacity 0.3s;
+  }
+}
+
+.fadePlayfield-enter-from,
+.fadePlayfield-leave-to {
+  color: white;
+  &:after,
+  & > * {
+    opacity: 0 !important;
+  }
+}
 </style>
 <script setup lang="ts">
 import DamageVariants from "./DamageVariants.vue";
@@ -57,19 +75,20 @@ const gameStore = useGameStore();
 const isOnlyPlayerMessage = computed(() => {
   const player = gameStore.isHost ? "host" : "guest";
   const enemy = gameStore.isHost ? "guest" : "host";
-  // TODO: remove this
-  return false;
-  return (
+  const res =
     gameStore.currentGame &&
     [
       `${enemy}ConnectionRepairingWaiting`,
       `${enemy}Exited`,
       `${enemy}TurnLost`,
       `${player}TurnLost`,
+      `${enemy}ArrangementLose`,
+      `${player}ArrangementLose`,
       "arrangementFinished",
       "finished",
-    ].includes(gameStore.gameStatus)
-  );
+    ].includes(gameStore.gameStatus);
+  console.log("isOnlyPlayerMessage", res, gameStore.gameStatus);
+  return res;
 });
 const isMissileLaunch = computed(() => {
   return (
@@ -81,19 +100,18 @@ const isMissileLaunch = computed(() => {
 <template>
   <div>
     <DamageVariants />
-    <TransitionGroup name="fade" mode="out-in">
-      <Playfield
-        key="player"
-        type="player"
-        :class="['player-field', isOnlyPlayerMessage && 'only-player-message']"
-      />
-      <Playfield
-        key="enemy"
-        type="enemy"
-        v-if="!isOnlyPlayerMessage"
-        class="enemy-field"
-      />
-    </TransitionGroup>
+    <Playfield
+      key="player"
+      type="player"
+      :class="['player-field', isOnlyPlayerMessage && 'only-player-message']"
+      :isOnlyPlayerMessage="!!isOnlyPlayerMessage"
+    />
+    <Playfield
+      key="enemy"
+      type="enemy"
+      class="enemy-field"
+      :isOnlyPlayerMessage="!!isOnlyPlayerMessage"
+    />
     <MissileLaunch v-if="isMissileLaunch" />
   </div>
 </template>

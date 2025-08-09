@@ -1,5 +1,5 @@
 import { defineStore } from "pinia";
-import type { FieldTurn, ShipState } from "~/types/game";
+import type { FieldTurn, ShipPart, ShipState } from "~/types/game";
 
 export type ShipStateDetailed = ShipState & {
   id: string;
@@ -35,6 +35,34 @@ export const useFieldStore = defineStore("field", () => {
       ships: [] as ShipStateDetailed[],
     },
   });
+
+  const getShipDetailsByCoords =
+    () => (x: number, y: number, owner: "player" | "enemy") => {
+      let resultShip: ShipStateDetailed | undefined;
+      let resultShipPart: ShipPart | undefined;
+      field[owner].ships.forEach((ship) => {
+        forEachShipPart(ship, (part) => {
+          if (part.x === x && part.y === y) {
+            resultShip = ship;
+            resultShipPart = part;
+            return false;
+          }
+          return true;
+        });
+        if (resultShip) {
+          return false;
+        }
+        return true;
+      });
+      if (resultShip) {
+        return {
+          ship: resultShip,
+          part: resultShipPart,
+        };
+      }
+      return undefined;
+    };
+
   function resetPlayerField() {
     // Сбрасываем корабли к изначальным позициям
     field.player.ships = [
@@ -52,5 +80,5 @@ export const useFieldStore = defineStore("field", () => {
     field.player.shipPlaceholder = undefined;
   }
 
-  return { ...field, resetPlayerField };
+  return { ...field, resetPlayerField, getShipDetailsByCoords };
 });

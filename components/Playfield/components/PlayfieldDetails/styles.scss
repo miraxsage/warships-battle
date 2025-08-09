@@ -3,11 +3,16 @@
 
 .details {
   color: $pen-color;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
   display: flex;
   flex-direction: column;
   justify-content: center;
-  height: 100%;
   padding-inline: 26px;
+  box-sizing: border-box;
 }
 .info {
   margin-right: 8px;
@@ -68,6 +73,15 @@
     @include bold-filter($success);
   }
 }
+.pen {
+  color: $pen-color;
+  &:is(svg) {
+    @include bold-filter($pen-color, $bold: false);
+  }
+  &:is(span) {
+    @include bold-filter($pen-color);
+  }
+}
 .fightButton {
   align-self: center;
   min-width: 150px;
@@ -92,8 +106,11 @@
     color: rgba($pen-color, 0.2);
     width: 100%;
     height: 100%;
-    transition: clip-path 1s linear;
-    clip-path: inset(0 0 0 calc(100% * var(--progress)));
+    mask-image: linear-gradient(to right, transparent 48%, black 51%);
+    mask-size: 200% 100%;
+    mask-position: calc(100% - var(--progress) * 100%);
+    mask-repeat: no-repeat;
+    transition: mask-position 1s linear;
   }
 }
 .missile {
@@ -103,8 +120,11 @@
   height: 100%;
   isolation: isolate;
   & svg {
-    transition: clip-path 1s linear;
-    clip-path: inset(0 calc(100% * (1 - var(--progress))) 0 0);
+    mask-image: linear-gradient(to right, black 48%, transparent 51%);
+    mask-size: 210% 100%;
+    mask-position: calc(100% - var(--progress) * 100%);
+    mask-repeat: no-repeat;
+    transition: mask-position 1s linear;
   }
   &::before {
     content: "";

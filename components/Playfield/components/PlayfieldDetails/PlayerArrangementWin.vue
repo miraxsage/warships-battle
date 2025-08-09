@@ -29,7 +29,7 @@ defineProps<{ fullDamage?: boolean }>();
       <span :class="$style.warning">Так держать!</span>
     </p>
     <p :class="[$style.text, $style.center]">
-      <span :class="$style.success">+10</span>
+      <span :class="$style.success">+5</span>
       <span> очков за медлительность врага </span>
     </p>
     <Button text="К статистике" variant="2" :class="$style.fightButton" />

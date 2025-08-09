@@ -2,6 +2,29 @@ import type { Point, Rect, Rotation } from "~/types/common";
 
 export const TURN_ANIMATION_DURATION = 7500;
 
+export const SHIPS_CLASSES = {
+  "1": {
+    name: "Разведовательный скаут",
+    nameTo: "Разведовательному скауту",
+    nameOf: "Разведовательных скаутов",
+  },
+  "2": {
+    name: "Патрульный корвет",
+    nameTo: "Патрульному корвету",
+    nameOf: "Патрульных корветов",
+  },
+  "3": {
+    name: "Штурмовой крейсер",
+    nameTo: "Штурмовому крейсеру",
+    nameOf: "Штурмовых крейсера",
+  },
+  "4": {
+    name: "Флагманский линкор",
+    nameTo: "Флагманскому линкору",
+    nameOf: "Флагманских линкоров",
+  },
+};
+
 export const ROTATION_ANGLE: Record<Rotation, number> = {
   top: 0,
   right: 90,

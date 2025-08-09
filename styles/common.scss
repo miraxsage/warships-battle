@@ -3,80 +3,22 @@
   opacity: 0.5;
 }
 
-// Fade transition (только opacity)
 .fade-enter-active,
 .fade-leave-active {
-  transition: opacity 0.3s ease-in-out;
+  transition: opacity 0.3s;
 }
 
-.fade-enter-from {
-  opacity: 0;
-}
-
+.fade-enter-from,
 .fade-leave-to {
   opacity: 0;
 }
 
-// Page transitions
-.page-enter-active,
-.page-leave-active {
-  transition: all 0.3s ease-in-out;
+.fadeText-enter-active,
+.fadeText-leave-active {
+  transition: opacity 0.6s;
 }
 
-.page-enter-from {
+.fadeText-enter-from,
+.fadeText-leave-to {
   opacity: 0;
-  transform: scale(0.8);
-}
-
-.page-leave-to {
-  opacity: 0;
-  transform: scale(1.2);
-}
-
-// Slide transition
-.slide-enter-active,
-.slide-leave-active {
-  transition: all 0.4s ease-in-out;
-}
-
-.slide-enter-from {
-  opacity: 0;
-  transform: translateX(100%);
-}
-
-.slide-leave-to {
-  opacity: 0;
-  transform: translateX(-100%);
-}
-
-// FadeScale transition (opacity + scale)
-.fadeScale-enter-active,
-.fadeScale-leave-active {
-  transition: all 20.3s ease-in-out;
-}
-
-.fadeScale-enter-from {
-  opacity: 0;
-  transform: scale(0.8);
-}
-
-.fadeScale-leave-to {
-  opacity: 0;
-  transform: scale(1.2);
-}
-
-// Scale transition
-.scale-enter-active,
-.scale-leave-active {
-  transition: all 0.5s ease-in-out;
-}
-
-.scale-enter-from {
-  opacity: 0;
-  transform: scale(0.8);
-}
-
-.scale-leave-to {
-  opacity: 0;
-  transform: scale(1.2);
 }

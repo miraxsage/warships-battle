@@ -1,9 +1,9 @@
 <style lang="scss" module>
-@use "./styles.scss" as *;
+@use "../styles.scss" as *;
 </style>
 <script setup lang="ts">
 import * as _ from "lodash-es";
-import EnergomoduleProgress from "./EnergomoduleProgress.vue";
+import EnergomoduleProgress from "../EnergomoduleProgress.vue";
 
 const startPhrases = [
   "Мы наносим ответный удар!",

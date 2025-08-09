@@ -114,7 +114,7 @@ const offsetPath = `path('${selectedPath.path}')`;
 const pathLength = getPathLength(selectedPath.path);
 
 const startY = computed(() => _.random(3, 7) * scale.fcellSize);
-const startX = 0;
+const startX = -scale.cellSize;
 
 const endX = computed(() => {
   const X = direction.value == "rightToLeft" ? 9 - x.value : x.value;
@@ -186,7 +186,7 @@ watchEffect(() => {
 
   // итоговый transform: только scale и rotate вокруг начальной точки
   routeTransform.value =
-    `translate(-${selectedPath.startPoint.x}px, ${
+    `translate(-${selectedPath.startPoint.x - startX}px, ${
       startY.value - selectedPath.startPoint.y
     }px) ` + `rotate(${localRotate}deg) scale(${localScale})`;
   revertTransform.value = `scale(${1 / localScale})`;

@@ -10,6 +10,7 @@ import type { ShipState } from "~/types/game";
 export interface WebSocketPeer {
   id: string;
   send(data: string): void;
+  close(code?: number, reason?: string): void;
 }
 
 export interface GamePeer {

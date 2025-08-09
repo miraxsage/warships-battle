@@ -19,7 +19,9 @@
 }
 </style>
 <script setup lang="ts">
-const props = defineProps<{ isHit: boolean; realX: number; realY: number }>();
+defineProps<{ isHit: boolean; realX: number; realY: number }>();
+const id = Math.random().toString(36).substring(2, 15);
+const animationId = Date.now() + Math.random();
 </script>
 <template>
   <div
@@ -29,14 +31,15 @@ const props = defineProps<{ isHit: boolean; realX: number; realY: number }>();
     <img
       v-if="isHit"
       :class="$style['missile-hit-image']"
-      src="/images/explosion.svg"
+      :src="`/images/explosion.svg?v=${animationId}`"
       alt="missile hit"
       :key="'hit' + realX + realY"
     />
     <img
       v-else
+      ref="missRef"
       :class="$style['missile-miss-image']"
-      src="/images/spray.svg"
+      :src="`/images/spray.svg?v=${animationId}`"
       alt="missile miss"
       :key="'miss' + realX + realY"
     />

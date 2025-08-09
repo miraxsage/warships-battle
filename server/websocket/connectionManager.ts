@@ -6,7 +6,7 @@ import {
   updateRoomStatus,
   broadcastToRoom,
 } from "./gameRoom";
-import { updateGameFinished } from "./utils";
+import { finishGameAsEscaped } from "./utils";
 import { delay } from "~/utils/delay";
 
 export async function handleDisconnection(peer: WebSocketPeer): Promise<void> {
@@ -56,8 +56,8 @@ export async function handleDisconnection(peer: WebSocketPeer): Promise<void> {
     },
   });
 
-  // Ждем переподключения (30 секунд в продакшене, 300 для тестов)
-  await delay(300 * 1000);
+  // Ждем переподключения
+  await delay(60000);
 
   // Проверяем, переподключился ли игрок
   const updatedRoom = getGameRoom(gameId);
@@ -94,12 +94,7 @@ export async function handleDisconnection(peer: WebSocketPeer): Promise<void> {
       updatedRoom.guestUser
     ) {
       try {
-        await updateGameFinished(
-          gameId,
-          updatedRoom.hostUser.id,
-          updatedRoom.guestUser.id,
-          !!gamePeer.isHost
-        );
+        await finishGameAsEscaped(gameId, !!gamePeer.isHost);
         console.log(
           `Game ${gameId} finished due to player disconnection. Escaped: ${
             gamePeer.isHost ? "host" : "guest"
@@ -111,33 +106,3 @@ export async function handleDisconnection(peer: WebSocketPeer): Promise<void> {
     }
   }
 }
-
-// export function handleReconnection(gameId: string, userId: number): void {
-//   const room = getGameRoom(gameId);
-//   if (!room) return;
-
-//   console.log(
-//     "Reconnecting to game:",
-//     gameId,
-//     "user:",
-//     userId,
-//     room.deferredOperation() ? "hasDefOp" : "noDefOp"
-//   );
-
-//   // Проверяем, был ли этот игрок в состоянии переподключения
-//   const isHostReconnecting =
-//     room.status === "hostConnectionRepairingWaiting" &&
-//     room.hostUser?.id === userId;
-//   const isGuestReconnecting =
-//     room.status === "guestConnectionRepairingWaiting" &&
-//     room.guestUser?.id === userId;
-
-//   if (isHostReconnecting || isGuestReconnecting) {
-//     // Восстанавливаем предыдущий статус
-//     if (room.beforeLostConnectionStatus) {
-//       updateRoomStatus(gameId, room.beforeLostConnectionStatus);
-//       room.deferredOperation()?.start();
-//       console.log(`Player ${userId} reconnected to game ${gameId}`);
-//     }
-//   }
-// }

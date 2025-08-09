@@ -1,5 +1,7 @@
 <style lang="scss">
 @use "~/styles/mixins" as *;
+@use "~/styles/colors" as *;
+
 .undefinite-details {
   @include bold-filter;
   font-size: 24px;
@@ -36,8 +38,33 @@
     3% 3%
   );
 }
-.playfield-message {
+.playfield-message:not(
+    :has(:global(:is(.critical, .successful):first-of-type))
+  ) {
   mix-blend-mode: darken;
+}
+
+.playfield-message:has(:is(.critical, .successful):first-of-type):after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: unset;
+  box-shadow: inset 0 0 145px 34px rgb(202 41 41 / 91%);
+  border-radius: 20px;
+  mix-blend-mode: overlay;
+  scale: 1.1;
+  translate: 5px -1px;
+  pointer-events: none;
+}
+.playfield-message:has(.critical:first-of-type):after {
+  translate: 3px 2px;
+}
+.playfield-message:has(.successful:first-of-type):after {
+  background-color: unset;
+  box-shadow: inset 0 0 145px 20px #008142;
 }
 </style>
 <script setup lang="ts">
@@ -47,47 +74,55 @@ import ArrangementPlayerFirst from "./ArrangementPlayerFirst.vue";
 import ArrangementStart from "./ArrangementStart.vue";
 import EnemyConnectionLost from "./EnemyConnectionLost.vue";
 import EnemyEscaped from "./EnemyEscaped.vue";
-import EnemyTurn from "./EnemyTurn.vue";
-import EnemyTurnLost from "./EnemyTurnLost.vue";
-import PlayerTurn from "./PlayerTurn.vue";
-import PlayerTurnLost from "./PlayerTurnLost.vue";
-
-const gameStore = useGameStore();
-const status = computed(() => gameStore.currentGame?.status);
-const playerRole = computed(() => gameStore.playerRole);
-const enemyRole = computed(() => gameStore.enemyRole);
+import PlayerArrangementLose from "./PlayerArrangementLose.vue";
+import PlayerArrangementWin from "./PlayerArrangementWin.vue";
+import Turn from "./Turn/Turn.vue";
 
 defineOptions({
   inheritAttrs: false,
 });
 
-const { type } = defineProps<{ type: "player" | "enemy" }>();
+const props = defineProps<{
+  type: "player" | "enemy";
+  empty?: boolean;
+}>();
+
+const gameStore = useGameStore();
+const gameStatus = computed(() => gameStore.currentGame?.status);
+const playerRole = computed(() => gameStore.playerRole);
+const enemyRole = computed(() => gameStore.enemyRole);
+
+const _is = (status: string) => {
+  return gameStatus.value == status;
+};
 </script>
 <template>
-  <div class="playfield-message" v-bind="$attrs">
-    <div :class="[type == 'player' ? 'border1' : 'border2', 'frameOnly']">
-      <template v-if="type == 'player'">
+  <div
+    class="playfield-message"
+    v-bind="$attrs"
+    :style="empty ? 'display: none' : ''"
+  >
+    <div :class="[props.type == 'player' ? 'border1' : 'border2', 'frameOnly']">
+      <Transition name="fadeText">
+        <Turn v-if="gameStatus?.match(/Turn(Finished|Lost)?$/)" />
         <EnemyConnectionLost
-          v-if="status == `${enemyRole}ConnectionRepairingWaiting`"
+          v-else-if="_is(`${enemyRole}ConnectionRepairingWaiting`)"
         />
-        <EnemyEscaped v-else-if="status == `${enemyRole}Exited`" />
-        <ArrangementFinished v-else-if="status == 'arrangementFinished'" />
-        <PlayerTurn v-else-if="status == `${playerRole}Turn`" />
-        <PlayerTurnLost v-else-if="status == `${playerRole}TurnLost`" />
-        <EnemyTurnLost v-else-if="status == `${enemyRole}TurnLost`" />
-        <div v-else class="undefinite-details">{{ status }}</div>
-      </template>
-      <template v-else>
-        <ArrangementStart v-if="status == 'arrangement'" />
+        <EnemyEscaped v-else-if="_is(`${enemyRole}Exited`)" />
+        <PlayerArrangementWin v-else-if="_is(`${enemyRole}ArrangementLose`)" />
+        <PlayerArrangementLose
+          v-else-if="_is(`${playerRole}ArrangementLose`)"
+        />
+        <ArrangementFinished v-else-if="_is('arrangementFinished')" />
+        <ArrangementStart v-else-if="_is('arrangement')" />
         <ArrangementPlayerFirst
-          v-else-if="status == `${enemyRole}ArrangementWaiting`"
+          v-else-if="_is(`${enemyRole}ArrangementWaiting`)"
         />
         <ArrangementEnemyFirst
-          v-else-if="status == `${playerRole}ArrangementWaiting`"
+          v-else-if="_is(`${playerRole}ArrangementWaiting`)"
         />
-        <EnemyTurn v-else-if="status == `${enemyRole}Turn`" />
-        <div v-else class="undefinite-details">{{ status }}</div>
-      </template>
+        <div v-else class="undefinite-details">{{ gameStatus }}</div>
+      </Transition>
     </div>
   </div>
 </template>

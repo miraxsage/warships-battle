@@ -7,8 +7,18 @@ definePageMeta({
 // Предзагрузка изображений границ
 useHead({
   link: [
-    { rel: "preload", href: "/images/border1.svg", as: "image" },
-    { rel: "preload", href: "/images/border2.svg", as: "image" },
+    {
+      rel: "preload",
+      href: "/images/border1.svg",
+      as: "image",
+      crossorigin: "anonymous",
+    },
+    {
+      rel: "preload",
+      href: "/images/border2.svg",
+      as: "image",
+      crossorigin: "anonymous",
+    },
   ],
 });
 
@@ -16,8 +26,17 @@ const { checkAuthAndRedirect } = useGameAuth();
 
 const gameStore = useGameStore();
 
+const preloadImages = () => {
+  const images = ["/images/border1.svg", "/images/border2.svg"];
+  images.forEach((src) => {
+    const img = new Image();
+    img.src = src;
+  });
+};
+
 onMounted(async () => {
   await checkAuthAndRedirect();
+  preloadImages(); // Запускаем предзагрузку
 });
 
 onUnmounted(() => {

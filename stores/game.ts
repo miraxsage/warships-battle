@@ -117,6 +117,9 @@ export const useGameStore = defineStore("game", () => {
             console.log("Updated Host user:", data.game?.hostUser);
             console.log("Updated Guest user:", data.game?.guestUser);
             _.merge(currentGame.value, data.game);
+            if (currentGame.value) {
+              currentGame.value.lastTurn = undefined;
+            }
           }
         }
         break;
@@ -144,11 +147,39 @@ export const useGameStore = defineStore("game", () => {
               y: data.y,
               result: data.turn?.type || "miss",
             } as const;
+            console.log("lastTurn", lastTurn);
             currentGame.value!.lastTurn = lastTurn;
             if (lastTurn.performer == "player" && data.turnsMap) {
-              fieldStore.player.turnsMap = data.turnsMap;
+              fieldStore.player.turnsMap = structuredClone(data.turnsMap);
+              console.log("has set player turnsMap", data.turnsMap);
+              // Игрок уничтожил вражеский корабль - получаем информацию о нем
+              if (data.destroyedShip) {
+                const ship = data.destroyedShip;
+                let id = `${ship.type}-ship`;
+                if (ship.type < 4) {
+                  id += `-${
+                    _.filter(fieldStore.enemy.ships, { type: ship.type })
+                      .length + 1
+                  }`;
+                }
+                const enemyDestroyedShip: ShipStateDetailed = {
+                  id,
+                  ...data.destroyedShip,
+                };
+                fieldStore.enemy.ships.push(enemyDestroyedShip);
+                console.log(
+                  "Enemy ships after push:",
+                  fieldStore.enemy.ships.length,
+                  fieldStore.enemy.ships
+                );
+                currentGame.value!.lastTurn!.isShipDestroyed = true;
+              }
             } else if (lastTurn.performer == "enemy" && data.turnsMap) {
-              fieldStore.enemy.turnsMap = data.turnsMap;
+              if (data.destroyedShip) {
+                currentGame.value!.lastTurn!.isShipDestroyed = true;
+              }
+              fieldStore.enemy.turnsMap = structuredClone(data.turnsMap);
+              console.log("has set enemy turnsMap", data.turnsMap);
             }
           }
         }
@@ -227,30 +258,5 @@ export const useGameStore = defineStore("game", () => {
     sendMessage,
     createGame,
     resetGame,
-    setGameStatus: (status: GameStatus) => {
-      gameStatus.value = status;
-    },
-    setLastTurn: (turn: Game["lastTurn"]) => {
-      if (!turn) {
-        return;
-      }
-      currentGame.value!.lastTurn = turn;
-      const performerFieldStore =
-        turn?.performer == "player" ? fieldStore.player : fieldStore.enemy;
-      if (!performerFieldStore.turnsMap[turn.x]) {
-        performerFieldStore.turnsMap[turn.x] = [];
-      }
-      performerFieldStore.turnsMap[turn.x]![turn.y] = {
-        type: turn.result,
-        count: 1,
-      };
-    },
-    setEmemyShip: (ship: ShipStateDetailed) => {
-      fieldStore.enemy.ships.push(ship);
-    },
-    clearTurnsMap: () => {
-      fieldStore.player.turnsMap = [];
-      fieldStore.enemy.turnsMap = [];
-    },
   };
 });

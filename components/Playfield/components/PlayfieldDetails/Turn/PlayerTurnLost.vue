@@ -1,5 +1,5 @@
 <style lang="scss" module>
-@use "./styles.scss" as *;
+@use "../styles.scss" as *;
 </style>
 <script setup lang="ts">
 const { count } = useCountdown(10);
@@ -8,21 +8,20 @@ const { count } = useCountdown(10);
   <div :class="$style.details">
     <p :class="[$style.text, $style.center]">
       <SpriteSymbol
-        name="fire"
+        name="error"
         :style="{ minWidth: '40px', minHeight: '40px' }"
-        :class="[$style.info, $style.warning]"
+        :class="[$style.info, $style.error]"
       />
     </p>
     <p :class="[$style.text, $style.center]">
       <span
         >Капитан!
         <br />
-        Враг</span
+        Момент выстрела</span
       >
-      <span :class="$style.success"> упустил </span>
-      <span>возможность!</span>
+      <span :class="$style.error"> упущен</span><span>!</span>
       <br />
-      <span>Не успев вовремя нанести удар</span>
+      <span>Мы не успели вовремя нанести удар!</span>
       <br />
       <span>Заряд потерял минимальную мощность...</span>
     </p>
