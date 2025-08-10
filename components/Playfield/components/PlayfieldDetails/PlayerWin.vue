@@ -33,6 +33,8 @@ defineProps<{ fullDamage?: boolean }>();
       <br />
       <span>Общий счет: </span><span :class="$style.success">+86 баллов</span>
     </p>
-    <Button text="К статистике" variant="2" :class="$style.fightButton" />
+    <NuxtLink to="/" :class="$style.fightButton">
+      <Button text="На главную" variant="2" />
+    </NuxtLink>
   </div>
 </template>

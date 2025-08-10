@@ -88,7 +88,7 @@ const props = defineProps<{
 }>();
 
 const gameStore = useGameStore();
-const gameStatus = computed(() => gameStore.currentGame?.status);
+const gameStatus = computed(() => gameStore.gameStatus);
 const playerRole = computed(() => gameStore.playerRole);
 const enemyRole = computed(() => gameStore.enemyRole);
 

@@ -76,17 +76,17 @@ const isOnlyPlayerMessage = computed(() => {
   const player = gameStore.isHost ? "host" : "guest";
   const enemy = gameStore.isHost ? "guest" : "host";
   const res =
-    gameStore.currentGame &&
-    [
-      `${enemy}ConnectionRepairingWaiting`,
-      `${enemy}Exited`,
-      `${enemy}TurnLost`,
-      `${player}TurnLost`,
-      `${enemy}ArrangementLose`,
-      `${player}ArrangementLose`,
-      "arrangementFinished",
-      "finished",
-    ].includes(gameStore.gameStatus);
+    (gameStore.currentGame &&
+      [
+        `${enemy}ConnectionRepairingWaiting`,
+        `${enemy}TurnLost`,
+        `${player}TurnLost`,
+        `${enemy}ArrangementLose`,
+        `${player}ArrangementLose`,
+        "arrangementFinished",
+        "finished",
+      ].includes(gameStore.gameStatus)) ||
+    !!gameStore.gameStatus.match(/(host|guest)Exited$/);
   console.log("isOnlyPlayerMessage", res, gameStore.gameStatus);
   return res;
 });

@@ -7,7 +7,6 @@ import {
   broadcastToRoom,
 } from "./gameRoom";
 import { finishGameAsEscaped } from "./utils";
-import { delay } from "~/utils/delay";
 
 export async function handleDisconnection(peer: WebSocketPeer): Promise<void> {
   console.log("WebSocket connection closed, peer ID:", peer.id);
@@ -56,43 +55,29 @@ export async function handleDisconnection(peer: WebSocketPeer): Promise<void> {
     },
   });
 
-  // Ждем переподключения
-  await delay(60000);
+  room.deferOperation(async () => {
+    const updatedRoom = getGameRoom(gameId);
+    if (!updatedRoom) {
+      return;
+    }
 
-  // Проверяем, переподключился ли игрок
-  const updatedRoom = getGameRoom(gameId);
-  if (
-    !updatedRoom ||
-    !updatedRoom.status.endsWith("ConnectionRepairingWaiting")
-  ) {
-    // Игрок переподключился или комната была удалена
-    return;
-  }
+    // Удаляем игрока из комнаты
+    const roomDeleted = removePlayerFromRoom(gameId, gamePeer);
+    removeGamePeer(peer);
+    console.log("Removing player from game:", gameId, "user:", gamePeer.userId);
 
-  console.log("Removing player from game:", gameId, "user:", gamePeer.userId);
+    if (roomDeleted) {
+      // Все игроки отключились - комната удалена
+      console.log("All players disconnected, room deleted:", gameId);
+    } else {
+      // Остался один игрок - уведомляем его
+      broadcastToRoom(gameId, {
+        type: "game:left",
+        data: {
+          status: gamePeer.isHost ? "hostExited" : "guestExited",
+        },
+      });
 
-  // Удаляем игрока из комнаты
-  const roomDeleted = removePlayerFromRoom(gameId, gamePeer);
-  removeGamePeer(peer);
-
-  if (roomDeleted) {
-    // Все игроки отключились - комната удалена
-    console.log("All players disconnected, room deleted:", gameId);
-  } else {
-    // Остался один игрок - уведомляем его
-    broadcastToRoom(gameId, {
-      type: "game:left",
-      data: { userId: gamePeer.userId, status: updatedRoom.status },
-    });
-
-    // Если игра была в процессе, помечаем как завершенную
-    if (
-      updatedRoom.beforeLostConnectionStatus &&
-      (updatedRoom.beforeLostConnectionStatus === "hostTurn" ||
-        updatedRoom.beforeLostConnectionStatus === "guestTurn" ||
-        updatedRoom.beforeLostConnectionStatus.match(/arrangement/i)) &&
-      updatedRoom.guestUser
-    ) {
       try {
         await finishGameAsEscaped(gameId, !!gamePeer.isHost);
         console.log(
@@ -104,5 +89,5 @@ export async function handleDisconnection(peer: WebSocketPeer): Promise<void> {
         console.error("Error updating game status:", error);
       }
     }
-  }
+  }, 60000);
 }

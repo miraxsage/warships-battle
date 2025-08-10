@@ -23,6 +23,7 @@ export const useGameStore = defineStore("game", () => {
   let ws: WebSocket | null = null;
   let reconnectAttempts = 0;
   const maxReconnectAttempts = 5;
+  let isGameFinished = false;
 
   const userStore = useUserStore();
   const fieldStore = useFieldStore();
@@ -37,6 +38,9 @@ export const useGameStore = defineStore("game", () => {
       return game;
     }
 
+    // Сбрасываем флаг завершения игры при новом подключении
+    isGameFinished = false;
+    reconnectAttempts = 0;
     gameStatus.value = "connecting";
 
     const protocol = location.protocol === "https:" ? "wss:" : "ws:";
@@ -72,11 +76,13 @@ export const useGameStore = defineStore("game", () => {
     };
 
     ws.onclose = () => {
-      gameStatus.value = "failed";
+      if (!isGameFinished) {
+        gameStatus.value = "failed";
+      }
       isConnected.value = false;
 
-      // Автоматическое переподключение
-      if (reconnectAttempts < maxReconnectAttempts) {
+      // Автоматическое переподключение только если игра не завершена
+      if (!isGameFinished && reconnectAttempts < maxReconnectAttempts) {
         reconnectAttempts++;
         setTimeout(() => connect(gameId), 1000 * reconnectAttempts);
       }
@@ -187,12 +193,11 @@ export const useGameStore = defineStore("game", () => {
         break;
 
       case "game:left":
-        {
-          const data = message.data;
-          if (data) {
-            console.log("Player left:", data.userId);
-          }
-        }
+        finishGame((enemyRole.value + "Exited") as GameStatus);
+        break;
+
+      case "game:end":
+        console.log("Game ended");
         break;
 
       case "game:restore":
@@ -261,7 +266,9 @@ export const useGameStore = defineStore("game", () => {
         console.error("Game error:", message.error);
         break;
     }
-    currentGame.value!.status = gameStatus.value;
+    if (currentGame.value) {
+      currentGame.value.status = gameStatus.value;
+    }
   }
 
   function sendMessage(message: WSMessage) {
@@ -307,6 +314,30 @@ export const useGameStore = defineStore("game", () => {
     }
   }
 
+  function finishGame(finalStatus: GameStatus = "finished") {
+    console.log("Finishing game and closing all resources");
+
+    isGameFinished = true;
+
+    if (ws) {
+      try {
+        ws.close();
+      } catch (e) {
+        console.log("Error closing WebSocket:", e);
+      }
+      ws = null;
+    }
+
+    gameStatus.value = finalStatus;
+    currentGame.value = null;
+    isConnected.value = false;
+
+    fieldStore.resetPlayerField();
+    fieldStore.enemy.ships = [];
+    fieldStore.player.turnsMap = [];
+    fieldStore.enemy.turnsMap = [];
+  }
+
   return {
     currentGame: readonly(currentGame),
     isConnected: readonly(isConnected),
@@ -321,5 +352,6 @@ export const useGameStore = defineStore("game", () => {
     sendMessage,
     createGame,
     resetGame,
+    finishGame,
   };
 });

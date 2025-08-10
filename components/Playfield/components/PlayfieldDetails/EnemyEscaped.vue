@@ -27,6 +27,8 @@ import * as _ from "lodash-es";
       <span>Мы же в свою очередь получаем </span
       ><span :class="$style.success">+10</span>
     </p>
-    <Button text="К статистике" variant="2" :class="$style.fightButton" />
+    <NuxtLink to="/" :class="$style.fightButton">
+      <Button text="На главную" variant="2" />
+    </NuxtLink>
   </div>
 </template>

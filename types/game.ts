@@ -141,7 +141,6 @@ export interface WSGameTurnedData {
 
 export interface WSGameLeftData {
   status: GameStatus;
-  userId: number;
 }
 
 export interface WSGameEndData {

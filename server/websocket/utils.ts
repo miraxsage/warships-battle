@@ -1,4 +1,5 @@
 import type { WSMessage, WebSocketPeer } from "./types";
+import { broadcastToRoom } from "./gameRoom";
 
 /**
  * Парсит WebSocket сообщение и валидирует его структуру
