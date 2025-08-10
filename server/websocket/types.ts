@@ -4,6 +4,7 @@ import type {
   GameUser,
   GameStatus,
   FieldTurn,
+  WSGameRestoreData,
 } from "~/types/game";
 import type { ShipState } from "~/types/game";
 
@@ -41,4 +42,10 @@ export interface GameRoom {
   players: Set<GamePeer>;
 }
 
-export { type WSMessage, type Game, type GameUser, type GameStatus };
+export {
+  type WSMessage,
+  type Game,
+  type GameUser,
+  type GameStatus,
+  type WSGameRestoreData,
+};

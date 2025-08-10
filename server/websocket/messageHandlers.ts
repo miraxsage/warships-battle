@@ -1,4 +1,10 @@
-import type { WSMessage, GameUser, WebSocketPeer, GameRoom } from "./types";
+import type {
+  WSMessage,
+  GameUser,
+  WebSocketPeer,
+  GameRoom,
+  WSGameRestoreData,
+} from "./types";
 import type { FieldTurn } from "~/types/game";
 import { addGamePeer, getGamePeer, isPeerConnected } from "./peerManager";
 import {
@@ -174,6 +180,61 @@ export async function handleGameJoin(
   // Сохраняем текущий статус как предыдущий, если он не connectionRepairingWaiting
   if (room && !room.status.endsWith("ConnectionRepairingWaiting")) {
     room.beforeLostConnectionStatus = room.status;
+  }
+
+  // При переподключении если игра уже не в состоянии arrangement,
+  // отправляем текущее состояние игры для восстановления на клиенте
+  if (room.status !== "arrangement") {
+    const playerArrangement = isHost
+      ? room.hostArrangement
+      : room.guestArrangement;
+    const playerTurnsMap = isHost ? room.hostTurnsMap : room.guestTurnsMap;
+    const enemyTurnsMap = isHost ? room.guestTurnsMap : room.hostTurnsMap;
+
+    if (playerArrangement) {
+      // Создаем карту ходов противника только с видимыми ходами
+      const visibleEnemyTurnsMap = enemyTurnsMap
+        ? enemyTurnsMap.map((row) =>
+            row
+              ? row.map((cell) => (cell && cell.count > 0 ? cell : undefined))
+              : []
+          )
+        : Array.from({ length: 10 }, () => Array(10).fill(undefined));
+
+      // Получаем информацию об уничтоженных кораблях противника
+      const enemyArrangement = isHost
+        ? room.guestArrangement
+        : room.hostArrangement;
+      const destroyedEnemyShips: ShipState[] = [];
+
+      if (enemyArrangement && playerTurnsMap) {
+        enemyArrangement.forEach((ship) => {
+          let damagedParts = 0;
+          forEachShipPart(ship, ({ x, y }) => {
+            if (playerTurnsMap[x]?.[y]?.count) {
+              damagedParts++;
+            }
+          });
+          if (damagedParts === ship.type) {
+            destroyedEnemyShips.push(ship);
+          }
+        });
+      }
+
+      sendMessage(peer, {
+        type: "game:restore",
+        data: {
+          playerArrangement: structuredClone(playerArrangement),
+          playerTurnsMap: structuredClone(
+            playerTurnsMap ||
+              Array.from({ length: 10 }, () => Array(10).fill(undefined))
+          ),
+          enemyTurnsMap: structuredClone(visibleEnemyTurnsMap),
+          enemyArrangement: destroyedEnemyShips,
+          turnNumber: room.turnNumber,
+        },
+      });
+    }
   }
 
   // Отправляем подтверждение подключения

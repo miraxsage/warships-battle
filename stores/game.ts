@@ -6,6 +6,7 @@ import type {
   WSGameUpdateData,
   WSGameLeftData,
   WSGameResetData,
+  WSGameRestoreData,
   ShipState,
 } from "~/types/game";
 import * as _ from "lodash-es";
@@ -190,6 +191,68 @@ export const useGameStore = defineStore("game", () => {
           const data = message.data;
           if (data) {
             console.log("Player left:", data.userId);
+          }
+        }
+        break;
+
+      case "game:restore":
+        {
+          const data = message.data;
+          if (data) {
+            console.log("Restoring game state:", data);
+
+            // Восстанавливаем корабли игрока
+            if (data.playerArrangement) {
+              const shipCounts = { 1: 0, 2: 0, 3: 0, 4: 0 };
+              fieldStore.player.ships = data.playerArrangement.map((ship) => {
+                shipCounts[ship.type]++;
+                const id =
+                  ship.type === 4
+                    ? "4-ship"
+                    : `${ship.type}-ship-${shipCounts[ship.type]}`;
+                return {
+                  id,
+                  ...ship,
+                };
+              });
+            }
+
+            // Восстанавливаем карту ходов игрока
+            if (data.playerTurnsMap) {
+              fieldStore.player.turnsMap = structuredClone(data.playerTurnsMap);
+            }
+
+            // Восстанавливаем карту ходов противника (только видимые ходы)
+            if (data.enemyTurnsMap) {
+              fieldStore.enemy.turnsMap = structuredClone(data.enemyTurnsMap);
+            }
+
+            // Восстанавливаем информацию об уничтоженных кораблях противника
+            if (data.enemyArrangement) {
+              fieldStore.enemy.ships = data.enemyArrangement.map(
+                (ship, index) => {
+                  const shipCounts = { 1: 0, 2: 0, 3: 0, 4: 0 };
+                  data.enemyArrangement
+                    .slice(0, index)
+                    .forEach((s) => shipCounts[s.type]++);
+                  shipCounts[ship.type]++;
+
+                  const id =
+                    ship.type === 4
+                      ? "4-ship"
+                      : `${ship.type}-ship-${shipCounts[ship.type]}`;
+                  return {
+                    id,
+                    ...ship,
+                  };
+                }
+              );
+            }
+
+            // Восстанавливаем номер хода
+            if (data.turnNumber && currentGame.value) {
+              currentGame.value.turnNumber = data.turnNumber;
+            }
           }
         }
         break;

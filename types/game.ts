@@ -78,6 +78,7 @@ export type WSMessageType =
   | "game:turned"
   | "game:end"
   | "game:reset"
+  | "game:restore"
   | "error";
 
 export type WSMessage =
@@ -90,6 +91,7 @@ export type WSMessage =
   | { type: "game:turned"; gameId?: string; data: WSGameTurnedData }
   | { type: "game:end"; gameId?: string; data: WSGameEndData }
   | { type: "game:reset"; gameId?: string; data: WSGameResetData }
+  | { type: "game:restore"; gameId?: string; data: WSGameRestoreData }
   | { type: "error"; gameId?: string; error: string };
 
 export interface WSGameJoinData {
@@ -150,6 +152,14 @@ export interface WSGameEndData {
 
 export interface WSGameResetData {
   gameId: string;
+}
+
+export interface WSGameRestoreData {
+  playerArrangement: ShipState[];
+  enemyArrangement: ShipState[];
+  playerTurnsMap: FieldTurn[][];
+  enemyTurnsMap: FieldTurn[][];
+  turnNumber?: number;
 }
 
 export interface WSErrorData {
