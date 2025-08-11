@@ -8,10 +8,9 @@ defineOptions({
 const game = useGameStore();
 const props = defineProps<{
   type: "player" | "enemy";
-  isOnlyPlayerMessage: boolean;
 }>();
 const isByOneMessageHidden = computed(() => {
-  return props.type != "player" && props.isOnlyPlayerMessage;
+  return props.type != "player" && game.isOnlyPlayerMessage;
 });
 
 const state = computed(() => {

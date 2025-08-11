@@ -72,24 +72,6 @@
 import DamageVariants from "./DamageVariants.vue";
 
 const gameStore = useGameStore();
-const isOnlyPlayerMessage = computed(() => {
-  const player = gameStore.isHost ? "host" : "guest";
-  const enemy = gameStore.isHost ? "guest" : "host";
-  const res =
-    (gameStore.currentGame &&
-      [
-        `${enemy}ConnectionRepairingWaiting`,
-        `${enemy}TurnLost`,
-        `${player}TurnLost`,
-        `${enemy}ArrangementLose`,
-        `${player}ArrangementLose`,
-        "arrangementFinished",
-        "finished",
-      ].includes(gameStore.gameStatus)) ||
-    !!gameStore.gameStatus.match(/(host|guest)Exited$/);
-  console.log("isOnlyPlayerMessage", res, gameStore.gameStatus);
-  return res;
-});
 const isMissileLaunch = computed(() => {
   return (
     gameStore.gameStatus === "guestTurnFinished" ||
@@ -103,15 +85,12 @@ const isMissileLaunch = computed(() => {
     <Playfield
       key="player"
       type="player"
-      :class="['player-field', isOnlyPlayerMessage && 'only-player-message']"
-      :isOnlyPlayerMessage="!!isOnlyPlayerMessage"
+      :class="[
+        'player-field',
+        gameStore.isOnlyPlayerMessage && 'only-player-message',
+      ]"
     />
-    <Playfield
-      key="enemy"
-      type="enemy"
-      class="enemy-field"
-      :isOnlyPlayerMessage="!!isOnlyPlayerMessage"
-    />
+    <Playfield key="enemy" type="enemy" class="enemy-field" />
     <MissileLaunch v-if="isMissileLaunch" />
   </div>
 </template>

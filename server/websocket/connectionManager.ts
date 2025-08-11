@@ -22,6 +22,8 @@ export async function handleDisconnection(peer: WebSocketPeer): Promise<void> {
     removeGamePeer(peer);
     return;
   }
+
+  // Приостанавливаем игровой таймер текущего хода, в ожидании переподключения
   room.deferredOperation()?.stop();
 
   const gameId = gamePeer.gameId;
@@ -29,7 +31,7 @@ export async function handleDisconnection(peer: WebSocketPeer): Promise<void> {
   console.log(
     `${
       gamePeer.isHost ? "Host" : "Guest"
-    } connection lost, waiting 30 seconds for repairing`,
+    } connection lost, waiting 60 seconds for repairing`,
     gameId,
     "user:",
     gamePeer.userId
@@ -55,7 +57,9 @@ export async function handleDisconnection(peer: WebSocketPeer): Promise<void> {
     },
   });
 
-  room.deferOperation(async () => {
+  // Устанавливаем таймер ожидания переподключения игрока за 60 секунд,
+  // иначе игра завершится автоматически
+  room.deferDisconnectOperation(async () => {
     const updatedRoom = getGameRoom(gameId);
     if (!updatedRoom) {
       return;

@@ -43,6 +43,13 @@ export type GameStatus =
   | "hostExited"
   | "guestExited"
   | "failed";
+export interface PlayerStats {
+  turns: number; // Общее количество ходов игрока
+  hits: number; // Количество попаданий
+  misses: number; // Количество промахов
+  skipped: number; // Количество пропущенных ходов
+}
+
 export interface Game {
   id: string;
   hostUser: GameUser;
@@ -51,6 +58,7 @@ export interface Game {
   // gameData?: any;
   createdAt: string;
   updatedAt?: string;
+  gameStartedAt?: number; // Unix timestamp начала игры
   lastTurn?: {
     performer: "player" | "enemy";
     role: "host" | "guest";
@@ -159,6 +167,9 @@ export interface WSGameRestoreData {
   playerTurnsMap: FieldTurn[][];
   enemyTurnsMap: FieldTurn[][];
   turnNumber?: number;
+  gameStartedAt?: number; // Unix timestamp начала игры
+  playerStats?: PlayerStats; // Статистика игрока
+  enemyStats?: PlayerStats; // Статистика противника
 }
 
 export interface WSErrorData {

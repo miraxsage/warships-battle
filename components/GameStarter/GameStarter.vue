@@ -172,10 +172,7 @@ const hostUser = computed(() => {
     <div :class="$style.players">
       <UserLegend :user="hostUser" />
       <SpriteSymbol name="vs" :class="$style.vs" />
-      <UserLegend
-        :user="gameStore.currentGame?.guestUser"
-        arrangement="right"
-      />
+      <UserLegend :user="gameStore.currentGame?.guestUser" align="right" />
     </div>
 
     <div v-if="shouldShowQRCode" :class="$style.qrcodeContainer">

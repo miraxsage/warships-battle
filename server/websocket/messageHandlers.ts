@@ -5,7 +5,7 @@ import type {
   GameRoom,
   WSGameRestoreData,
 } from "./types";
-import type { FieldTurn } from "~/types/game";
+import type { FieldTurn, PlayerStats } from "~/types/game";
 import { addGamePeer, getGamePeer, isPeerConnected } from "./peerManager";
 import {
   getGameRoom,
@@ -25,6 +25,7 @@ import {
 import * as _ from "lodash-es";
 import { someShipPart } from "~/utils/someShipPart";
 import { forEachShipPart } from "~/utils/forEachShipPart";
+import { initPlayerStats } from "~/utils/initPlayerStats";
 
 function scheduleGameTurn(
   game: GameRoom,
@@ -49,13 +50,18 @@ function scheduleGameTurn(
       () => {
         game.status = `${turnFor}TurnLost`;
 
+        const stats = (game[`${turnFor}Stats`] = initPlayerStats(
+          game[`${turnFor}Stats`]
+        ));
+        stats.skipped++;
+
         broadcastToRoom(gameId, {
           type: "game:update",
           data: { status: game.status },
         });
         scheduleGameTurn(game, turnFor == "host" ? "guest" : "host", 10000);
       },
-      game.turnNumber == 1 ? 46000 : 31000
+      game.turnNumber == 1 || game.turnNumber == 2 ? 46000 : 31000
     );
   }, delay);
 }
@@ -97,6 +103,9 @@ export async function handleGameJoin(
   let room = getGameRoom(gameId);
   let isHost = false;
   let gameResponse;
+  // Останавливаем таймер ожидания переподключения,
+  // чтобы игра не завершилась, т.к. игрок уже успешно переподключился
+  room?.disconnectOperation()?.stop();
 
   console.log(
     `GameID: ${gameId}, Room exists: ${!!room}, User: ${data.username} (ID: ${
@@ -140,6 +149,7 @@ export async function handleGameJoin(
       // Хост переподключается
       if (room.status == "hostConnectionRepairingWaiting") {
         updateRoomStatus(gameId, room.beforeLostConnectionStatus!);
+        // Возвращаем игровой таймер, если он был поставлен на паузу
         room.deferredOperation()?.start();
         console.log(`${data.username} host connection repaired`);
       } else {
@@ -149,6 +159,7 @@ export async function handleGameJoin(
       // Гость подключается или переподключается
       if (room.status == "guestConnectionRepairingWaiting") {
         updateRoomStatus(gameId, room.beforeLostConnectionStatus!);
+        // Возвращаем игровой таймер, если он был поставлен на паузу
         room.deferredOperation()?.start();
         console.log(`${data.username} guest connection repaired`);
       } else {
@@ -163,6 +174,7 @@ export async function handleGameJoin(
     }
 
     gameResponse = createGameResponse(room);
+    gameResponse.gameStartedAt = room.gameStartedAt;
   }
 
   // Создаем GamePeer
@@ -232,6 +244,9 @@ export async function handleGameJoin(
           enemyTurnsMap: structuredClone(visibleEnemyTurnsMap),
           enemyArrangement: destroyedEnemyShips,
           turnNumber: room.turnNumber,
+          gameStartedAt: room.gameStartedAt,
+          playerStats: isHost ? room.hostStats : room.guestStats,
+          enemyStats: isHost ? room.guestStats : room.hostStats,
         },
       });
     }
@@ -352,6 +367,17 @@ export async function handleGameTurn(
 
   game[`${performerRole}TurnsMap`] = turnsMap;
 
+  const stats = (game[`${performerRole}Stats`] = initPlayerStats(
+    game[`${performerRole}Stats`]
+  ));
+
+  stats.turns++;
+  if (turn?.type === "hit") {
+    stats.hits++;
+  } else {
+    stats.misses++;
+  }
+
   if (game.turnNumber) {
     game.turnNumber++;
   }
@@ -400,6 +426,8 @@ export async function handleGameReset(peer: WebSocketPeer): Promise<void> {
   game.guestArrangement = undefined;
   game.firstArranged = undefined;
   game.turnNumber = undefined;
+  game.hostStats = undefined;
+  game.guestStats = undefined;
 
   // Уведомляем всех игроков о сбросе
   broadcastToRoom(gamePeer.gameId, {

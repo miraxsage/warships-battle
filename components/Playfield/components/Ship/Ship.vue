@@ -57,7 +57,7 @@ const theme = computed(() => {
       `subShip`,
       `${subTheme}Theme`,
       owner == 'enemy' ? 'enemyOwned' : 'playerOwned',
-      { hidden: _.isEmpty(invalidParts), fadeIn: isLastTurnDamaged },
+      { hide: _.isEmpty(invalidParts), fadeIn: isLastTurnDamaged },
     ]"
     :theme="subTheme"
     :key="subTheme"
@@ -85,7 +85,7 @@ const theme = computed(() => {
       `mainShip`,
       `${theme}Theme`,
       owner == 'player' ? 'playerOwned' : 'enemyOwned',
-      { smooth: ship.isSmooth, hidden: isDestroyed && !isLastTurnDamaged },
+      { smooth: ship.isSmooth, hide: isDestroyed && !isLastTurnDamaged },
     ]"
     :style="{
       zIndex: ship.isDragging ? 100 : 1,
@@ -151,7 +151,7 @@ const theme = computed(() => {
   &.mainShip.normalTheme.enemyOwned {
     opacity: 0;
   }
-  &.hidden {
+  &.hide {
     opacity: 0;
   }
 }

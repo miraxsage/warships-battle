@@ -1,15 +1,7 @@
-import type {
-  Game,
-  GameStatus,
-  WSMessage,
-  WSGameJoinedData,
-  WSGameUpdateData,
-  WSGameLeftData,
-  WSGameResetData,
-  WSGameRestoreData,
-  ShipState,
-} from "~/types/game";
+import type { Game, GameStatus, WSMessage, PlayerStats } from "~/types/game";
 import * as _ from "lodash-es";
+import { utcTimestampToLocalDate } from "~/utils/utcToLocal";
+import { TURN_ANIMATION_DURATION } from "~/constants/common";
 
 export const useGameStore = defineStore("game", () => {
   const currentGame = ref<Game | null>(null);
@@ -20,10 +12,46 @@ export const useGameStore = defineStore("game", () => {
   const gameStatus = ref<GameStatus>("initial");
   const turnNumber = computed(() => currentGame.value?.turnNumber || 0);
   const lastTurn = computed(() => currentGame.value?.lastTurn || null);
+  const gameStartedAt = ref<Date | null>(null);
+  const playerStats = ref<PlayerStats>(initPlayerStats());
+  const enemyStats = ref<PlayerStats>(initPlayerStats());
+  const playerScore = computed(() => {
+    if (playerStats.value && enemyStats.value) {
+      return playerStats.value.hits - enemyStats.value.hits;
+    }
+    return 0;
+  });
+  const enemyScore = computed(() => {
+    if (playerStats.value && enemyStats.value) {
+      return enemyStats.value.hits - playerStats.value.hits;
+    }
+    return 0;
+  });
   let ws: WebSocket | null = null;
   let reconnectAttempts = 0;
   const maxReconnectAttempts = 5;
   let isGameFinished = false;
+
+  const isOnlyPlayerMessage = computed(() => {
+    const player = isHost.value ? "host" : "guest";
+    const enemy = isHost.value ? "guest" : "host";
+    const result =
+      (currentGame.value &&
+        [
+          `${enemy}ConnectionRepairingWaiting`,
+          `${enemy}TurnLost`,
+          `${player}TurnLost`,
+          `${enemy}ArrangementLose`,
+          `${player}ArrangementLose`,
+          "arrangementFinished",
+          "finished",
+          "failed",
+          "connecting",
+        ].includes(gameStatus.value)) ||
+      !!gameStatus.value.match(/(host|guest)Exited$/);
+    console.log("isOnlyPlayerMessage", result, gameStatus.value);
+    return result;
+  });
 
   const userStore = useUserStore();
   const fieldStore = useFieldStore();
@@ -111,6 +139,11 @@ export const useGameStore = defineStore("game", () => {
             console.log("Guest user:", data.game?.guestUser);
             currentGame.value = data.game;
             isHost.value = data.isHost;
+            if (data.game?.gameStartedAt) {
+              gameStartedAt.value = utcTimestampToLocalDate(
+                data.game.gameStartedAt
+              );
+            }
           }
         }
         break;
@@ -119,11 +152,25 @@ export const useGameStore = defineStore("game", () => {
         {
           const data = message.data;
           gameStatus.value = data.status || gameStatus.value;
+          const turnLostMatch = gameStatus.value.match(/(host|guest)TurnLost$/);
+          if (turnLostMatch) {
+            const performer = turnLostMatch[1] as "host" | "guest";
+            if (performer == playerRole.value) {
+              playerStats.value!.skipped++;
+            } else {
+              enemyStats.value!.skipped++;
+            }
+          }
           if (data?.game) {
             console.log("Game updated:", data.game);
             console.log("Updated Host user:", data.game?.hostUser);
             console.log("Updated Guest user:", data.game?.guestUser);
             _.merge(currentGame.value, data.game);
+            if (data.game?.gameStartedAt) {
+              gameStartedAt.value = utcTimestampToLocalDate(
+                data.game.gameStartedAt
+              );
+            }
             if (currentGame.value) {
               currentGame.value.lastTurn = undefined;
             }
@@ -156,6 +203,28 @@ export const useGameStore = defineStore("game", () => {
             } as const;
             console.log("lastTurn", lastTurn);
             currentGame.value!.lastTurn = lastTurn;
+
+            if (performer == "player") {
+              playerStats.value!.turns++;
+
+              setTimeout(() => {
+                if (data.turn?.type === "hit") {
+                  playerStats.value!.hits++;
+                } else {
+                  playerStats.value!.misses++;
+                }
+              }, TURN_ANIMATION_DURATION);
+            } else {
+              enemyStats.value!.turns++;
+              setTimeout(() => {
+                if (data.turn?.type === "hit") {
+                  enemyStats.value!.hits++;
+                } else {
+                  enemyStats.value!.misses++;
+                }
+              }, TURN_ANIMATION_DURATION);
+            }
+
             if (lastTurn.performer == "player" && data.turnsMap) {
               fieldStore.player.turnsMap = structuredClone(data.turnsMap);
               console.log("has set player turnsMap", data.turnsMap);
@@ -258,6 +327,17 @@ export const useGameStore = defineStore("game", () => {
             if (data.turnNumber && currentGame.value) {
               currentGame.value.turnNumber = data.turnNumber;
             }
+
+            // Восстанавливаем время начала игры
+            if (data.gameStartedAt) {
+              gameStartedAt.value = utcTimestampToLocalDate(data.gameStartedAt);
+            }
+
+            // Восстанавливаем статистику игроков
+            if (data.playerStats && data.enemyStats) {
+              playerStats.value = data.playerStats;
+              enemyStats.value = data.enemyStats;
+            }
           }
         }
         break;
@@ -347,6 +427,12 @@ export const useGameStore = defineStore("game", () => {
     gameStatus: readonly(gameStatus),
     turnNumber: readonly(turnNumber),
     lastTurn: readonly(lastTurn),
+    gameStartedAt: readonly(gameStartedAt),
+    playerStats: readonly(playerStats),
+    enemyStats: readonly(enemyStats),
+    playerScore: readonly(playerScore),
+    enemyScore: readonly(enemyScore),
+    isOnlyPlayerMessage: readonly(isOnlyPlayerMessage),
     connect,
     disconnect,
     sendMessage,

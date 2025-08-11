@@ -11,14 +11,15 @@ export class Scheduler {
       console.log("Scheduler already completed");
       return;
     }
-    console.log("Starting scheduler with delay:", this.delay);
     this.timeoutId = setTimeout(() => {
       this.completed = true;
       this.handler();
     }, this.delay);
+    console.log("Starting scheduler with delay:", this.delay, this.timeoutId);
   }
 
   stop() {
+    console.log("Stopping sheduler:", this.timeoutId);
     if (!this.completed && this.timeoutId) {
       clearTimeout(this.timeoutId);
     }

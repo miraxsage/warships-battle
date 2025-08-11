@@ -95,6 +95,16 @@ const enemyRole = computed(() => gameStore.enemyRole);
 const _is = (status: string) => {
   return gameStatus.value == status;
 };
+
+const defaultStatusDetails = computed(() => {
+  switch (gameStatus.value) {
+    case "failed":
+      return "Ошибка";
+    case "connecting":
+      return "Подключение...";
+  }
+  return gameStatus.value;
+});
 </script>
 <template>
   <div
@@ -121,7 +131,7 @@ const _is = (status: string) => {
         <ArrangementEnemyFirst
           v-else-if="_is(`${playerRole}ArrangementWaiting`)"
         />
-        <div v-else class="undefinite-details">{{ gameStatus }}</div>
+        <div v-else class="undefinite-details">{{ defaultStatusDetails }}</div>
       </Transition>
     </div>
   </div>

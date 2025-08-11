@@ -5,8 +5,10 @@ import type {
   GameStatus,
   FieldTurn,
   WSGameRestoreData,
+  PlayerStats,
 } from "~/types/game";
 import type { ShipState } from "~/types/game";
+import { Scheduler } from "./scheduler";
 
 export interface WebSocketPeer {
   id: string;
@@ -35,8 +37,16 @@ export interface GameRoom {
   status: GameStatus;
   beforeLostConnectionStatus?: GameStatus;
   turnNumber?: number;
-  deferredOperation: () => any;
-  deferOperation: (handler: () => void, delay: number) => any;
+  gameStartedAt?: number; // Unix timestamp начала игры
+  // Статистика игроков
+  hostStats?: PlayerStats;
+  guestStats?: PlayerStats;
+  // Игровой таймер (ходы/размещение и т.п.)
+  deferredOperation: () => Scheduler | undefined;
+  deferOperation: (handler: () => void, delay: number) => Scheduler;
+  // Таймер ожидания переподключения
+  disconnectOperation: () => Scheduler | undefined;
+  deferDisconnectOperation: (handler: () => void, delay: number) => Scheduler;
   gameData?: any;
   createdAt: Date;
   players: Set<GamePeer>;

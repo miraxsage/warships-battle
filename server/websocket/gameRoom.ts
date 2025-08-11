@@ -36,6 +36,7 @@ export function createGameRoom(gameId: string, hostUser: GameUser): GameRoom {
   console.log(`Creating new room, ${hostUser.username} becomes HOST`);
 
   let deferredOperation: Scheduler | undefined;
+  let disconnectOperation: Scheduler | undefined;
 
   const room: GameRoom = {
     id: gameId,
@@ -48,6 +49,11 @@ export function createGameRoom(gameId: string, hostUser: GameUser): GameRoom {
     deferOperation: (handler, delay) => {
       deferredOperation?.stop();
       return (deferredOperation = new Scheduler(handler, delay));
+    },
+    disconnectOperation: () => disconnectOperation,
+    deferDisconnectOperation: (handler, delay) => {
+      disconnectOperation?.stop();
+      return (disconnectOperation = new Scheduler(handler, delay));
     },
   };
 
@@ -69,6 +75,7 @@ export function joinGameRoom(
   console.log(`${guestUser.username} becomes GUEST`);
   room.guestUser = guestUser;
   room.status = "arrangement";
+  room.gameStartedAt = Math.floor(Date.now() / 1000); // Unix timestamp в UTC
 
   return room;
 }

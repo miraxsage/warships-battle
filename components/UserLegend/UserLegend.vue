@@ -12,6 +12,7 @@
   grid-template-rows: 1fr 1fr;
   gap: 0 10px;
   align-items: center;
+  justify-items: start;
   color: $pen-color;
   .username {
     font-size: 28px;
@@ -20,14 +21,15 @@
     }
   }
   &.right {
+    justify-items: end;
     & > :nth-child(1) {
-      order: 999;
-    }
-    & > :nth-child(2) {
       order: 998;
     }
-    & > :nth-child(3) {
+    & > :nth-child(2) {
       order: 997;
+    }
+    & > :nth-child(3) {
+      order: 999;
     }
   }
 }
@@ -52,7 +54,7 @@
 import type { User } from "~/types/common";
 defineProps<{
   user?: User;
-  arrangement?: "left" | "right";
+  align?: "left" | "right";
 }>();
 const slots = useSlots();
 const hasActions = computed(() => !!slots.actions);
@@ -63,7 +65,7 @@ const { borderVariant } = useBorderVariant("1");
     :class="[
       $style.userContainer,
       { [$style.hasActions]: hasActions },
-      { [$style.right]: arrangement === 'right' },
+      { [$style.right]: align === 'right' },
     ]"
   >
     <div :class="$style.avatarBorder" :style="borderVariant">
