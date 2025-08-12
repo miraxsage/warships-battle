@@ -3,7 +3,7 @@
 
 .root {
   input {
-    font-size: 26px;
+    font-size: pxrem(26);
     font-family: "First Time Writing";
     border: none;
     background: transparent;

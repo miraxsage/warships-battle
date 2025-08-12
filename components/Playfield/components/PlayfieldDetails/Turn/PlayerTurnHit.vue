@@ -23,7 +23,7 @@ const damagedShipDetails = computed(() => {
 const damagedShip = computed(() => damagedShipDetails.value?.ship);
 const fullDamage = computed(() => gameStore.lastTurn?.isShipDestroyed);
 const playerHasWon = computed(() => gameStore.playerStats.hits == HITS_TO_WIN);
-const iconSize = computed(() => (playerHasWon.value ? "60px" : "40px"));
+const iconSize = computed(() => (playerHasWon.value ? pxrem(60) : pxrem(40)));
 </script>
 <template>
   <div :class="$style.details">

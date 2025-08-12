@@ -51,3 +51,7 @@
   max-width: $size;
   max-height: $size;
 }
+
+@function pxrem($px) {
+  @return #{$px / 16}rem;
+}

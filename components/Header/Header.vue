@@ -22,7 +22,7 @@
 }
 
 .game-time-left {
-  font-size: 22px;
+  font-size: pxrem(22);
   align-items: center;
   display: flex;
   flex-direction: column;
@@ -38,10 +38,18 @@
   }
 }
 .game-time-left-icon {
-  width: 48px;
-  height: 48px;
-  margin-bottom: 10px;
+  margin-bottom: pxrem(10);
   color: $pen-color;
+  @include fixedSize(30px);
+  @include xl {
+    @include fixedSize(34px);
+  }
+  @include xxl {
+    @include fixedSize(40px);
+  }
+  @include xxxl {
+    @include fixedSize(48px);
+  }
 }
 </style>
 

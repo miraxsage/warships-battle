@@ -10,7 +10,7 @@ const { count } = useCountdown(60);
     <p :class="[$style.text, $style.center]">
       <SpriteSymbol
         name="game/no-internet"
-        :style="{ minWidth: '60px', minHeight: '60px' }"
+        :style="{ minWidth: pxrem(60), minHeight: pxrem(60) }"
         :class="[$style.info, $style.neutral]"
       />
     </p>

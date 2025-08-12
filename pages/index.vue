@@ -20,7 +20,7 @@
   height: 100%;
 }
 .authButton.authButton {
-  font-size: 30px;
+  font-size: pxrem(30);
 }
 .content {
   flex-grow: 1;
@@ -31,7 +31,7 @@
 .playButton.playButton {
   grid-area: 1/3/3/4;
   margin-left: 40px;
-  font-size: 30px;
+  font-size: pxrem(30);
 }
 .logout {
   font-size: 24x;

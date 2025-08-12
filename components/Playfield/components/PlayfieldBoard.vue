@@ -55,16 +55,7 @@
   color: var(--pen-color);
   @include bold-filter;
 
-  font-size: 22px;
-  @include sm {
-    font-size: 27px;
-  }
-  @include xl {
-    font-size: 32px;
-  }
-  @include xxxl {
-    font-size: 38px;
-  }
+  font-size: pxrem(38);
 }
 .v-ruler {
   width: var(--fcell-size);
@@ -88,25 +79,16 @@ const { type } = defineProps<{ type: "player" | "enemy" }>();
 const isPlayerField = type == "player";
 const isEnemyField = type == "enemy";
 
-const shipsCount = computed(() => {
-  console.log(
-    `${type} ships count:`,
-    fieldState[type].ships.length,
-    fieldState[type].ships
-  );
-  return fieldState[type].ships.length;
-});
-
 const hletters = ["A", "Б", "В", "Г", "Д", "E", "Ж", "З", "И", "К"];
 
 const root = useTemplateRef("root");
 const game = useGameStore();
 const boardIsDisabled = computed(() => {
-  const player = game.isHost ? "host" : "guest";
+  console.log("playfieldBoard", type, isPlayerField, game.gameStatus);
   return (
     isPlayerField &&
     game.gameStatus != "arrangement" &&
-    game.gameStatus != `${player}ArrangementWaiting`
+    game.gameStatus != `${game.playerRole}ArrangementWaiting`
   );
 });
 
@@ -139,7 +121,7 @@ const turnsMap = computed(() => {
     ref="root"
     :class="{
       'field-disabled':
-        (isPelengatorDisabled && boardIsDisabled) ||
+        (isPlayerField && boardIsDisabled) ||
         (isEnemyField && isPelengatorDisabled),
     }"
   >

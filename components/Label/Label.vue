@@ -2,7 +2,7 @@
 @use "@/styles/mixins.scss" as *;
 
 .root {
-  font-size: 24px;
+  font-size: pxrem(24);
   color: var(--pen-color);
   @include bold-filter;
 }

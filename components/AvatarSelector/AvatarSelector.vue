@@ -112,7 +112,7 @@ onMounted(() => {
   pointer-events: all;
   background: transparent;
   font-family: inherit;
-  font-size: 24px;
+  font-size: pxrem(24);
   color: var(--pen-color);
   will-change: transform;
   transition: all 0.1s;

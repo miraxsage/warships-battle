@@ -56,7 +56,7 @@
 .error {
   margin-top: -20px;
   margin-bottom: 25px;
-  font-size: 24px;
+  font-size: pxrem(24);
   color: $error;
   max-height: 95px;
   overflow: hidden;

@@ -61,7 +61,7 @@ defineEmits<{
   input:checked + &::after {
     content: "V";
     font-family: "First Time Writing";
-    font-size: 24px;
+    font-size: pxrem(24);
     scale: 1.5 1;
     color: var(--pen-color);
   }
@@ -84,7 +84,7 @@ defineEmits<{
 
 .checkbox-label {
   font-family: "First Time Writing";
-  font-size: 24px;
+  font-size: pxrem(24);
   color: var(--pen-color);
   @include bold-filter;
 }

@@ -63,7 +63,7 @@ defineProps<{ fullDamage?: boolean }>();
     <p :class="[$style.text, $style.center]">
       <SpriteSymbol
         name="game/rocket"
-        :style="{ minWidth: '50px', minHeight: '50px' }"
+        :style="{ minWidth: pxrem(50), minHeight: pxrem(50) }"
         :class="[$style.info, $style.pen]"
       />
     </p>

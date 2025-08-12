@@ -9,7 +9,7 @@ import * as _ from "lodash-es";
     <p :class="[$style.text, $style.center]">
       <SpriteSymbol
         name="game/rat"
-        :style="{ minWidth: '80px', minHeight: '80px' }"
+        :style="{ minWidth: pxrem(80), minHeight: pxrem(80) }"
         :class="[$style.info, $style.neutral]"
       />
     </p>

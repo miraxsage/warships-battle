@@ -135,9 +135,9 @@ const theme = computed(() => {
     transform: translate(-8px, -6px) scale(0.96);
     mask-image: unset !important;
     &.fadeIn {
-      animation: fadeIn 6s;
+      animation: fadeIn 7s;
       & + .ship {
-        animation: fadeOut 6s forwards;
+        animation: fadeOut 6s 1s forwards;
       }
     }
     & + .ship {

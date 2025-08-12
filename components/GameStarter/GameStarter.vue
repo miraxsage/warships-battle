@@ -12,8 +12,8 @@
 }
 .vs {
   color: $pen-color;
-  width: 150px;
-  height: 150px;
+  width: pxrem(150);
+  height: pxrem(150);
 }
 .container {
   display: flex;
@@ -43,10 +43,10 @@
 .statusText,
 .qrcodeLink {
   text-align: center;
-  font-size: 20px;
+  font-size: pxrem(20);
   color: $pen-color;
   text-align: left;
-  font-size: 24px;
+  font-size: pxrem(24);
   filter: drop-shadow(0px 1px 0 $pen-color) drop-shadow(1px 0px 0 $pen-color);
 }
 .statusText {
@@ -54,7 +54,7 @@
 }
 .qrcodeLink {
   display: inline;
-  font-size: 30px;
+  font-size: pxrem(30);
   color: white;
   background-color: $pen-color;
   font-weight: 600;

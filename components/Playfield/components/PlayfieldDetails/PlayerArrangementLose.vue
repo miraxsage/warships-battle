@@ -14,7 +14,7 @@
     <p :class="[$style.text, $style.center]">
       <SpriteSymbol
         name="game/skull"
-        :style="{ minWidth: '80px', minHeight: '80px' }"
+        :style="{ minWidth: pxrem(80), minHeight: pxrem(80) }"
         :class="[$style.info, $style.error]"
       />
     </p>

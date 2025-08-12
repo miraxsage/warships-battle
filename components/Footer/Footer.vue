@@ -7,7 +7,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 26px;
+  font-size: pxrem(26);
   @include bold-filter;
   .link {
     text-decoration: none;

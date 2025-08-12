@@ -1,7 +1,7 @@
 <style scoped lang="scss">
 @use "~/styles/colors.scss" as *;
 
-$fixed-size: 15px;
+$fixed-size: calc(var(--cell-size) * 0.5);
 
 .pelengator-sight {
   min-width: calc(var(--fcell-size) * 1.5);
@@ -25,7 +25,7 @@ $fixed-size: 15px;
 .pelengator-content {
   grid-column: 2 / 5;
   grid-row: 2 / 5;
-  margin: -5px;
+  margin: calc(var(--cell-size) * -0.1666);
   overflow: hidden;
   clip-path: inset(0 0 0 0);
 }
@@ -78,19 +78,19 @@ $fixed-size: 15px;
   height: calc(var(--cell-size) * 18);
   left: 50%;
   top: 0;
-  translate: -15px -100%;
+  translate: calc(var(--cell-size) * -0.5) -100%;
 }
 .bottom-arrow {
   top: 100%;
-  translate: -15px 0;
+  translate: calc(var(--cell-size) * -0.5) 0;
 }
 .left-arrow {
-  top: calc(50% + -2px);
+  top: calc(50% + calc(var(--cell-size) * -0.0666));
   left: calc(var(--cell-size) * -18);
   translate: 0% -50%;
 }
 .right-arrow {
-  top: calc(50% - 3px);
+  top: calc(50% - calc(var(--cell-size) * 0.1));
   left: 100%;
 }
 .top-arrow:before {
@@ -99,7 +99,7 @@ $fixed-size: 15px;
   transform-origin: calc(var(--fcell-size) * 0.25)
     calc(var(--fcell-size) * 0.25);
   rotate: 270deg;
-  left: calc(50% - 15px);
+  left: calc(50% - var(--cell-size) * 0.5);
   top: 100%;
   translate: 0 -100%;
 }
@@ -124,7 +124,7 @@ $fixed-size: 15px;
 .top-arrow:after {
   top: calc(var(--cell-size));
   rotate: -90deg;
-  translate: 0 -3px;
+  translate: 0 calc(var(--cell-size) * -0.1);
 }
 .bottom-arrow:after {
   top: calc(var(--cell-size) * 16);
@@ -133,7 +133,7 @@ $fixed-size: 15px;
 .left-arrow:after {
   left: calc(var(--cell-size));
   scale: -1 1;
-  translate: 0px 0;
+  translate: 0 0;
 }
 .right-arrow:after {
   left: calc(var(--cell-size) * 16);

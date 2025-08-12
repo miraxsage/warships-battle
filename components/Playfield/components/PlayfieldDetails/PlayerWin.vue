@@ -10,14 +10,25 @@ defineProps<{ fullDamage?: boolean }>();
 </script>
 <template>
   <div :class="[$style.details, 'successful']">
-    <p :class="[$style.text, $style.center]">
+    <p
+      :class="[$style.text, $style.center]"
+      :style="{ marginBottom: pxrem(10) }"
+    >
       <SpriteSymbol
         name="game/win"
-        :style="{ minWidth: '80px', minHeight: '80px' }"
+        :style="{
+          minWidth: pxrem(80),
+          minHeight: pxrem(80),
+        }"
         :class="[$style.info, $style.warning]"
       />
     </p>
-    <p :class="[$style.text, $style.center]"><span>УРААА!!!</span></p>
+    <p
+      :class="[$style.text, $style.center]"
+      :style="{ marginBottom: pxrem(10) }"
+    >
+      <span>УРААА!!!</span>
+    </p>
     <p :class="[$style.text, $style.center]">
       <span
         >Капитан, мы полностью <br />
@@ -26,7 +37,7 @@ defineProps<{ fullDamage?: boolean }>();
       <span :class="$style.warning">Победа</span><span> за нами!</span>
     </p>
     <GameResults />
-    <NuxtLink to="/" :class="$style.fightButton" style="margin-top: 10px">
+    <NuxtLink to="/" :class="$style.fightButton">
       <Button text="На главную" variant="2" />
     </NuxtLink>
   </div>

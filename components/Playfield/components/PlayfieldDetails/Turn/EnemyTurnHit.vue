@@ -30,7 +30,7 @@ const damagedShip = computed(() => damagedShipDetails.value?.ship);
 const damagedShipPart = computed(() => damagedShipDetails.value?.part);
 const fullDamage = computed(() => gameStore.lastTurn?.isShipDestroyed);
 const enemyHasWon = computed(() => gameStore.enemyStats.hits == HITS_TO_WIN);
-const iconSize = computed(() => (enemyHasWon.value ? "60px" : "40px"));
+const iconSize = computed(() => (enemyHasWon.value ? pxrem(60) : pxrem(40)));
 </script>
 <template>
   <div :class="$style.details">
@@ -73,12 +73,14 @@ const iconSize = computed(() => (enemyHasWon.value ? "60px" : "40px"));
       <span v-if="fullDamage">
         <br />
         Пилот пал смертью храбрых...
-        <template v-if="enemyHasWon">
-          <br />
-          Похоже у нас не осталось кораблей, капитан!
-        </template>
       </span>
-      <span :class="$style.warning" v-else>Держать оборону!</span>
+      <template v-if="enemyHasWon">
+        <br />
+        Похоже у нас не осталось кораблей, капитан!
+      </template>
+      <span :class="$style.warning" v-if="!enemyHasWon">
+        Держать оборону!
+      </span>
     </p>
     <p
       :style="{ opacity: count > 0 ? 1 : 0 }"

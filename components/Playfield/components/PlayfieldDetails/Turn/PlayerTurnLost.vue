@@ -9,7 +9,7 @@ const { count } = useCountdown(10);
     <p :class="[$style.text, $style.center]">
       <SpriteSymbol
         name="error"
-        :style="{ minWidth: '40px', minHeight: '40px' }"
+        :style="{ minWidth: pxrem(40), minHeight: pxrem(40) }"
         :class="[$style.info, $style.error]"
       />
     </p>

@@ -68,8 +68,8 @@ const opponentStats = computed(() => {
   gap: 8px;
 }
 .icon {
-  width: 28px;
-  height: 28px;
+  width: pxrem(28);
+  height: pxrem(28);
 }
 .fire {
   color: #d4762d;
@@ -86,9 +86,9 @@ const opponentStats = computed(() => {
 }
 .score {
   position: relative;
-  top: -2px;
-  width: 32px;
-  height: 32px;
+  top: -pxrem(2);
+  width: pxrem(32);
+  height: pxrem(32);
   &.win {
     color: #107946;
     @include bold-filter(#107946);
@@ -104,20 +104,20 @@ const opponentStats = computed(() => {
 }
 .stat {
   order: 10;
-  font-size: 22px;
+  font-size: pxrem(22);
   display: flex;
   align-items: center;
   overflow: hidden;
-  gap: 4px;
+  gap: pxrem(4);
   span {
     @include bold-filter;
   }
   &:has(.score) {
-    font-size: 28px;
+    font-size: pxrem(28);
     position: relative;
-    top: -2px;
-    margin-left: 5px;
-    margin-right: 5px;
+    top: -pxrem(2);
+    margin-left: pxrem(5);
+    margin-right: pxrem(5);
     .right & {
       order: 1;
     }
@@ -130,7 +130,7 @@ const opponentStats = computed(() => {
     max-width: 0;
   }
   50% {
-    max-width: 100px;
+    max-width: pxrem(100);
   }
   100% {
     opacity: 1;

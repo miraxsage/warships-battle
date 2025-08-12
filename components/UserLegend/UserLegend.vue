@@ -15,7 +15,7 @@
   justify-items: start;
   color: $pen-color;
   .username {
-    font-size: 28px;
+    font-size: pxrem(28);
     .hasActions & {
       grid-row: span 2;
     }
@@ -37,15 +37,23 @@
   color: $pen-color;
   grid-row: span 2;
   padding: 0 !important;
-  min-width: 80px;
-  min-height: 80px;
   display: flex;
   align-items: center;
   justify-content: center;
+  @include fixedSize(62px);
+  @include xl {
+    @include fixedSize(68px);
+  }
+  @include xxl {
+    @include fixedSize(80px);
+  }
+  @include xxxl {
+    @include fixedSize(84px);
+  }
 }
 .emptyAvatar {
   color: $pen-color;
-  font-size: 50px;
+  font-size: pxrem(50);
   line-height: 1;
   filter: drop-shadow(1px 1px 0 $pen-color);
 }

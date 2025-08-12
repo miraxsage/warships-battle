@@ -4,6 +4,18 @@
 @use "@/styles/common.scss" as *;
 @use "sass:color";
 
+html {
+  font-size: 11.1px;
+  @include xl {
+    font-size: 12px;
+  }
+  @include xxl {
+    font-size: 14px;
+  }
+  @include xxxl {
+    font-size: 16px;
+  }
+}
 body {
   font-family: "First Time Writing";
   margin: 0;
@@ -92,17 +104,17 @@ body {
   background-image: repeating-linear-gradient(
       270deg,
       transparent 0,
-      transparent 30px,
-      color.change($pen-color, $lightness: 97.6%) 30px,
-      color.change($pen-color, $lightness: 97.6%) 32.5px,
-      transparent 32.5px
+      transparent pxrem(30),
+      color.change($pen-color, $lightness: 97.6%) pxrem(30),
+      color.change($pen-color, $lightness: 97.6%) pxrem(32.5),
+      transparent pxrem(32.5)
     ),
     repeating-linear-gradient(
       0deg,
       transparent 0,
-      transparent 30px,
-      color.change($pen-color, $lightness: 97.6%) 30px,
-      color.change($pen-color, $lightness: 97.6%) 32px
+      transparent pxrem(30),
+      color.change($pen-color, $lightness: 97.6%) pxrem(30),
+      color.change($pen-color, $lightness: 97.6%) pxrem(32)
     );
 }
 @keyframes spin {
@@ -123,6 +135,16 @@ body {
   left: calc(50% - 125px);
   top: calc(50% - 60px);
   filter: drop-shadow(0px 0px 0px $pen-color);
+  scale: 0.7;
+  @include xl {
+    scale: 0.8;
+  }
+  @include xxl {
+    scale: 0.9;
+  }
+  @include xxxl {
+    scale: 1;
+  }
 }
 </style>
 <script setup lang="ts">

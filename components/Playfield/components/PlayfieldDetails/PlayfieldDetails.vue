@@ -4,7 +4,7 @@
 
 .undefinite-details {
   @include bold-filter;
-  font-size: 24px;
+  font-size: pxrem(24);
   height: 100%;
   display: flex;
   align-items: center;

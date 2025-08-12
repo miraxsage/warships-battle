@@ -19,7 +19,7 @@ defineProps<{ fullDamage?: boolean }>();
     <p :class="[$style.text, $style.center]">
       <SpriteSymbol
         name="reject"
-        :style="{ minWidth: '40px', minHeight: '40px' }"
+        :style="{ minWidth: pxrem(40), minHeight: pxrem(40) }"
         :class="[$style.info, $style.error]"
       />
     </p>

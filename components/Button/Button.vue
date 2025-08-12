@@ -5,7 +5,7 @@
 .regular,
 .ghost {
   display: inline-block;
-  font-size: 26px;
+  font-size: pxrem(26);
   font-family: "First Time Writing";
   color: var(--pen-color);
   transition: all 0.3s;
