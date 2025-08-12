@@ -125,6 +125,8 @@ const gameUrl = ref<string>("");
 const isLoading = ref(false);
 
 onMounted(async () => {
+  gameStore.resetStats();
+
   const peerGameId =
     (route.query.peer as string) || "c7a6652303aa25ac46e7408b80c75ba7";
 

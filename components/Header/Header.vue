@@ -72,17 +72,15 @@ const gameIsStarted = ref(false);
 
 watchEffect(() => {
   if (gameStore.currentGame) {
+    console.log(gameStore.gameStatus);
     if (gameStore.gameStatus.match(/(^arrangement$)|(Turn(Finished|Lost)?$)/)) {
       setTimeout(() => {
         showStats.value = true;
         gameIsStarted.value = true;
       }, 1900);
-    }
-    console.log(gameStore.gameStatus);
-    if (
-      gameStore.isOnlyPlayerMessage &&
+    } else if (
       gameStore.gameStatus.match(
-        /(ConnectionRepairingWaiting|Exited|failed|connecting|finished|ArrangementLose)$/
+        /(ConnectionRepairingWaiting|Exited|failed|connecting|finished|ArrangementLose|ConnectionWaiting)$/
       )
     ) {
       showStats.value = false;

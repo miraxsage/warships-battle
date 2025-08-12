@@ -76,6 +76,8 @@ import EnemyConnectionLost from "./EnemyConnectionLost.vue";
 import EnemyEscaped from "./EnemyEscaped.vue";
 import PlayerArrangementLose from "./PlayerArrangementLose.vue";
 import PlayerArrangementWin from "./PlayerArrangementWin.vue";
+import PlayerLose from "./PlayerLose.vue";
+import PlayerWin from "./PlayerWin.vue";
 import Turn from "./Turn/Turn.vue";
 
 defineOptions({
@@ -114,10 +116,16 @@ const defaultStatusDetails = computed(() => {
   >
     <div :class="[props.type == 'player' ? 'border1' : 'border2', 'frameOnly']">
       <Transition name="fadeText">
-        <Turn v-if="gameStatus?.match(/Turn(Finished|Lost)?$/)" />
+        <PlayerWin
+          v-if="_is('finished') && gameStore.winner == gameStore.playerRole"
+        />
+        <PlayerLose
+          v-else-if="_is('finished') && gameStore.winner == gameStore.enemyRole"
+        />
         <EnemyConnectionLost
           v-else-if="_is(`${enemyRole}ConnectionRepairingWaiting`)"
         />
+        <Turn v-else-if="gameStatus?.match(/Turn(Finished|Lost)?$/)" />
         <EnemyEscaped v-else-if="_is(`${enemyRole}Exited`)" />
         <PlayerArrangementWin v-else-if="_is(`${enemyRole}ArrangementLose`)" />
         <PlayerArrangementLose

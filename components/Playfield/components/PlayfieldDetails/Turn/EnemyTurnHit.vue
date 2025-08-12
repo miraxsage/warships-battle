@@ -3,7 +3,7 @@
 </style>
 <script setup lang="ts">
 import * as _ from "lodash-es";
-import { SHIPS_CLASSES } from "~/constants/common";
+import { HITS_TO_WIN, SHIPS_CLASSES } from "~/constants/common";
 
 const startPhrases = [
   "Враг попал по нашему кораблю!",
@@ -15,7 +15,6 @@ const startPhrase = _.sample(startPhrases);
 const game = useGameStore();
 const fieldStore = useFieldStore();
 const { count } = useCountdown(game.lastTurn?.isShipDestroyed ? 15 : 10);
-defineProps<{ fullDamage?: boolean }>();
 const gameStore = useGameStore();
 const hitSector = computed(() => {
   const lastTurn = gameStore.lastTurn;
@@ -29,13 +28,16 @@ const damagedShipDetails = computed(() => {
 });
 const damagedShip = computed(() => damagedShipDetails.value?.ship);
 const damagedShipPart = computed(() => damagedShipDetails.value?.part);
+const fullDamage = computed(() => gameStore.lastTurn?.isShipDestroyed);
+const enemyHasWon = computed(() => gameStore.enemyStats.hits == HITS_TO_WIN);
+const iconSize = computed(() => (enemyHasWon.value ? "60px" : "40px"));
 </script>
 <template>
   <div :class="$style.details">
     <p :class="[$style.text, $style.center]">
       <SpriteSymbol
-        name="fire"
-        :style="{ minWidth: '40px', minHeight: '40px' }"
+        :name="enemyHasWon ? 'game/skull' : 'fire'"
+        :style="{ minWidth: iconSize, minHeight: iconSize }"
         :class="[$style.info, $style.error]"
       />
     </p>
@@ -71,6 +73,10 @@ const damagedShipPart = computed(() => damagedShipDetails.value?.part);
       <span v-if="fullDamage">
         <br />
         Пилот пал смертью храбрых...
+        <template v-if="enemyHasWon">
+          <br />
+          Похоже у нас не осталось кораблей, капитан!
+        </template>
       </span>
       <span :class="$style.warning" v-else>Держать оборону!</span>
     </p>

@@ -153,8 +153,9 @@ export interface WSGameLeftData {
 
 export interface WSGameEndData {
   status: GameStatus;
-  winnerId?: number;
-  reason?: string;
+  winner: "host" | "guest";
+  hostStats: PlayerStats;
+  guestStats: PlayerStats;
 }
 
 export interface WSGameResetData {

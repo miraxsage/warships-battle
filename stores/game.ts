@@ -15,6 +15,7 @@ export const useGameStore = defineStore("game", () => {
   const gameStartedAt = ref<Date | null>(null);
   const playerStats = ref<PlayerStats>(initPlayerStats());
   const enemyStats = ref<PlayerStats>(initPlayerStats());
+  const winner = ref<"host" | "guest" | null>(null);
   const playerScore = computed(() => {
     if (playerStats.value && enemyStats.value) {
       return playerStats.value.hits - enemyStats.value.hits;
@@ -44,11 +45,10 @@ export const useGameStore = defineStore("game", () => {
           `${enemy}ArrangementLose`,
           `${player}ArrangementLose`,
           "arrangementFinished",
-          "finished",
           "failed",
           "connecting",
         ].includes(gameStatus.value)) ||
-      !!gameStatus.value.match(/(host|guest)Exited$/);
+      !!gameStatus.value.match(/^(host|guest)Exited|finished$/);
     console.log("isOnlyPlayerMessage", result, gameStatus.value);
     return result;
   });
@@ -262,11 +262,16 @@ export const useGameStore = defineStore("game", () => {
         break;
 
       case "game:left":
-        finishGame((enemyRole.value + "Exited") as GameStatus);
+        finishGame((enemyRole.value + "Exited") as GameStatus, "host");
         break;
 
       case "game:end":
-        console.log("Game ended");
+        const data = message.data;
+        if (data.hostStats && data.guestStats) {
+          playerStats.value = data[`${playerRole.value}Stats`];
+          enemyStats.value = data[`${enemyRole.value}Stats`];
+        }
+        finishGame("finished", data.winner);
         break;
 
       case "game:restore":
@@ -394,10 +399,14 @@ export const useGameStore = defineStore("game", () => {
     }
   }
 
-  function finishGame(finalStatus: GameStatus = "finished") {
+  function finishGame(
+    finalStatus: GameStatus = "finished",
+    gameWinner: "host" | "guest"
+  ) {
     console.log("Finishing game and closing all resources");
 
     isGameFinished = true;
+    winner.value = gameWinner;
 
     if (ws) {
       try {
@@ -416,6 +425,11 @@ export const useGameStore = defineStore("game", () => {
     fieldStore.enemy.ships = [];
     fieldStore.player.turnsMap = [];
     fieldStore.enemy.turnsMap = [];
+  }
+
+  function resetStats() {
+    playerStats.value = initPlayerStats();
+    enemyStats.value = initPlayerStats();
   }
 
   return {
@@ -439,5 +453,7 @@ export const useGameStore = defineStore("game", () => {
     createGame,
     resetGame,
     finishGame,
+    resetStats,
+    winner,
   };
 });

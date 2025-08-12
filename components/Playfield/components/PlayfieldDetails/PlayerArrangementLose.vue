@@ -8,6 +8,7 @@
   }
 }
 </style>
+
 <template>
   <div :class="[$style.details, 'critical']">
     <p :class="[$style.text, $style.center]">

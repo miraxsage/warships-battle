@@ -1,0 +1,12 @@
+export { default as Button } from "./Button/Button.vue";
+export { default as Input } from "./Input/Input.vue";
+export { default as Label } from "./Label/Label.vue";
+export { default as Header } from "./Header/Header.vue";
+export { default as Footer } from "./Footer/Footer.vue";
+export { default as GameStarter } from "./GameStarter/GameStarter.vue";
+export { default as HatchBackground } from "./HatchBackground/HatchBackground.vue";
+export { default as Playground } from "./Playground/Playground.vue";
+export { default as UserGameStats } from "./UserGameStats/UserGameStats.vue";
+export { default as UserLegend } from "./UserLegend/UserLegend.vue";
+export { default as AvatarSelector } from "./AvatarSelector/AvatarSelector.vue";
+export { Checkbox } from "./Checkbox";

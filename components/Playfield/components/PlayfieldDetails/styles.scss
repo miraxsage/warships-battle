@@ -21,7 +21,8 @@
   @include fixedSize(32px);
   @include bold-filter($pen-color, $bold: false);
 }
-.text {
+.text,
+.results {
   align-items: center;
   gap: 4px;
   line-height: 32px;
@@ -30,6 +31,10 @@
   & span {
     @include bold-filter;
   }
+}
+.results {
+  display: grid;
+  grid-template-columns: 1.8fr 1fr 1fr;
 }
 .cwArrow {
   scale: -1 1;

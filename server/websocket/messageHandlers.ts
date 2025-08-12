@@ -15,10 +15,17 @@ import {
   updateRoomStatus,
   createGameResponse,
   broadcastToRoom,
+  deleteGameRoom,
 } from "./gameRoom";
-import { sendMessage, sendError, finishGameAsArrangementLose } from "./utils";
+import {
+  sendMessage,
+  sendError,
+  finishGameAsArrangementLose,
+  finishGame,
+} from "./utils";
 import type { ShipState, WSGameTurnData } from "~/types/game";
 import {
+  HITS_TO_WIN,
   SHIP_DIRECTION_INCREMENTS,
   TURN_ANIMATION_DURATION,
 } from "~/constants/common";
@@ -404,11 +411,34 @@ export async function handleGameTurn(
     },
   });
 
-  scheduleGameTurn(
-    game,
-    enemyRole,
-    TURN_ANIMATION_DURATION + 11000 + (destroyedShip ? 5000 : 0)
-  );
+  if (stats.hits === HITS_TO_WIN) {
+    // Игрок уничтожил все корабли противника - завершаем игру
+    game.deferredOperation()?.stop();
+
+    game.deferOperation(() => {
+      const winner = performerRole;
+      const loser = winner == "host" ? "guest" : "host";
+      broadcastToRoom(game.id, {
+        type: "game:end",
+        data: {
+          status: "finished",
+          winner,
+          hostStats: game.hostStats!,
+          guestStats: game.guestStats!,
+        },
+      });
+      const hostScore = game.hostStats!.hits - game.guestStats!.hits;
+      const guestScore = game.guestStats!.hits - game.hostStats!.hits;
+
+      finishGame(game.id, hostScore, guestScore, "finished");
+    }, TURN_ANIMATION_DURATION + 11000 + (destroyedShip ? 5000 : 0));
+  } else {
+    scheduleGameTurn(
+      game,
+      enemyRole,
+      TURN_ANIMATION_DURATION + 11000 + (destroyedShip ? 5000 : 0)
+    );
+  }
 }
 
 export async function handleGameReset(peer: WebSocketPeer): Promise<void> {

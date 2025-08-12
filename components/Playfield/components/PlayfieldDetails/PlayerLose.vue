@@ -3,8 +3,8 @@
 </style>
 <script setup lang="ts">
 import * as _ from "lodash-es";
+import GameResults from "./GameResults.vue";
 
-const { count } = useCountdown(5);
 defineProps<{ fullDamage?: boolean }>();
 </script>
 <template>
@@ -24,16 +24,8 @@ defineProps<{ fullDamage?: boolean }>();
       <br />
       <span>Мы повержены!</span>
     </p>
-    <p :class="[$style.text]">
-      <span>Всего выстрелов: 31</span>
-      <br />
-      <span>Мимо: 23</span>
-      <br />
-      <span>В цель: 8</span>
-      <br />
-      <span>Общий счет: </span><span :class="$style.error">-86 баллов</span>
-    </p>
-    <NuxtLink to="/" :class="$style.fightButton">
+    <GameResults />
+    <NuxtLink to="/" :class="$style.fightButton" style="margin-top: 10px">
       <Button text="На главную" variant="2" />
     </NuxtLink>
   </div>
