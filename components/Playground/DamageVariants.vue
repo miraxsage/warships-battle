@@ -14,7 +14,7 @@
           numOctaves="1.5"
           result="noise"
         />
-        <feDisplacementMap in="SourceGraphic" in2="noise" scale="20" />
+        <feDisplacementMap in="SourceGraphic" in2="noise" scale="15" />
       </filter>
       <filter
         id="ship-distort-heavy-3"
@@ -25,11 +25,11 @@
       >
         <feTurbulence
           type="turbulence"
-          baseFrequency="0.039"
+          baseFrequency="0.04"
           numOctaves="1"
           result="noise"
         />
-        <feDisplacementMap in="SourceGraphic" in2="noise" scale="20" />
+        <feDisplacementMap in="SourceGraphic" in2="noise" scale="18" />
       </filter>
       <filter
         id="ship-distort-heavy-2"
@@ -40,11 +40,11 @@
       >
         <feTurbulence
           type="turbulence"
-          baseFrequency="0.03"
+          baseFrequency="0.05"
           numOctaves="1.3"
           result="noise"
         />
-        <feDisplacementMap in="SourceGraphic" in2="noise" scale="25" />
+        <feDisplacementMap in="SourceGraphic" in2="noise" scale="12" />
       </filter>
       <filter
         id="ship-distort-heavy-1"
@@ -55,11 +55,11 @@
       >
         <feTurbulence
           type="turbulence"
-          baseFrequency="0.04"
+          baseFrequency="0.012"
           numOctaves="1.3"
           result="noise"
         />
-        <feDisplacementMap in="SourceGraphic" in2="noise" scale="28" />
+        <feDisplacementMap in="SourceGraphic" in2="noise" scale="25" />
       </filter>
     </defs>
   </svg>

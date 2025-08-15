@@ -7,6 +7,7 @@ import {
   broadcastToRoom,
 } from "./gameRoom";
 import { finishGameAsEscaped } from "./utils";
+import { getGameStatus } from "~/server/utils/games";
 
 export async function handleDisconnection(peer: WebSocketPeer): Promise<void> {
   console.log("WebSocket connection closed, peer ID:", peer.id);
@@ -27,6 +28,20 @@ export async function handleDisconnection(peer: WebSocketPeer): Promise<void> {
   room.deferredOperation()?.stop();
 
   const gameId = gamePeer.gameId;
+
+  // Проверяем статус игры в БД перед установкой таймера
+  try {
+    const gameStatus = await getGameStatus(gameId);
+    if (!gameStatus || gameStatus.isFinished) {
+      console.log(
+        `Game ${gameId} already finished or room not exists, skipping disconnect timer`
+      );
+      return;
+    }
+  } catch (error) {
+    console.error("Error checking game status:", error);
+    return;
+  }
 
   console.log(
     `${

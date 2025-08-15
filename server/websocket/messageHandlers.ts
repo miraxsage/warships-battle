@@ -15,13 +15,13 @@ import {
   updateRoomStatus,
   createGameResponse,
   broadcastToRoom,
-  deleteGameRoom,
 } from "./gameRoom";
 import {
   sendMessage,
   sendError,
   finishGameAsArrangementLose,
   finishGame,
+  switchGameStatusAfterReconnection,
 } from "./utils";
 import type { ShipState, WSGameTurnData } from "~/types/game";
 import {
@@ -108,6 +108,7 @@ export async function handleGameJoin(
   }
 
   let room = getGameRoom(gameId);
+  console.log("room", room);
   let isHost = false;
   let gameResponse;
   // Останавливаем таймер ожидания переподключения,
@@ -155,7 +156,10 @@ export async function handleGameJoin(
     if (isHost) {
       // Хост переподключается
       if (room.status == "hostConnectionRepairingWaiting") {
-        updateRoomStatus(gameId, room.beforeLostConnectionStatus!);
+        updateRoomStatus(
+          gameId,
+          switchGameStatusAfterReconnection(room.beforeLostConnectionStatus)!
+        );
         // Возвращаем игровой таймер, если он был поставлен на паузу
         room.deferredOperation()?.start();
         console.log(`${data.username} host connection repaired`);
@@ -165,7 +169,10 @@ export async function handleGameJoin(
     } else {
       // Гость подключается или переподключается
       if (room.status == "guestConnectionRepairingWaiting") {
-        updateRoomStatus(gameId, room.beforeLostConnectionStatus!);
+        updateRoomStatus(
+          gameId,
+          switchGameStatusAfterReconnection(room.beforeLostConnectionStatus)!
+        );
         // Возвращаем игровой таймер, если он был поставлен на паузу
         room.deferredOperation()?.start();
         console.log(`${data.username} guest connection repaired`);
@@ -322,7 +329,7 @@ export async function handleGameArranged(
         type: "game:update",
         data: { status: game.status },
       });
-      // finishGameAsArrangementLose(game.id, loserRole == "host");
+      finishGameAsArrangementLose(game.id, loserRole == "host");
     }, 30000);
   }
 }
@@ -399,6 +406,8 @@ export async function handleGameTurn(
     return rowToShow;
   });
 
+  game.status = `${performerRole}TurnFinished`;
+
   broadcastToRoom(gamePeer.gameId, {
     type: "game:turned",
     data: {
@@ -417,7 +426,6 @@ export async function handleGameTurn(
 
     game.deferOperation(() => {
       const winner = performerRole;
-      const loser = winner == "host" ? "guest" : "host";
       broadcastToRoom(game.id, {
         type: "game:end",
         data: {
@@ -430,7 +438,7 @@ export async function handleGameTurn(
       const hostScore = game.hostStats!.hits - game.guestStats!.hits;
       const guestScore = game.guestStats!.hits - game.hostStats!.hits;
 
-      finishGame(game.id, hostScore, guestScore, "finished");
+      finishGame(game.id, hostScore, guestScore);
     }, TURN_ANIMATION_DURATION + 11000 + (destroyedShip ? 5000 : 0));
   } else {
     scheduleGameTurn(

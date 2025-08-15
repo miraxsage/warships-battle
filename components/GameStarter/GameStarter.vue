@@ -3,7 +3,7 @@
 @use "~/styles/mixins" as *;
 .players {
   display: flex;
-  gap: 20px;
+  gap: calc(var(--cell-size) * 0.8);
   align-items: center;
   width: min-content;
   margin: 0 auto;
@@ -18,7 +18,7 @@
 .container {
   display: flex;
   flex-direction: column;
-  gap: 25px;
+  gap: calc(var(--cell-size) * 0.85);
   height: 100%;
   justify-content: center;
   align-content: space-between;
@@ -29,15 +29,15 @@
   path {
     fill: $pen-color !important;
   }
-  max-width: 160px;
-  max-height: 160px;
-  min-width: 160px;
-  min-height: 160px;
+  max-width: calc(var(--cell-size) * 5.333);
+  max-height: calc(var(--cell-size) * 5.333);
+  min-width: calc(var(--cell-size) * 5.333);
+  min-height: calc(var(--cell-size) * 5.333);
 }
 .qrcodeContainer {
   display: flex;
   align-items: center;
-  gap: 20px;
+  gap: calc(var(--cell-size) * 0.8);
 }
 .qrcodeText,
 .statusText,
@@ -67,18 +67,18 @@
 .qrcodeTextContainer {
   display: flex;
   flex-direction: column;
-  gap: 15px;
+  gap: calc(var(--cell-size) * 0.8);
 }
 .loader {
   display: flex;
-  margin-top: 20px;
-  margin-bottom: 20px;
+  margin-top: calc(var(--cell-size) * 0.666);
+  margin-bottom: calc(var(--cell-size) * 0.666);
   width: 400%;
   position: relative;
   animation: loaderPosition 10s infinite cubic-bezier(0.34, 0.48, 0.69, 0.57),
     loaderScale 10s infinite cubic-bezier(0.68, 0.04, 0.28, 0.98);
   & > div {
-    height: 10px;
+    height: calc(var(--cell-size) * 0.333);
     width: 50%;
     background-repeat: no-repeat;
     background-image: url("/images/dash-line.svg");
@@ -124,19 +124,47 @@ const route = useRoute();
 const gameUrl = ref<string>("");
 const isLoading = ref(false);
 
+async function createNewGame() {
+  const { gameId, url } = await gameStore.createGame();
+  console.log("createNewGame", gameId, url);
+  history.pushState({}, "", url);
+  gameUrl.value = url;
+  gameStore.connect(gameId);
+}
+
 onMounted(async () => {
   gameStore.resetStats();
 
-  const peerGameId =
-    (route.query.peer as string) || "c7a6652303aa25ac46e7408b80c75ba7";
+  const peerGameId = route.query.peer as string; //|| "c7a6652303aa25ac46e7408b80c75ba7";
 
   if (peerGameId) {
-    const { url } = gameStore.connect(peerGameId);
-    gameUrl.value = url;
+    try {
+      isLoading.value = true;
+      // Проверяем статус игры перед подключением
+      const gameStatus = await gameStore.checkGameStatus(peerGameId);
+
+      console.log("gameStatus", gameStatus);
+      if (!gameStatus || gameStatus.isFinished) {
+        await createNewGame();
+      } else {
+        const { url } = gameStore.connect(peerGameId);
+        gameUrl.value = url;
+      }
+    } catch (error) {
+      console.error("Failed to check game status or create new game:", error);
+      try {
+        await createNewGame();
+      } catch (createError) {
+        console.error("Failed to create game:", createError);
+      }
+    } finally {
+      isLoading.value = false;
+    }
   } else {
     try {
       isLoading.value = true;
       const { gameId, url } = await gameStore.createGame();
+      history.pushState({}, "", url);
       gameUrl.value = url;
       gameStore.connect(gameId);
     } catch (error) {

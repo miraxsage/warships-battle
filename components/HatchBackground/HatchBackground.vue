@@ -13,7 +13,7 @@
   height: 100%;
   position: relative;
   background-color: currentColor;
-  mask-image: url("./images/hatch.svg");
+  mask-image: url("/images/hatch.svg");
   mask-size: 100% 100%;
   rotate: -90deg;
   translate: calc(var(--column) * -10%) calc(var(--row) * -10%);

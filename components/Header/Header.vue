@@ -82,10 +82,13 @@ watchEffect(() => {
   if (gameStore.currentGame) {
     console.log(gameStore.gameStatus);
     if (gameStore.gameStatus.match(/(^arrangement$)|(Turn(Finished|Lost)?$)/)) {
-      setTimeout(() => {
-        showStats.value = true;
-        gameIsStarted.value = true;
-      }, 1900);
+      setTimeout(
+        () => {
+          showStats.value = true;
+          gameIsStarted.value = true;
+        },
+        !gameIsStarted.value ? 1900 : 300
+      );
     } else if (
       gameStore.gameStatus.match(
         /(ConnectionRepairingWaiting|Exited|failed|connecting|finished|ArrangementLose|ConnectionWaiting)$/
@@ -122,7 +125,7 @@ function handleResetGame() {
 
 <template>
   <div class="header container">
-    <button class="reset-game" @click="handleResetGame">reset game</button>
+    <!-- <button class="reset-game" @click="handleResetGame">reset game</button> -->
     <Transition name="fade">
       <div class="game-stats-container" v-if="showStats">
         <UserLegend :user="player">

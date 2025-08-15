@@ -98,4 +98,4 @@ export const SHIP_DIRECTION_INCREMENTS: Record<
   left: [1, 0],
 };
 
-export const HITS_TO_WIN = 2;
+export const HITS_TO_WIN = 20;

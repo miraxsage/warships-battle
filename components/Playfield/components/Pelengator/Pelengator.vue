@@ -144,7 +144,7 @@
   width: calc(var(--fcell-size) * 1.2);
   height: calc(var(--fcell-size) * 1.2);
   background-color: var(--pen-color);
-  mask-image: url("./images/sight.svg");
+  mask-image: url("/images/sight.svg");
   translate: -50% -50%;
   transition: opacity 0.4s;
   opacity: 0;
@@ -168,7 +168,7 @@
     width: 100%;
     height: 100%;
     background-color: var(--pen-color);
-    mask-image: url("./images/hatch.svg");
+    mask-image: url("/images/hatch.svg");
     mask-size: cover;
   }
 }

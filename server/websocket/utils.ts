@@ -1,4 +1,4 @@
-import type { WSMessage, WebSocketPeer } from "./types";
+import type { GameStatus, WSMessage, WebSocketPeer } from "./types";
 import { broadcastToRoom } from "./gameRoom";
 
 /**
@@ -74,8 +74,8 @@ export async function finishGameAsArrangementLose(
   const hostScore = hostIsLoser ? -5 : 5;
   const guestScore = hostIsLoser ? 5 : -5;
   const status = hostIsLoser
-    ? "host_arrangement_lose"
-    : "guest_arrangement_lose";
+    ? "host_arrangement_lost"
+    : "guest_arrangement_lost";
   return finishGame(gameId, hostScore, guestScore, status);
 }
 
@@ -103,16 +103,22 @@ export async function finishGame(
   return new Promise<void>((resolve, reject) => {
     db.run(
       `UPDATE games 
-       SET status = ?,
+       SET guest_user_id = ?,
+           status = ?,
            host_score = ?,
            guest_score = ?,
-           winner_id = ?,
            finished_at = CURRENT_TIMESTAMP
        WHERE id = ?`,
-      [status ?? "finished", hostScore, guestScore, finalWinnerId, gameId],
+      [
+        room.guestUser?.id ?? 0,
+        status ?? "finished",
+        hostScore,
+        guestScore,
+        gameId,
+      ],
       function (err) {
         if (err) {
-          console.error("Error finishing game:", err);
+          console.error("Error finishing game:", err, status ?? "finished");
           reject(err);
           return;
         }
@@ -127,4 +133,32 @@ export async function finishGame(
       }
     );
   });
+}
+
+export function switchGameStatusAfterReconnection(
+  previousStatus?: GameStatus
+): GameStatus | undefined {
+  if (!previousStatus) {
+    return undefined;
+  }
+  const turnStatusMatch = previousStatus.match(
+    /(host|guest)Turn(Finished|Lost)?$/
+  );
+  console.log(
+    "switchGameStatusAfterReconnection",
+    previousStatus,
+    turnStatusMatch
+  );
+  if (turnStatusMatch) {
+    const turnPerformer = turnStatusMatch[1];
+    const enemy = turnPerformer === "host" ? "guest" : "host";
+    const turnType = turnStatusMatch[2];
+    if (turnType == "Finished") {
+      return `${enemy}Turn`;
+    } else {
+      return previousStatus;
+    }
+  } else {
+    return previousStatus;
+  }
 }

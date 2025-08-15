@@ -132,12 +132,23 @@ const theme = computed(() => {
   transform-origin: calc(var(--fcell-size) / 2) calc(var(--fcell-size) / 2);
   transition: rotate 0.5s;
   &.subShip.destroyedTheme {
-    transform: translate(-8px, -6px) scale(0.96);
+    &.ship4 {
+      transform: translate(-2px, 0px) scale(0.96);
+    }
+    &.ship3 {
+      transform: translate(-4px, 0px) scale(0.96);
+    }
+    &.ship2 {
+      transform: translate(-2px, 0px) scale(0.96);
+    }
+    &.ship1 {
+      transform: translate(-6px, -4px) scale(0.96);
+    }
     mask-image: unset !important;
     &.fadeIn {
-      animation: fadeIn 7s;
+      animation: fadeIn 9s;
       & + .ship {
-        animation: fadeOut 6s 1s forwards;
+        animation: fadeOut 9s forwards;
       }
     }
     & + .ship {

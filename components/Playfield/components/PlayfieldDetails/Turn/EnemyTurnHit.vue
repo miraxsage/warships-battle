@@ -69,15 +69,16 @@ const iconSize = computed(() => (enemyHasWon.value ? pxrem(60) : pxrem(40)));
     <p :class="[$style.text, $style.center]">
       <span :class="$style.error" v-if="fullDamage">
         Борт полностью уничтожен!
+        <br />
       </span>
       <span v-if="fullDamage">
-        <br />
         Пилот пал смертью храбрых...
-      </span>
-      <template v-if="enemyHasWon">
         <br />
+      </span>
+      <span v-if="enemyHasWon">
         Похоже у нас не осталось кораблей, капитан!
-      </template>
+        <br />
+      </span>
       <span :class="$style.warning" v-if="!enemyHasWon">
         Держать оборону!
       </span>

@@ -52,23 +52,20 @@ export function initDatabase() {
                 CREATE TABLE IF NOT EXISTS games (
                   id TEXT PRIMARY KEY,
                   host_user_id INTEGER NOT NULL,
-                  guest_user_id INTEGER NOT NULL,
-                  status TEXT NOT NULL CHECK (status IN (
+                  guest_user_id INTEGER NULL,
+                  status TEXT NULL CHECK (status IN (
                     'finished', 
                     'host_arrangement_lost', 
                     'guest_arrangement_lost',
                     'host_escaped', 
-                    'guest_escaped',
-                    'exited'
+                    'guest_escaped'
                   )),
-                  host_score INTEGER NOT NULL DEFAULT 0,
-                  guest_score INTEGER NOT NULL DEFAULT 0,
-                  winner_id INTEGER DEFAULT NULL,
+                  host_score INTEGER NULL DEFAULT 0,
+                  guest_score INTEGER NULL DEFAULT 0,
                   created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
                   finished_at DATETIME DEFAULT CURRENT_TIMESTAMP,
                   FOREIGN KEY (host_user_id) REFERENCES users (id) ON DELETE CASCADE,
-                  FOREIGN KEY (guest_user_id) REFERENCES users (id) ON DELETE CASCADE,
-                  FOREIGN KEY (winner_id) REFERENCES users (id) ON DELETE SET NULL
+                  FOREIGN KEY (guest_user_id) REFERENCES users (id) ON DELETE CASCADE
                 )
               `,
                 (gameErr) => {

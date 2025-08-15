@@ -34,21 +34,20 @@ export const useGameStore = defineStore("game", () => {
   let isGameFinished = false;
 
   const isOnlyPlayerMessage = computed(() => {
-    const player = isHost.value ? "host" : "guest";
     const enemy = isHost.value ? "guest" : "host";
     const result =
       (currentGame.value &&
         [
           `${enemy}ConnectionRepairingWaiting`,
-          `${enemy}TurnLost`,
-          `${player}TurnLost`,
-          `${enemy}ArrangementLose`,
-          `${player}ArrangementLose`,
+          `hostTurnLost`,
+          `guestTurnLost`,
           "arrangementFinished",
           "failed",
           "connecting",
         ].includes(gameStatus.value)) ||
-      !!gameStatus.value.match(/^(host|guest)Exited|finished$/);
+      !!gameStatus.value.match(
+        /^((host|guest)(Exited|ArrangementLose)|finished)$/
+      );
     console.log("isOnlyPlayerMessage", result, gameStatus.value);
     return result;
   });
@@ -174,6 +173,13 @@ export const useGameStore = defineStore("game", () => {
             if (currentGame.value) {
               currentGame.value.lastTurn = undefined;
             }
+          }
+          const arrangementLostMatch = gameStatus.value.match(
+            /^(host|guest)ArrangementLose$/
+          );
+          if (arrangementLostMatch) {
+            const winner = arrangementLostMatch[1] == "host" ? "guest" : "host";
+            finishGame(gameStatus.value, winner);
           }
         }
         break;
@@ -373,6 +379,22 @@ export const useGameStore = defineStore("game", () => {
     gameStatus.value = isHost.value ? "hostExited" : "guestExited";
   }
 
+  async function checkGameStatus(gameId: string) {
+    try {
+      const response = await $fetch<{
+        gameId: string;
+        status: string | null;
+        isFinished: boolean;
+      }>(`/api/games/status?gameId=${gameId}`, {
+        method: "GET",
+      });
+      return response;
+    } catch (error) {
+      console.error("Failed to check game status:", error);
+      throw error;
+    }
+  }
+
   async function createGame() {
     try {
       const response = await $fetch<{ gameId: string; url: string }>(
@@ -451,6 +473,7 @@ export const useGameStore = defineStore("game", () => {
     disconnect,
     sendMessage,
     createGame,
+    checkGameStatus,
     resetGame,
     finishGame,
     resetStats,

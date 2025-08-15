@@ -36,7 +36,7 @@ export function useShip(shipId: string, owner: "player" | "enemy") {
       if (newDamagedParts.length == ship.type) {
         setTimeout(
           () => (isDestroyed.value = true),
-          TURN_ANIMATION_DURATION * 2
+          TURN_ANIMATION_DURATION * 1.8
         );
       }
     } else {
