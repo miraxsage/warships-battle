@@ -32,5 +32,8 @@
   "devDependencies": {
     "@types/cookie": "^1.0.0",
     "sass": "^1.89.0"
+  },
+  "optionalDependencies": {
+    "@rollup/rollup-linux-x64-musl": "4.9.5"
   }
 }
