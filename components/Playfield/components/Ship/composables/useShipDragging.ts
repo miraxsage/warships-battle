@@ -26,7 +26,9 @@ export function useShipDragging<T extends HTMLElement>(
     displaceY: 0,
   });
 
-  const shipCoordination = useShipCoordination(el, { coords, shipId });
+  const shipCoordination = el
+    ? useShipCoordination(el, { coords, shipId })
+    : null;
 
   watch(
     el,
@@ -34,6 +36,12 @@ export function useShipDragging<T extends HTMLElement>(
       if (!el) {
         return;
       }
+
+      const domElement = el instanceof HTMLElement ? el : (el as any).$el;
+      if (!domElement || !(domElement instanceof HTMLElement)) {
+        return;
+      }
+
       const dragHandler = (event: MouseEvent) => {
         if (!shipState || !fieldState || !scaleState || event.button !== 0) {
           return;
@@ -41,8 +49,8 @@ export function useShipDragging<T extends HTMLElement>(
         fieldState.shipPlaceholder = { ...shipState };
         shipState.isDragging = true;
         shipState.isSmooth = false;
-        const shipRect = el.getBoundingClientRect();
-        const fieldRect = el.parentElement!.getBoundingClientRect();
+        const shipRect = domElement.getBoundingClientRect();
+        const fieldRect = domElement.parentElement!.getBoundingClientRect();
 
         coords.displaceX = event.clientX - shipRect.left;
         coords.displaceY = event.clientY - shipRect.top;
@@ -138,9 +146,10 @@ export function useShipDragging<T extends HTMLElement>(
           { once: true }
         );
       };
-      el.addEventListener("mousedown", dragHandler);
+
+      domElement.addEventListener("mousedown", dragHandler);
       onCleanup(() => {
-        el.removeEventListener("mousedown", dragHandler);
+        domElement.removeEventListener("mousedown", dragHandler);
       });
     },
     { immediate: true }
